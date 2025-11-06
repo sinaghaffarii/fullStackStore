@@ -21,7 +21,7 @@ class App {
     this.app = express();
 
     this.initializeMiddlewares();
-    this.initializeSwagger(); // اول Swagger رو setup کن
+    this.initializeSwagger();
     this.initializeDatabase();
     this.initializeRoutes();
     this.initializeErrorHandling();
@@ -74,7 +74,6 @@ class App {
 
   private initializeErrorHandling(): void {
     console.log('🔄 Setting up error handling...');
-    // این باید همیشه آخر باشه
     this.app.use(notFoundHandler);
     this.app.use(errorHandler);
   }

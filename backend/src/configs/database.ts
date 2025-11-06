@@ -1,6 +1,16 @@
 import { Sequelize } from 'sequelize';
 import { config } from './environment';
 
+const customLogger = (msg: string) => {
+  if (config.app.env === 'development') {
+    if (msg.includes('SELECT 1+1') || msg.includes('ERROR')) {
+      console.log(`🗄️  ${msg}`);
+    } else if (msg.includes('CREATE TABLE') || msg.includes('CREATE INDEX')) {
+      console.log(`🗃️  ${msg}`);
+    }
+  }
+};
+
 export const sequelize = new Sequelize({
   dialect: 'postgres',
   host: config.database.host,
@@ -8,7 +18,7 @@ export const sequelize = new Sequelize({
   username: config.database.username,
   password: config.database.password,
   database: config.database.database,
-  logging: config.app.env === 'development' ? console.log : false,
+  logging: customLogger,
   define: {
     timestamps: true,
     underscored: true,
@@ -29,16 +39,3 @@ export const sequelize = new Sequelize({
         : false,
   },
 });
-
-export const testConnection = async (): Promise<boolean> => {
-  try {
-    await sequelize.authenticate();
-    console.log(
-      '✅ Connection to PostgreSQL has been established successfully.',
-    );
-    return true;
-  } catch (error) {
-    console.error('❌ Unable to connect to PostgreSQL:', error);
-    return false;
-  }
-};

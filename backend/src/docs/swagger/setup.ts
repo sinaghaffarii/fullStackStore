@@ -23,7 +23,6 @@ export function setupSwagger(app: Application): void {
     console.log('   📋 JSON: /api-docs.json');
   } catch (error) {
     console.error('❌ Swagger setup error:', error);
-    // Fallback: حداقل basic Swagger رو setup کن
     setupBasicSwagger(app);
   }
 }
