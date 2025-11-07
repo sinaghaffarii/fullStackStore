@@ -15,6 +15,9 @@ export class ProductController {
     try {
       const productData: CreateProductDTO = req.body;
 
+      console.log('Creating product with data:', productData);
+      console.log('User making request:', req.user);
+
       const product = await this.productService.createProduct(productData);
 
       sendResponse(res, StatusCodes.CREATED, {
@@ -22,6 +25,7 @@ export class ProductController {
         data: product,
       });
     } catch (error) {
+      console.error('Error in createProduct:', error);
       throw error;
     }
   };
@@ -53,6 +57,12 @@ export class ProductController {
         limit = '10',
       } = req.query;
 
+      const pageNum = Math.max(1, parseInt(page as string) || 1);
+      const limitNum = Math.min(
+        100,
+        Math.max(1, parseInt(limit as string) || 10),
+      );
+
       const filters: ProductFilters = {
         category_id: category_id as string,
         min_price: min_price ? parseFloat(min_price as string) : undefined,
@@ -61,7 +71,6 @@ export class ProductController {
         search: search as string,
       };
 
-      // Parse attributes from query string
       if (req.query.attributes) {
         try {
           filters.attributes = JSON.parse(req.query.attributes as string);
@@ -75,8 +84,8 @@ export class ProductController {
 
       const result = await this.productService.listProducts(
         filters,
-        parseInt(page as string),
-        parseInt(limit as string),
+        pageNum,
+        limitNum,
       );
 
       sendResponse(res, StatusCodes.OK, {
@@ -123,9 +132,13 @@ export class ProductController {
       const { id } = req.params;
       const { quantity } = req.body;
 
-      if (typeof quantity !== 'number' || quantity < 0) {
+      if (
+        typeof quantity !== 'number' ||
+        quantity < 0 ||
+        !Number.isInteger(quantity)
+      ) {
         throw new AppError(
-          'Valid quantity is required',
+          'Valid positive integer quantity is required',
           StatusCodes.BAD_REQUEST,
         );
       }

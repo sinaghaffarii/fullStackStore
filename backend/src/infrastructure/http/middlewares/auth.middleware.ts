@@ -3,13 +3,13 @@ import { verifyAccessToken } from '../../../shared/utils/jwt';
 import { AppError } from '../../../shared/errors/app-error';
 import { StatusCodes } from 'http-status-codes';
 
-// تعریف تایپ extended برای Request
 declare global {
   namespace Express {
     interface Request {
       user?: {
         userId: string;
         email: string;
+        role: string;
       };
     }
   }
@@ -21,7 +21,11 @@ export const authMiddleware = (
   next: NextFunction,
 ): void => {
   try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
+    let token = req.cookies.accessToken;
+
+    if (!token) {
+      token = req.header('Authorization')?.replace('Bearer ', '');
+    }
 
     if (!token) {
       throw new AppError(
@@ -33,6 +37,7 @@ export const authMiddleware = (
     const decoded = verifyAccessToken(token) as {
       userId: string;
       email: string;
+      role: string;
     };
     req.user = decoded;
     next();

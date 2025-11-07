@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../../configs/database';
+import { User } from './user.model';
 
 interface OTPAttributes {
   id?: string;
@@ -10,11 +11,22 @@ interface OTPAttributes {
 }
 
 export class OTP extends Model<OTPAttributes> implements OTPAttributes {
-  public id?: string;
-  public email!: string;
-  public code!: string;
-  public expires_at!: Date;
-  public used!: boolean;
+  declare id?: string;
+  declare email: string;
+  declare code: string;
+  declare expires_at: Date;
+  declare used: boolean;
+
+  // Associations
+  public readonly user?: User;
+
+  static associate(models: any): void {
+    OTP.belongsTo(models.User, {
+      foreignKey: 'email',
+      targetKey: 'email',
+      as: 'user',
+    });
+  }
 }
 
 OTP.init(
@@ -48,3 +60,5 @@ OTP.init(
     timestamps: true,
   },
 );
+
+export default OTP;

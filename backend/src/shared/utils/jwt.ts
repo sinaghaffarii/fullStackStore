@@ -6,7 +6,11 @@ const JWT_SECRET =
 const JWT_REFRESH_SECRET =
   process.env.JWT_REFRESH_SECRET || 'your-refresh-secret-key';
 
-export const generateAccessToken = (payload: object): string => {
+export const generateAccessToken = (payload: {
+  userId: string;
+  email: string;
+  role: string;
+}) => {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: '15m' });
 };
 
@@ -22,25 +26,23 @@ export const verifyRefreshToken = (token: string): string | jwt.JwtPayload => {
   return jwt.verify(token, JWT_REFRESH_SECRET);
 };
 
-export const setAccessTokenCookie = (res: Response, token: string): void => {
+export function setAccessTokenCookie(res: Response, token: string): void {
   res.cookie('accessToken', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
-    maxAge: 15 * 60 * 1000, // 15 دقیقه
-    path: '/',
+    maxAge: 15 * 60 * 1000, // 15 minutes
   });
-};
+}
 
-export const setRefreshTokenCookie = (res: Response, token: string): void => {
+export function setRefreshTokenCookie(res: Response, token: string): void {
   res.cookie('refreshToken', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 روز
-    path: '/',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
-};
+}
 
 export const clearAuthCookies = (res: Response): void => {
   res.clearCookie('accessToken');

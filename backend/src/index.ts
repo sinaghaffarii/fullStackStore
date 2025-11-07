@@ -12,6 +12,7 @@ import { sequelize } from './configs/database';
 import { config } from './configs/environment';
 import { notFoundHandler } from './infrastructure/http/middlewares/not-fount.middleware';
 import { errorHandler } from './infrastructure/http/middlewares/error-handler.middleware';
+import { setupAssociations } from './infrastructure/database/models';
 
 class App {
   public app: express.Application;
@@ -46,9 +47,11 @@ class App {
       await sequelize.authenticate();
       console.log('✅ Database connected');
 
+      setupAssociations();
+
       if (config.app.env === 'development') {
         console.log('🔄 Syncing database...');
-        await sequelize.sync({ force: false });
+        await sequelize.sync({ force: false, alter: true });
         console.log('✅ Database synced');
       }
     } catch (error) {
@@ -60,7 +63,15 @@ class App {
   private initializeRoutes(): void {
     console.log('🔄 Setting up routes...');
 
-    // Health check - این رو قبل از API routes بذار
+    this.app.get('/', (req, res) => {
+      res.json({
+        message: 'FullStack Store API',
+        version: '1.0.0',
+        docs: `/api-docs`,
+        health: `/health`,
+      });
+    });
+
     this.app.get('/health', (req, res) => {
       res.json({ status: 'OK', timestamp: new Date().toISOString() });
     });

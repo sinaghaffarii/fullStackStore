@@ -5,8 +5,12 @@ import { AppError } from '../../../shared/errors/app-error';
 import { sendResponse } from '../../../shared/utils/response-handler';
 import {
   clearAuthCookies,
+  generateAccessToken,
+  generateRefreshToken,
   setAccessTokenCookie,
+  setRefreshTokenCookie,
 } from '../../../shared/utils/jwt';
+import { User } from '../../database/models';
 
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -43,7 +47,24 @@ export class AuthController {
 
       const result = await this.authService.verifyOTP(email, code);
 
-      setAccessTokenCookie(res, result.token);
+      const accessToken = generateAccessToken({
+        userId: result.user.id,
+        email: result.user.email,
+        role: result.user.role,
+      });
+
+      const refreshToken = generateRefreshToken({
+        userId: result.user.id,
+        email: result.user.email,
+      });
+
+      setAccessTokenCookie(res, accessToken);
+      setRefreshTokenCookie(res, refreshToken);
+
+      await User.update(
+        { refresh_token: refreshToken },
+        { where: { id: result.user.id } },
+      );
 
       sendResponse(res, StatusCodes.OK, {
         message: 'OTP verified successfully',
@@ -52,6 +73,7 @@ export class AuthController {
         },
       });
     } catch (err) {
+      console.error('Error in verifyOTP:', err);
       throw err;
     }
   };

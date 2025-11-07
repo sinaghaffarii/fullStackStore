@@ -25,7 +25,6 @@ router.get('/:id', productController.getProduct);
 
 router.get('/category/:categoryId', productController.getProductsByCategory);
 
-// Protected routes (Admin only)
 router.post(
   '/',
   authMiddleware,

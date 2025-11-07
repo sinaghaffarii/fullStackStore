@@ -1,5 +1,7 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../../../configs/database';
+import { Category } from './category.model';
+import { CartItem } from './cart.model';
 
 export interface ProductAttributes {
   id: string;
@@ -14,7 +16,6 @@ export interface ProductAttributes {
   updated_at?: Date;
 }
 
-// برای ایجاد محصول - فیلدهای optional رو مشخص می‌کنیم
 export interface ProductCreationAttributes
   extends Optional<
     ProductAttributes,
@@ -35,6 +36,22 @@ export class Product
   public is_active!: boolean;
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
+
+  // Associations
+  public readonly category?: Category;
+  public readonly cart_items?: CartItem[];
+
+  static associate(models: any): void {
+    Product.belongsTo(models.Category, {
+      foreignKey: 'category_id',
+      as: 'category',
+    });
+
+    Product.hasMany(models.CartItem, {
+      foreignKey: 'product_id',
+      as: 'cart_items',
+    });
+  }
 }
 
 Product.init(
@@ -108,3 +125,5 @@ Product.init(
     updatedAt: 'updated_at',
   },
 );
+
+export default Product;

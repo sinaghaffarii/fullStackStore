@@ -2,7 +2,6 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../../configs/database';
 import { User } from './user.model';
 import { Product } from './product.model';
-import { Category } from './category.model';
 
 interface CartAttributes {
   id: string;
@@ -10,10 +9,26 @@ interface CartAttributes {
   is_active: boolean;
 }
 
-export class Cart extends Model<CartAttributes> implements CartAttributes {
+class Cart extends Model<CartAttributes> implements CartAttributes {
   public id!: string;
   public user_id!: string;
   public is_active!: boolean;
+
+  // Associations
+  public readonly user?: User;
+  public readonly items?: CartItem[];
+
+  static associate(models: any): void {
+    Cart.belongsTo(models.User, {
+      foreignKey: 'user_id',
+      as: 'user',
+    });
+
+    Cart.hasMany(models.CartItem, {
+      foreignKey: 'cart_id',
+      as: 'items',
+    });
+  }
 }
 
 Cart.init(
@@ -50,19 +65,32 @@ interface CartItemAttributes {
   product_id: string;
   quantity: number;
   unit_price: number;
-  attributes: Record<string, any>; // For product variations
+  attributes: Record<string, any>;
 }
 
-export class CartItem
-  extends Model<CartItemAttributes>
-  implements CartItemAttributes
-{
+class CartItem extends Model<CartItemAttributes> implements CartItemAttributes {
   public id!: string;
   public cart_id!: string;
   public product_id!: string;
   public quantity!: number;
   public unit_price!: number;
   public attributes!: Record<string, any>;
+
+  // Associations
+  public readonly cart?: Cart;
+  public readonly product?: Product;
+
+  static associate(models: any): void {
+    CartItem.belongsTo(models.Cart, {
+      foreignKey: 'cart_id',
+      as: 'cart',
+    });
+
+    CartItem.belongsTo(models.Product, {
+      foreignKey: 'product_id',
+      as: 'product',
+    });
+  }
 }
 
 CartItem.init(
@@ -112,18 +140,4 @@ CartItem.init(
   },
 );
 
-// Define associations
-User.hasMany(Cart, { foreignKey: 'user_id', as: 'carts' });
-Cart.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
-
-Cart.hasMany(CartItem, { foreignKey: 'cart_id', as: 'items' });
-CartItem.belongsTo(Cart, { foreignKey: 'cart_id', as: 'cart' });
-
-Product.hasMany(CartItem, { foreignKey: 'product_id', as: 'cart_items' });
-CartItem.belongsTo(Product, { foreignKey: 'product_id', as: 'product' });
-
-Category.hasMany(Product, { foreignKey: 'category_id', as: 'products' });
-Product.belongsTo(Category, { foreignKey: 'category_id', as: 'category' });
-
-Category.belongsTo(Category, { foreignKey: 'parent_id', as: 'parent' });
-Category.hasMany(Category, { foreignKey: 'parent_id', as: 'children' });
+export { Cart, CartItem };
