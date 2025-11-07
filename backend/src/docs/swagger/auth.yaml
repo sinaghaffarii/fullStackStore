@@ -63,6 +63,100 @@ components:
                 is_verified:
                   type:
                     booleanVerifyOTPResponse:
+    RefreshTokenRequest:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+          example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+    RefreshTokenResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Token refreshed successfully
+        data:
+          type: object
+          properties:
+            accessToken:
+              type: string
+            refreshToken:
+              type: string
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [customer, admin]
+        is_verified:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    UpdateProfileRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: newuser@example.com
+    ChangePasswordRequest:
+      type: object
+      required:
+        - currentPassword
+        - newPassword
+      properties:
+        currentPassword:
+          type: string
+          example: 'oldPassword123'
+        newPassword:
+          type: string
+          example: 'newPassword123'
+    RequestPasswordResetRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@example.com
+    VerifyPasswordResetRequest:
+      type: object
+      required:
+        - email
+        - code
+      properties:
+        email:
+          type: string
+          format: email
+        code:
+          type: string
+          example: '123456'
+    ResetPasswordRequest:
+      type: object
+      required:
+        - resetToken
+        - newPassword
+      properties:
+        resetToken:
+          type: string
+          example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+        newPassword:
+          type: string
+          example: 'newPassword123'
   type: object
   properties:
     success:
@@ -131,3 +225,166 @@ paths:
           description: Invalid or expired OTP
         '500':
           description: Internal server error
+
+  /auth/refresh-token:
+    post:
+      tags:
+        - Authentication
+      summary: Refresh access token using refresh token
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshTokenResponse'
+        '401':
+          description: Invalid refresh token
+
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Logout user and clear tokens
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Logout successfully
+        '500':
+          description: Internal server error
+
+  /profile/me:
+    get:
+      tags:
+        - Profile
+      summary: Get current user profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Profile retrieved successfully
+                  data:
+                    $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Unauthorized
+
+    put:
+      tags:
+        - Profile
+      summary: Update user profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+      responses:
+        '200':
+          description: Profile updated successfully
+        '400':
+          description: Validation error
+        '401':
+          description: Unauthorized
+        '409':
+          description: Email already exists
+
+  /profile/password/change:
+    post:
+      tags:
+        - Profile
+      summary: Change user password
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+      responses:
+        '200':
+          description: Password changed successfully
+        '400':
+          description: Validation error or incorrect current password
+        '401':
+          description: Unauthorized
+
+  /profile/password/reset/request:
+    post:
+      tags:
+        - Profile
+      summary: Request password reset OTP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestPasswordResetRequest'
+      responses:
+        '200':
+          description: If the email exists, a password reset code has been sent
+
+  /profile/password/reset/verify:
+    post:
+      tags:
+        - Profile
+      summary: Verify password reset OTP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyPasswordResetRequest'
+      responses:
+        '200':
+          description: Password reset code verified successfully
+        '400':
+          description: Invalid or expired OTP
+
+  /profile/password/reset:
+    post:
+      tags:
+        - Profile
+      summary: Reset password using reset token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+      responses:
+        '200':
+          description: Password reset successfully
+        '400':
+          description: Validation error
+        '401':
+          description: Invalid or expired reset token

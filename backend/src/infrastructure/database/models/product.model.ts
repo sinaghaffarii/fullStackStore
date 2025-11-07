@@ -1,7 +1,11 @@
-import { DataTypes, Model, Optional } from 'sequelize';
+import type { Optional } from 'sequelize';
+
+import { DataTypes, Model } from 'sequelize';
+
+import type { CartItem } from './cart.model';
+import type { Category } from './category.model';
+
 import { sequelize } from '../../../configs/database';
-import { Category } from './category.model';
-import { CartItem } from './cart.model';
 
 export interface ProductAttributes {
   id: string;
@@ -19,27 +23,27 @@ export interface ProductAttributes {
 export interface ProductCreationAttributes
   extends Optional<
     ProductAttributes,
-    'id' | 'description' | 'is_active' | 'created_at' | 'updated_at'
+    'created_at' | 'description' | 'id' | 'is_active' | 'updated_at'
   > {}
 
 export class Product
   extends Model<ProductAttributes, ProductCreationAttributes>
   implements ProductAttributes
 {
-  public id!: string;
-  public name!: string;
-  public description?: string;
-  public base_price!: number;
-  public category_id!: string;
   public attributes!: Record<string, any>;
-  public stock_quantity!: number;
-  public is_active!: boolean;
-  public readonly created_at!: Date;
-  public readonly updated_at!: Date;
-
+  public base_price!: number;
+  public readonly cart_items?: CartItem[];
   // Associations
   public readonly category?: Category;
-  public readonly cart_items?: CartItem[];
+  public category_id!: string;
+  public readonly created_at!: Date;
+  public description?: string;
+  public id!: string;
+  public is_active!: boolean;
+  public name!: string;
+
+  public stock_quantity!: number;
+  public readonly updated_at!: Date;
 
   static associate(models: any): void {
     Product.belongsTo(models.Category, {

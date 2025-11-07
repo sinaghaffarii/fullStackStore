@@ -1,5 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import type { NextFunction, Request, Response } from 'express';
+
 import { StatusCodes } from 'http-status-codes';
+
 import { AppError } from '../../../shared/errors/app-error';
 import { sendError } from '../../../shared/utils/response-handler';
 

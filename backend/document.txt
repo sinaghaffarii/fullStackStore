@@ -1,3 +1,35 @@
+backend/
+src/
+├── config/
+│   ├── database.ts
+│   └── environment.ts
+├── core/
+│   ├── entities/
+│   ├── repositories/
+│   ├── services/
+│   └── use-cases/
+├── infrastructure/
+│   ├── database/
+│   │   ├── models/
+│   │   └── migrations/
+│   ├── http/
+│   │   ├── controllers/
+│   │   ├── middlewares/
+│   │   ├── routes/
+│   │   └── validators/
+│   └── external/
+│       ├── email/
+│       └── payment/
+├── docs/
+│   └── swagger/
+├── shared/
+│   ├── utils/
+│   ├── errors/
+│   └── types/
+└── index.ts
+
+
+
 ✅ کارهای تکمیل شده:
 ۱. زیرساخت اصلی
 ساختار پروژه (Clean Architecture + SOLID)

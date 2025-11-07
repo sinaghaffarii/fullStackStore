@@ -1,6 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
-import { ObjectSchema } from 'joi';
+import type { NextFunction, Request, Response } from 'express';
+import type { ObjectSchema } from 'joi';
+
 import { StatusCodes } from 'http-status-codes';
+
 import { AppError } from '../../../shared/errors/app-error';
 
 export function validateRequest(

@@ -1,7 +1,9 @@
-import { Request, Response, NextFunction } from 'express';
-import { verifyAccessToken } from '../../../shared/utils/jwt';
-import { AppError } from '../../../shared/errors/app-error';
+import type { NextFunction, Request, Response } from 'express';
+
 import { StatusCodes } from 'http-status-codes';
+
+import { AppError } from '../../../shared/errors/app-error';
+import { verifyAccessToken } from '../../../shared/utils/jwt';
 
 declare global {
   namespace Express {

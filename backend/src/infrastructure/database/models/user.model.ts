@@ -1,14 +1,19 @@
-import { DataTypes, Model, Optional } from 'sequelize';
+import type { Optional } from 'sequelize';
+
+import { DataTypes, Model } from 'sequelize';
+
+import type { Cart } from './cart.model';
+import type { OTP } from './otp.model';
+
 import { sequelize } from '../../../configs/database';
-import { OTP } from './otp.model';
-import { Cart } from './cart.model';
 
 interface UserAttributes {
   id: string;
   email: string;
-  role: 'customer' | 'admin';
+  password?: string | null;
+  role: 'admin' | 'customer';
   is_verified: boolean;
-  refresh_token?: string;
+  refresh_token?: string | null;
   created_at?: Date;
   updated_at?: Date;
 }
@@ -16,24 +21,25 @@ interface UserAttributes {
 export interface UserCreationAttributes
   extends Optional<
     UserAttributes,
-    'id' | 'role' | 'is_verified' | 'created_at' | 'updated_at'
+    'created_at' | 'id' | 'is_verified' | 'password' | 'role' | 'updated_at'
   > {}
 
 export class User
   extends Model<UserAttributes, UserCreationAttributes>
   implements UserAttributes
 {
-  declare id: string;
-  declare email: string;
-  declare role: 'customer' | 'admin';
-  declare is_verified: boolean;
-  declare refresh_token?: string;
+  public readonly carts?: Cart[];
   declare readonly created_at?: Date;
-  declare readonly updated_at?: Date;
-
+  declare email: string;
+  declare id: string;
+  declare is_verified: boolean;
   // Associations
   public readonly otps?: OTP[];
-  public readonly carts?: Cart[];
+  declare password?: string;
+  declare refresh_token?: string;
+
+  declare role: 'admin' | 'customer';
+  declare readonly updated_at?: Date;
 
   static associate(models: any): void {
     User.hasMany(models.OTP, {
@@ -63,6 +69,10 @@ User.init(
       validate: {
         isEmail: true,
       },
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     role: {
       type: DataTypes.ENUM('customer', 'admin'),

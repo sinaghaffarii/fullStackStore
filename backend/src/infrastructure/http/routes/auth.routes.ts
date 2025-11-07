@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import { AuthController } from '../controllers/auth.controller';
+
 import { AuthService } from '../../../core/services/auth.service';
 import { EmailService } from '../../../infrastructure/external/email.service';
+import { AuthController } from '../controllers/auth.controller';
 import { validateRequest } from '../middlewares/validation.middleware';
 import { authValidation } from '../validators/auth.validator';
 
@@ -23,6 +24,8 @@ router.post(
   validateRequest(authValidation.verifyOTP),
   authController.verifyOTP,
 );
+
+router.post('/refresh-token', authController.refreshToken);
 
 router.post('/logout', authController.logout);
 

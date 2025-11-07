@@ -1,8 +1,9 @@
-import { Application } from 'express';
-import swaggerUi from 'swagger-ui-express';
-import YAML from 'yaml';
+import type { Application, NextFunction, Request, Response } from 'express';
+
 import fs from 'fs';
 import path from 'path';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yaml';
 
 export function setupSwagger(app: Application): void {
   console.log('🎯 Setting up Swagger documentation...');
@@ -10,10 +11,27 @@ export function setupSwagger(app: Application): void {
   try {
     const swaggerSpec = buildSwaggerSpec();
 
-    // Swagger UI Route - این مهمه!
-    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+    app.use(
+      '/api-docs',
+      swaggerUi.serve,
+      (req: Request, res: Response, next: NextFunction) => {
+        const swaggerUiHandler = swaggerUi.setup(swaggerSpec, {
+          swaggerOptions: {
+            deepLinking: false,
+            persistAuthorization: true,
+            displayRequestDuration: true,
+            docExpansion: 'none',
+            filter: true,
+            showExtensions: true,
+            showCommonExtensions: true,
+          },
+          customCss: '.swagger-ui .topbar { display: none }',
+          customSiteTitle: 'FullStack Store API',
+        });
+        return swaggerUiHandler(req, res, next);
+      },
+    );
 
-    // Raw JSON endpoint
     app.get('/api-docs.json', (req, res) => {
       res.json(swaggerSpec);
     });
@@ -63,7 +81,7 @@ function buildSwaggerSpec() {
 
 function loadYamlFiles() {
   const specsDir = __dirname;
-  const yamlFiles = ['auth.yaml', 'product.yaml'];
+  const yamlFiles = ['auth.yaml', 'product.yaml', 'category.yaml'];
 
   return yamlFiles.map((file) => {
     const filePath = path.join(specsDir, file);
@@ -102,7 +120,6 @@ function mergeSpecs(target: any, source: any) {
   };
 }
 
-// Fallback function
 function setupBasicSwagger(app: Application): void {
   console.log('🔄 Setting up basic Swagger fallback...');
 
@@ -123,6 +140,14 @@ function setupBasicSwagger(app: Application): void {
     },
   };
 
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(basicSpec));
+  app.use(
+    '/api-docs',
+    swaggerUi.serve,
+    swaggerUi.setup(basicSpec, {
+      swaggerOptions: {
+        deepLinking: true,
+      },
+    }),
+  );
   console.log('✅ Basic Swagger fallback setup completed');
 }

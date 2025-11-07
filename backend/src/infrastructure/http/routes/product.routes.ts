@@ -1,11 +1,12 @@
 import { Router } from 'express';
-import { ProductController } from '../controllers/product.controller';
-import { ProductService } from '../../../core/services/product.service';
+
 import { ProductRepository } from '../../../core/repositories/product.repository';
-import { validateRequest } from '../middlewares/validation.middleware';
-import { productValidation } from '../validators/product.validator';
+import { ProductService } from '../../../core/services/product.service';
+import { ProductController } from '../controllers/product.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { roleMiddleware } from '../middlewares/role.middleware';
+import { validateRequest } from '../middlewares/validation.middleware';
+import { productValidation } from '../validators/product.validator';
 
 const router = Router();
 

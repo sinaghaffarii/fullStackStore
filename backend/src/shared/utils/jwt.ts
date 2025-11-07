@@ -1,5 +1,6 @@
+import type { Response } from 'express';
+
 import jwt from 'jsonwebtoken';
-import { Response } from 'express';
 
 const JWT_SECRET =
   process.env.JWT_SECRET || 'your-super-secret-key-for-development-only';

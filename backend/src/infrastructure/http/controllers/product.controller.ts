@@ -1,10 +1,13 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
+
 import { StatusCodes } from 'http-status-codes';
-import {
-  ProductService,
+
+import type {
   CreateProductDTO,
   ProductFilters,
+  ProductService,
 } from '../../../core/services/product.service';
+
 import { AppError } from '../../../shared/errors/app-error';
 import { sendResponse } from '../../../shared/utils/response-handler';
 
@@ -30,6 +33,20 @@ export class ProductController {
     }
   };
 
+  deleteProduct = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { id } = req.params;
+
+      await this.productService.deleteProduct(id);
+
+      sendResponse(res, StatusCodes.OK, {
+        message: 'Product deleted successfully',
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+
   getProduct = async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
@@ -39,6 +56,29 @@ export class ProductController {
       sendResponse(res, StatusCodes.OK, {
         message: 'Product retrieved successfully',
         data: product,
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  getProductsByCategory = async (
+    req: Request,
+    res: Response,
+  ): Promise<void> => {
+    try {
+      const { categoryId } = req.params;
+      const { page = '1', limit = '10' } = req.query;
+
+      const result = await this.productService.getProductsByCategory(
+        categoryId,
+        parseInt(page as string),
+        parseInt(limit as string),
+      );
+
+      sendResponse(res, StatusCodes.OK, {
+        message: 'Products retrieved successfully',
+        data: result,
       });
     } catch (error) {
       throw error;
@@ -113,20 +153,6 @@ export class ProductController {
     }
   };
 
-  deleteProduct = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { id } = req.params;
-
-      await this.productService.deleteProduct(id);
-
-      sendResponse(res, StatusCodes.OK, {
-        message: 'Product deleted successfully',
-      });
-    } catch (error) {
-      throw error;
-    }
-  };
-
   updateStock = async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
@@ -148,29 +174,6 @@ export class ProductController {
       sendResponse(res, StatusCodes.OK, {
         message: 'Stock updated successfully',
         data: product,
-      });
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  getProductsByCategory = async (
-    req: Request,
-    res: Response,
-  ): Promise<void> => {
-    try {
-      const { categoryId } = req.params;
-      const { page = '1', limit = '10' } = req.query;
-
-      const result = await this.productService.getProductsByCategory(
-        categoryId,
-        parseInt(page as string),
-        parseInt(limit as string),
-      );
-
-      sendResponse(res, StatusCodes.OK, {
-        message: 'Products retrieved successfully',
-        data: result,
       });
     } catch (error) {
       throw error;

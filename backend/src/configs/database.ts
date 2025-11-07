@@ -1,4 +1,5 @@
 import { Sequelize } from 'sequelize';
+
 import { config } from './environment';
 
 const customLogger = (msg: string) => {

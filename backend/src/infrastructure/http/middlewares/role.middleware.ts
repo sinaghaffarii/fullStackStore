@@ -1,6 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
-import { AppError } from '../../../shared/errors/app-error';
+import type { NextFunction, Request, Response } from 'express';
+
 import { StatusCodes } from 'http-status-codes';
+
+import { AppError } from '../../../shared/errors/app-error';
 
 export const roleMiddleware = (allowedRoles: string[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {

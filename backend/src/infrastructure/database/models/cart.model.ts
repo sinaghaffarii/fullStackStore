@@ -1,7 +1,9 @@
 import { DataTypes, Model } from 'sequelize';
+
+import type { Product } from './product.model';
+import type { User } from './user.model';
+
 import { sequelize } from '../../../configs/database';
-import { User } from './user.model';
-import { Product } from './product.model';
 
 interface CartAttributes {
   id: string;
@@ -11,12 +13,12 @@ interface CartAttributes {
 
 class Cart extends Model<CartAttributes> implements CartAttributes {
   public id!: string;
-  public user_id!: string;
   public is_active!: boolean;
+  public readonly items?: CartItem[];
 
   // Associations
   public readonly user?: User;
-  public readonly items?: CartItem[];
+  public user_id!: string;
 
   static associate(models: any): void {
     Cart.belongsTo(models.User, {
@@ -69,16 +71,16 @@ interface CartItemAttributes {
 }
 
 class CartItem extends Model<CartItemAttributes> implements CartItemAttributes {
-  public id!: string;
-  public cart_id!: string;
-  public product_id!: string;
-  public quantity!: number;
-  public unit_price!: number;
   public attributes!: Record<string, any>;
-
   // Associations
   public readonly cart?: Cart;
+  public cart_id!: string;
+  public id!: string;
   public readonly product?: Product;
+  public product_id!: string;
+
+  public quantity!: number;
+  public unit_price!: number;
 
   static associate(models: any): void {
     CartItem.belongsTo(models.Cart, {

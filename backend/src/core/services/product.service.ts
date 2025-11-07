@@ -1,21 +1,25 @@
-import { Op, WhereOptions } from 'sequelize';
+import type { WhereOptions } from 'sequelize';
+
 import { StatusCodes } from 'http-status-codes';
-import { AppError } from '../../shared/errors/app-error';
-import { ProductRepository } from '../repositories/product.repository';
-import {
+import { Op } from 'sequelize';
+
+import type {
   Product,
   ProductAttributes,
   ProductCreationAttributes,
 } from '../../infrastructure/database/models/product.model';
+import type { ProductRepository } from '../repositories/product.repository';
+
 import { Category } from '../../infrastructure/database/models/category.model';
+import { AppError } from '../../shared/errors/app-error';
 
 // استفاده از ProductCreationAttributes به جای تعریف مجدد
 export interface CreateProductDTO
-  extends Omit<ProductCreationAttributes, 'id' | 'created_at' | 'updated_at'> {}
+  extends Omit<ProductCreationAttributes, 'created_at' | 'id' | 'updated_at'> {}
 
 export interface UpdateProductDTO
   extends Partial<
-    Omit<ProductCreationAttributes, 'id' | 'created_at' | 'updated_at'>
+    Omit<ProductCreationAttributes, 'created_at' | 'id' | 'updated_at'>
   > {}
 
 export interface ProductFilters {
@@ -63,6 +67,11 @@ export class ProductService {
     return await this.productRepository.create(productData);
   }
 
+  async deleteProduct(id: string): Promise<void> {
+    const product = await this.getProductById(id);
+    await this.productRepository.update(id, { is_active: false });
+  }
+
   async getProductById(id: string): Promise<Product> {
     const product = await this.productRepository.findById(id, {
       include: [
@@ -79,6 +88,13 @@ export class ProductService {
     }
 
     return product;
+  }
+  async getProductsByCategory(
+    categoryId: string,
+    page: number = 1,
+    limit: number = 10,
+  ) {
+    return this.listProducts({ category_id: categoryId }, page, limit);
   }
 
   async listProducts(
@@ -152,6 +168,7 @@ export class ProductService {
       totalPages: Math.ceil(result.count / limit),
     };
   }
+
   async updateProduct(id: string, data: UpdateProductDTO): Promise<Product> {
     const product = await this.getProductById(id);
 
@@ -174,11 +191,6 @@ export class ProductService {
     return await this.productRepository.update(id, updateData);
   }
 
-  async deleteProduct(id: string): Promise<void> {
-    const product = await this.getProductById(id);
-    await this.productRepository.update(id, { is_active: false });
-  }
-
   async updateStock(id: string, quantity: number): Promise<Product> {
     const product = await this.getProductById(id);
 
@@ -192,13 +204,5 @@ export class ProductService {
     return await this.productRepository.update(id, {
       stock_quantity: quantity,
     });
-  }
-
-  async getProductsByCategory(
-    categoryId: string,
-    page: number = 1,
-    limit: number = 10,
-  ) {
-    return this.listProducts({ category_id: categoryId }, page, limit);
   }
 }

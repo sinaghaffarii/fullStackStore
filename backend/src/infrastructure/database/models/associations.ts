@@ -1,8 +1,8 @@
+import { Cart, CartItem } from './cart.model';
 import { Category } from './category.model';
+import { OTP } from './otp.model';
 import { Product } from './product.model';
 import { User } from './user.model';
-import { OTP } from './otp.model';
-import { Cart, CartItem } from './cart.model';
 
 export function setupAssociations(): void {
   console.log('🔄 Setting up database associations...');

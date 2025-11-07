@@ -1,6 +1,8 @@
 import { DataTypes, Model } from 'sequelize';
+
+import type { User } from './user.model';
+
 import { sequelize } from '../../../configs/database';
-import { User } from './user.model';
 
 interface OTPAttributes {
   id?: string;
@@ -11,10 +13,10 @@ interface OTPAttributes {
 }
 
 export class OTP extends Model<OTPAttributes> implements OTPAttributes {
-  declare id?: string;
-  declare email: string;
   declare code: string;
+  declare email: string;
   declare expires_at: Date;
+  declare id?: string;
   declare used: boolean;
 
   // Associations

@@ -1,6 +1,10 @@
-import { DataTypes, Model, Optional } from 'sequelize';
+import type { Optional } from 'sequelize';
+
+import { DataTypes, Model } from 'sequelize';
+
+import type { Product } from './product.model';
+
 import { sequelize } from '../../../configs/database';
-import { Product } from './product.model';
 
 export interface CategoryAttributes {
   id: string;
@@ -10,20 +14,20 @@ export interface CategoryAttributes {
 }
 
 export interface CategoryCreationAttributes
-  extends Optional<CategoryAttributes, 'id' | 'description' | 'parent_id'> {}
+  extends Optional<CategoryAttributes, 'description' | 'id' | 'parent_id'> {}
 
 export class Category
   extends Model<CategoryAttributes, CategoryCreationAttributes>
   implements CategoryAttributes
 {
+  public readonly children?: Category[];
+  public description?: string;
   public id!: string;
   public name!: string;
-  public description?: string;
-  public parent_id?: string;
 
-  public readonly products?: Product[];
   public readonly parent?: Category;
-  public readonly children?: Category[];
+  public parent_id?: string;
+  public readonly products?: Product[];
 
   static associate(models: any): void {
     Category.hasMany(models.Product, {

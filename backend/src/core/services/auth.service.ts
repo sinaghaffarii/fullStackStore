@@ -1,10 +1,11 @@
-import { OTP } from '../../infrastructure/database/models/index';
-import { Op } from 'sequelize';
-import { generateOtp } from '../../shared/utils/otp';
 import { StatusCodes } from 'http-status-codes';
-import { User } from '../../infrastructure/database/models/index';
+import { Op } from 'sequelize';
+
+import type { EmailService } from '../../infrastructure/external/email.service';
+
+import { OTP, User } from '../../infrastructure/database/models/index';
 import { AppError } from '../../shared/errors/app-error';
-import { EmailService } from '../../infrastructure/external/email.service';
+import { generateOtp } from '../../shared/utils/otp';
 
 export interface VerifyOTPResult {
   user: {
