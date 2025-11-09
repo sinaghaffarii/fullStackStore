@@ -1,0 +1,151 @@
+ecommerce-store/
+├── app/
+│ ├── (site)/ // Parallel Route برای سایت اصلی
+│ │ ├── layout.tsx // Layout سایت با Header/Footer
+│ │ ├── page.tsx // صفحه اصلی (SSG + ISG)
+│ │ ├── products/
+│ │ │ ├── page.tsx // لیست محصولات (SSR)
+│ │ │ └── [slug]/
+│ │ │ └── page.tsx // جزئیات محصول (SSG + fallback)
+│ │ ├── cart/
+│ │ │ └── page.tsx // سبد خرید
+│ │ ├── checkout/
+│ │ │ └── page.tsx // فرآیند پرداخت
+│ │ ├── auth/
+│ │ │ ├── login/page.tsx // ورود
+│ │ │ ├── register/page.tsx // ثبت‌نام
+│ │ │
+│ │ ├── profile/
+│ │ │ ├── layout.tsx // Protected Layout برای پروفایل
+│ │ │ ├── page.tsx // پروفایل کاربر
+│ │ │ ├── orders/
+│ │ │ │ ├── page.tsx // تاریخچه سفارشات
+│ │ │ │ └── [id]/page.tsx // جزئیات سفارش
+│ │ │ ├── tickets/
+│ │ │ │ ├── page.tsx // لیست تیکت‌ها
+│ │ │ │ ├── new/page.tsx // ایجاد تیکت جدید
+│ │ │ │ └── [id]/page.tsx // مشاهده تیکت
+│ │ │ └── wishlist/page.tsx // لیست علاقه‌مندی‌ها
+│ │ ├── blog/
+│ │ │ ├── page.tsx // لیست مقالات (SSG)
+│ │ │ └── [slug]/page.tsx // مقاله کامل (SSG)
+│ │ ├── contact/page.tsx // تماس با ما
+│ │ ├── about/page.tsx // درباره ما
+│ │ ├── compare/page.tsx // مقایسه محصولات
+│ │ ├── search/page.tsx // نتایج جستجو (SSR)
+│ │ ├── faq/page.tsx // سوالات متداول (SSG)
+│ │ ├── terms/page.tsx // قوانین و شرایط
+│ │ ├── privacy/page.tsx // حریم خصوصی
+│ │ └── return-policy/page.tsx // سیاست بازگشت کالا
+│ │
+│ ├── (admin)/ // Parallel Route برای پنل مدیریت
+│ │ ├── layout.tsx // Admin Layout + Sidebar
+│ │ ├── page.tsx // داشبورد ادمین (SSR)
+│ │ ├── products/
+│ │ │ ├── page.tsx // مدیریت محصولات
+│ │ │ ├── new/page.tsx // افزودن محصول جدید
+│ │ │ └── [id]/edit/page.tsx // ویرایش محصول
+│ │ ├── users/
+│ │ │ ├── page.tsx // مدیریت کاربران
+│ │ │ └── [id]/page.tsx // جزئیات کاربر
+│ │ ├── orders/
+│ │ │ ├── page.tsx // مدیریت سفارشات
+│ │ │ └── [id]/page.tsx // جزئیات سفارش
+│ │ ├── tickets/
+│ │ │ ├── page.tsx // مدیریت تیکت‌ها
+│ │ │ └── [id]/page.tsx // مشاهده/پاسخ تیکت
+│ │ ├── blog/
+│ │ │ ├── page.tsx // مدیریت مقالات
+│ │ │ ├── new/page.tsx // افزودن مقاله جدید
+│ │ │ └── [id]/edit/page.tsx // ویرایش مقاله
+│ │ ├── analytics/page.tsx // آمار و آنالیز
+│ │ ├── finance/
+│ │ │ ├── page.tsx // گزارش‌گیری مالی
+│ │ │ └── reports/page.tsx // گزارش‌های تحلیلی
+│ │ ├── settings/
+│ │ │ ├── page.tsx // تنظیمات سایت
+│ │ │ ├── seo/page.tsx // مدیریت SEO
+│ │ │ └── banner/page.tsx // مدیریت بنرها
+│ │ ├── categories/page.tsx // مدیریت دسته‌بندی‌ها
+│ │ ├── brands/page.tsx // مدیریت برندها
+│ │ └── coupons/page.tsx // مدیریت کدهای تخفیف
+│ │
+│ ├── api/
+│ │ └── proxy/[...path]/route.ts // پروکسی برای API calls به backend (اختیاری برای CORS)
+│ │
+│ ├── layout.tsx // Root Layout (RTL + Font + Providers)
+│ ├── not-found.tsx // صفحه 404
+│ ├── error.tsx // مدیریت خطا
+│ ├── loading.tsx // لودینگ گلوبال
+│ └── globals.css // استایل‌های جهانی
+│
+├── src/
+│ ├── components/
+│ │ ├── ui/ // shadcn/ui components (Button, Card, etc.)
+│ │ ├── layout/
+│ │ │ ├── Header.tsx // هدر سایت
+│ │ │ ├── Footer.tsx // فوتر سایت
+│ │ │ ├── MobileNav.tsx // منوی موبایل
+│ │ │ └── AdminSidebar.tsx // سایدبار ادمین
+│ │ ├── product/
+│ │ │ ├── ProductCard.tsx // کارت محصول
+│ │ │ ├── ProductGallery.tsx // گالری تصاویر محصول
+│ │ │ ├── Filters.tsx // فیلتر پیشرفته محصولات
+│ │ │ └── AddToCartButton.tsx // دکمه افزودن به سبد
+│ │ ├── cart/
+│ │ │ ├── CartDrawer.tsx // کشوی سبد خرید (Intercepting Route)
+│ │ │ └── CartItem.tsx // آیتم سبد خرید
+│ │ ├── auth/
+│ │ │ ├── LoginForm.tsx // فرم ورود
+│ │ │ └── RegisterForm.tsx // فرم ثبت‌نام
+│ │ ├── profile/
+│ │ │ ├── ProfileInfo.tsx // اطلاعات پروفایل
+│ │ │ └── OrderTable.tsx // جدول سفارشات
+│ │ ├── admin/
+│ │ │ ├── ProductForm.tsx // فرم مدیریت محصول
+│ │ │ └── AnalyticsChart.tsx // چارت آمار
+│ │ └── common/
+│ │ ├── LoadingSpinner.tsx // اسپینر لودینگ
+│ │ ├── Toast.tsx // نوتفیکیشن
+│ │ ├── Breadcrumb.tsx // بریدکرامب
+│ │ └── Pagination.tsx // پیجینیشن
+│ │
+│ ├── lib/
+│ │ ├── utils.ts // فانکشن‌های کمکی مثل cn()
+│ │ ├── apiClient.ts // کلاینت Axios برای API calls با TanStack Query
+│ │ └── auth.ts // فانکشن‌های auth مثل getToken, logout
+│ │
+│ ├── hooks/
+│ │ ├── useCart.ts // هوک سبد خرید (Zustand)
+│ │ ├── useWishlist.ts // هوک علاقه‌مندی‌ها
+│ │ ├── useAuth.ts // هوک احراز هویت
+│ │ └── useQueryClient.ts // هوک برای TanStack Query
+│ │
+│ ├── store/
+│ │ ├── cartStore.ts // Zustand store برای سبد خرید
+│ │ └── uiStore.ts // store برای UI state مثل theme, modals
+│ │
+│ ├── types/
+│ │ ├── index.ts // تایپ‌های گلوبال
+│ │ ├── product.ts // تایپ محصول
+│ │ ├── user.ts // تایپ کاربر
+│ │ ├── order.ts // تایپ سفارش
+│ │ └── ticket.ts // تایپ تیکت
+│ │
+│ └── validations/
+│ ├── index.ts // اکسپورت همه schemaها
+│ ├── productSchema.ts // Zod schema برای محصول
+│ ├── loginSchema.ts // schema ورود
+│ └── checkoutSchema.ts // schema پرداخت
+│
+├── public/
+│ ├── images/ // تصاویر استاتیک
+│ ├── icons/ // آیکون‌ها
+│ └── favicon.ico // فاویکون
+│
+├── proxy.ts // حفاظت مسیرها با JWT decode
+├── next.config.mjs // کانفیگ Next.js
+├── tailwind.config.ts // کانفیگ Tailwind
+├── tsconfig.json // کانفیگ TypeScript
+├── package.json // وابستگی‌ها
+└── README.md // داکیومنت پروژه
