@@ -1,7 +1,7 @@
-import { SpeedInsights } from '@/components/analytics/SpeedInsights';
-import { Breadcrumb } from '@/components/common/Breadcrumb';
-import { Footer } from '@/components/layout/Footer';
-import { Header } from '@/components/layout/Header';
+// import { SpeedInsights } from '@/components/analytics/SpeedInsights';
+import { Breadcrumb } from '../../components/ui/breadcrumb';
+import Footer from '../../components/layout/Footer';
+import Header from '../../components/layout/Header';
 
 export default function SiteLayout({
   children,
@@ -16,7 +16,7 @@ export default function SiteLayout({
         {children}
       </main>
       <Footer />
-      <SpeedInsights />
+      {/* <SpeedInsights /> */}
     </div>
   );
 }

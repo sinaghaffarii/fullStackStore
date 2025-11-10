@@ -2,12 +2,13 @@ import type { Metadata } from 'next';
 
 import { notFound } from 'next/navigation';
 
-import type { Product } from '@/types';
+import type { Product } from '../../../../src/types';
+import { apiClient } from '../../../../src/lib/apiClient';
 
-import { AddToCartButton } from '@/components/product/AddToCartButton';
-import { ProductGallery } from '@/components/product/ProductGallery';
-import { ProductStructuredData } from '@/components/seo/ProductStructuredData';
-import { apiClient } from '@/lib/apiClient';
+// import { AddToCartButton } from '@/components/product/AddToCartButton';
+// import { ProductGallery } from '@/components/product/ProductGallery';
+// import { ProductStructuredData } from '@/components/seo/ProductStructuredData';
+// import { apiClient } from '@/lib/apiClient';
 
 interface ProductPageProps {
   params: { slug: string };
@@ -40,12 +41,12 @@ export async function generateMetadata({
     title: product.name,
     description:
       product.description || `خرید ${product.name} با بهترین قیمت و کیفیت`,
-    openGraph: {
-      title: product.name,
-      description: product.description || `خرید ${product.name}`,
-      images: product.images || ['/images/og-product.jpg'],
-      type: 'product',
-    },
+    // openGraph: {
+    //   title: product.name,
+    //   description: product.description || `خرید ${product.name}`,
+    //   images: product.images || ['/images/og-product.jpg'],
+    //   type: 'product',
+    // },
     twitter: {
       card: 'summary_large_image',
       title: product.name,
@@ -80,14 +81,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <>
-      <ProductStructuredData product={product} />
+      {/* <ProductStructuredData product={product} /> */}
 
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Product Images */}
-          <div>
-            <ProductGallery images={product.images || []} />
-          </div>
+          <div>{/* <ProductGallery images={product.images || []} /> */}</div>
 
           {/* Product Info */}
           <div className="space-y-6">
@@ -114,7 +113,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             )}
 
             <div className="flex items-center space-x-4 space-x-reverse">
-              <AddToCartButton product={product} />
+              {/* <AddToCartButton product={product} /> */}
             </div>
 
             {/* Product Attributes */}

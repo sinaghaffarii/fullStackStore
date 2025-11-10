@@ -5,7 +5,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 import { StructuredData } from '@/components/seo/StructuredData';
-import { Providers } from '@/lib/providers';
+import { Providers } from '../src/lib/providers';
 
 const inter = Inter({
   subsets: ['latin'],

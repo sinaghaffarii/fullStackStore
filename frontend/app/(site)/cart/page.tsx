@@ -1,8 +1,7 @@
 'use client';
 
-import { CartItem } from '@/components/cart/CartItem';
-import { Button } from '@/components/ui/button';
-import { useCart } from '@/hooks/useCart';
+import { Button } from '../../../components/ui/button';
+import { useCart } from '../../../src/hooks/useCart';
 
 export default function CartPage() {
   const { items, totalPrice, clearCart } = useCart();
@@ -30,7 +29,8 @@ export default function CartPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-4">
           {items.map((item) => (
-            <CartItem item={item} key={item.id} />
+            <div>cart items {item.product?.name}</div>
+            // <CartItem item={item} key={item.id} />
           ))}
         </div>
 

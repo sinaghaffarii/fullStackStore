@@ -4,9 +4,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import type { LoginInput } from '@/validations';
+import type { LoginInput } from '../../../../src/validations';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '../../../../components/ui/button';
 import {
   Form,
   FormControl,
@@ -16,8 +16,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useAuth } from '@/hooks/useAuth';
-import { loginSchema } from '@/validations';
+import { useAuth } from '../../../../src/hooks/useAuth';
+import { loginSchema } from '../../../../src/validations';
 
 export default function LoginPage() {
   const [step, setStep] = useState<'email' | 'otp'>('email');

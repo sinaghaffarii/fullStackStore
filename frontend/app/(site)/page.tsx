@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 
-import type { Product } from '@/types';
+import type { Product } from '../../src/types';
 
 import { ProductCard } from '@/components/product/ProductCard';
-import { HomeStructuredData } from '@/components/seo/HomeStructuredData';
-import { apiClient } from '@/lib/apiClient';
+// import { HomeStructuredData } from '@/components/seo/HomeStructuredData';
+import { apiClient } from '../../src/lib/apiClient';
 
 async function getFeaturedProducts(): Promise<Product[]> {
   try {
@@ -51,7 +51,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <HomeStructuredData categories={categories} products={products} />
+      {/* <HomeStructuredData categories={categories} products={products} /> */}
 
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-blue-600 to-purple-700 text-white py-20">
