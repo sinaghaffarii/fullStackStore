@@ -6,6 +6,8 @@ import './globals.css';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 import { StructuredData } from '@/components/seo/StructuredData';
 import { Providers } from '../src/lib/providers';
+import Header from '../components/layout/Header';
+import Footer from '../components/layout/Footer';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -77,10 +79,12 @@ export default function RootLayout({
       <head>
         <GoogleAnalytics />
       </head>
-      <body className="min-h-screen bg-background font-sans antialiased">
+      <body className="min-h-screen flex flex-col bg-background font-sans antialiased">
         <Providers>
           <StructuredData />
-          {children}
+          <Header />
+          <div className="min-h-svh">{children}</div>
+          <Footer />
         </Providers>
       </body>
     </html>
