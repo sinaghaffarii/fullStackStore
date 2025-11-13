@@ -56,7 +56,7 @@ const Footer = () => {
                   className="bg-gray-800 border-0 text-white placeholder-gray-400 flex-1"
                   placeholder="شماره موبایل یا ایمیل خود را وارد نمایید"
                 />
-                <Button className="bg-blue-600 text-white hover:bg-blue-700 whitespace-nowrap">
+                <Button size={'lg'} className="bg-blue-600 text-white hover:bg-blue-700 whitespace-nowrap">
                   ارسال
                 </Button>
               </form>
