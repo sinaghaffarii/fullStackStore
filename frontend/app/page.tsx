@@ -1,9 +1,23 @@
-import Carousel from '@/components/homePage/Carousel';
+import Categories from '@/components/homePage/Categories';
+import Hero from '@/components/homePage/Hero';
+import Newsletter from '@/components/homePage/Newsletter';
+import PromoBanner from '@/components/homePage/PromoBanner';
+import Testimonials from '@/components/homePage/Testimonials';
 
 export default function Home() {
   return (
-    <div className="mt-auto min-h-screen max-w-[1400px] mx-auto w-11/12">
-      <Carousel />
-    </div>
+    <main className="w-full overflow-x-hidden">
+      <Hero />
+
+      <Categories />
+
+      <PromoBanner />
+
+      {/* <FeaturedProducts /> */}
+
+      <Testimonials />
+
+      <Newsletter />
+    </main>
   );
 }

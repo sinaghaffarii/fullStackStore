@@ -74,7 +74,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // max-w-[1400px] mx-auto w-11/12
   return (
     <html dir="rtl" lang="fa" className={inter.variable}>
       <head>
@@ -84,7 +83,7 @@ export default function RootLayout({
         <Providers>
           <StructuredData />
           <Header />
-          <div className="min-h-svh">{children}</div>
+          <main className="flex-1 mb-52">{children}</main>
           <Footer />
         </Providers>
       </body>
