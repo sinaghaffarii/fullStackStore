@@ -1,7 +1,9 @@
-import TrashIcon from '@/public/icons/TrashIcon';
-import { Button } from '../components/ui/button';
-import Loading from './loading';
+import Carousel from '@/components/homePage/Carousel';
 
 export default function Home() {
-  return <div>home page</div>;
+  return (
+    <div className="mt-auto min-h-screen max-w-[1400px] mx-auto w-11/12">
+      <Carousel />
+    </div>
+  );
 }

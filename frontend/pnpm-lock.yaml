@@ -41,9 +41,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
-      lineicons-react:
-        specifier: ^2.0.0
-        version: 2.0.0(react@19.2.0)
+      keen-slider:
+        specifier: ^6.8.6
+        version: 6.8.6
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -1928,6 +1928,9 @@ packages:
     resolution: {integrity: sha512-ZZow9HBI5O6EPgSJLUb8n2NKgmVWTwCvHGwFuJlMjvLFqlGG6pjirPhtdsseaLZjSibD8eegzmYpUZwoIlj2cQ==}
     engines: {node: '>=4.0'}
 
+  keen-slider@6.8.6:
+    resolution: {integrity: sha512-dcEQ7GDBpCjUQA8XZeWh3oBBLLmyn8aoeIQFGL/NTVkoEOsmlnXqA4QykUm/SncolAZYGsEk/PfUhLZ7mwMM2w==}
+
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
@@ -2011,11 +2014,6 @@ packages:
   lightningcss@1.30.2:
     resolution: {integrity: sha512-utfs7Pr5uJyyvDETitgsaqSyjCb2qNRAtuqUeWIAKztsOYdcACf2KtARYXg2pSvhkt+9NfoaNY7fxjl6nuMjIQ==}
     engines: {node: '>= 12.0.0'}
-
-  lineicons-react@2.0.0:
-    resolution: {integrity: sha512-Q3vFZgciMDPLSLpqVHBLaBFj+CeorDJMy92iRMpiyNXHn/Us2iH0rBmxYJaP16niOMagXrHyjVBKX9DkOBLJYw==}
-    peerDependencies:
-      react: '>16.0.0'
 
   local-pkg@1.1.2:
     resolution: {integrity: sha512-arhlxbFRmoQHl33a0Zkle/YWlmNwoyt6QNZEIJcqNbdrsix5Lvc4HyyI3EnwxTYlZYc32EbYrQ8SzEZ7dqgg9A==}
@@ -4836,6 +4834,8 @@ snapshots:
       object.assign: 4.1.7
       object.values: 1.2.1
 
+  keen-slider@6.8.6: {}
+
   keyv@4.5.4:
     dependencies:
       json-buffer: 3.0.1
@@ -4899,10 +4899,6 @@ snapshots:
       lightningcss-linux-x64-musl: 1.30.2
       lightningcss-win32-arm64-msvc: 1.30.2
       lightningcss-win32-x64-msvc: 1.30.2
-
-  lineicons-react@2.0.0(react@19.2.0):
-    dependencies:
-      react: 19.2.0
 
   local-pkg@1.1.2:
     dependencies:

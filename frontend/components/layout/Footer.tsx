@@ -27,16 +27,16 @@ const Footer = () => {
             {/* Contact information */}
             <div className="flex flex-col py-2 w-full px-5">
               <a href="tel:02157826000" className="text-right">
-                <strong className="text-blue-500 text-sm font-bold mb-1 block">
+                <strong className="text-blue-500 text-sm font-semibold mb-1 block">
                   تماس با فاران: <span dir="ltr">021 8608 3140</span>
                 </strong>
-                <strong className="text-blue-500 text-sm font-bold mb-1 block">
+                <strong className="text-blue-500 text-sm font-semibold mb-1 block">
                   تماس با فاران: <span dir="ltr">021 8879 8540</span>
                 </strong>
-                <span className="text-white font-bold text-sm block">
+                <span className="text-white font-semibold text-sm block">
                   شنبه تا چهارشنبه از ساعت 9:00 تا 22:00
                 </span>
-                <span className="text-white font-bold text-sm block">
+                <span className="text-white font-semibold text-sm block">
                   پنج‌شنبه از ساعت 9:00 تا 19:00
                 </span>
               </a>
@@ -44,7 +44,7 @@ const Footer = () => {
 
             {/* Newsletter form */}
             <div className="flex flex-col py-2 w-full px-5 border-r border-l border-gray-600">
-              <strong className="text-white mb-2 font-bold text-center text-sm">
+              <strong className="text-white mb-2 font-semibold text-center text-sm">
                 از تخفیف‌ها و جدیدترین‌های فاران شاپ باخبر شوید:
               </strong>
               <form className="gap-2 mt-2 flex">
@@ -63,7 +63,7 @@ const Footer = () => {
 
             {/* Social networks */}
             <div className="flex flex-col py-2 w-full px-5 items-start">
-              <strong className="text-white mb-2 font-bold text-sm">
+              <strong className="text-white mb-2 font-semibold text-sm">
                 فاران در شبکه های اجتماعی
               </strong>
               <div className="flex gap-2">
@@ -98,7 +98,7 @@ const Footer = () => {
                 alt="Roja Shop"
                 className="h-10 w-auto"
               /> */}
-              <h1 className="text-2xl font-bold text-primary whitespace-nowrap">
+              <h1 className="text-2xl font-semibold text-primary whitespace-nowrap">
                 FaranGallery
               </h1>
               <a
@@ -109,7 +109,7 @@ const Footer = () => {
               </a>
             </div>
 
-            <strong className="font-bold my-3 text-gray-800">
+            <strong className="font-semibold my-3 text-gray-800">
               اطلاعات تماس
             </strong>
 
@@ -310,7 +310,7 @@ const Footer = () => {
 
               {/* Left column - About us */}
               <div className="space-y-4">
-                <strong className="font-bold text-gray-800 text-lg">
+                <strong className="font-semibold text-gray-800 text-lg">
                   زیبا بمانید
                 </strong>
 
