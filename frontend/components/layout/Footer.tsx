@@ -1,12 +1,8 @@
 'use client';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
-  SearchIcon,
-  UserIcon,
-  ShoppingBasket,
-  PhoneIcon,
   HomeIcon,
   MailIcon,
   Instagram,
@@ -24,11 +20,11 @@ const Footer = () => {
 
   return (
     <footer className="relative bg-white mt-auto max-w-[1400px] mx-auto w-11/12">
-      {/* بخش بالایی - فقط در دسکتاپ نمایش داده می‌شود */}
+      {/* Top section - only displayed on desktop */}
       <section className="hidden lg:block absolute w-full -top-45 h-auto my-4">
         <div className="container mx-auto">
           <div className="bg-black w-full py-3 flex rounded-xl justify-around items-center">
-            {/* اطلاعات تماس */}
+            {/* Contact information */}
             <div className="flex flex-col py-2 w-full px-5">
               <a href="tel:02157826000" className="text-right">
                 <strong className="text-blue-500 text-sm font-bold mb-1 block">
@@ -46,23 +42,26 @@ const Footer = () => {
               </a>
             </div>
 
-            {/* فرم خبرنامه */}
+            {/* Newsletter form */}
             <div className="flex flex-col py-2 w-full px-5 border-r border-l border-gray-600">
               <strong className="text-white mb-2 font-bold text-center text-sm">
                 از تخفیف‌ها و جدیدترین‌های فاران شاپ باخبر شوید:
               </strong>
-              <form className="flex gap-2 mt-2">
+              <form className="gap-2 mt-2 flex">
                 <Input
-                  className="bg-gray-800 border-0 text-white placeholder-gray-400 flex-1"
+                  className="bg-gray-800 border-0 text-white placeholder-gray-400 w-[300px]"
                   placeholder="شماره موبایل یا ایمیل خود را وارد نمایید"
                 />
-                <Button size={'lg'} className="bg-blue-600 text-white hover:bg-blue-700 whitespace-nowrap">
+                <Button
+                  size={'lg'}
+                  className="bg-blue-600 text-white hover:bg-blue-700 whitespace-nowrap"
+                >
                   ارسال
                 </Button>
               </form>
             </div>
 
-            {/* شبکه‌های اجتماعی */}
+            {/* Social networks */}
             <div className="flex flex-col py-2 w-full px-5 items-start">
               <strong className="text-white mb-2 font-bold text-sm">
                 فاران در شبکه های اجتماعی
@@ -88,7 +87,7 @@ const Footer = () => {
         </div>
       </section>
 
-      {/* بخش اصلی فوتر */}
+      {/* The main part of the footer */}
       <div className="container mx-auto pt-32 lg:pt-4">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* ستون اول - لوگو و اطلاعات تماس */}
@@ -145,7 +144,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* ستون‌های دوم و سوم - لینک‌ها */}
+          {/* Second and third columns - links */}
           <div className="col-span-1 lg:col-span-3">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* لینک‌های سمت راست */}
@@ -198,7 +197,7 @@ const Footer = () => {
                     </ul>
                   </div>
 
-                  {/* منو کمکی */}
+                  {/* auxiliary menu */}
                   <div>
                     <h3 className="sr-only">منو کمکی</h3>
                     <ul className="space-y-3 text-sm">
@@ -246,7 +245,7 @@ const Footer = () => {
                   </div>
                 </div>
 
-                {/* بخش موبایل - فرم و شبکه‌های اجتماعی */}
+                {/* Mobile section - form and social networks */}
                 <div className="lg:hidden space-y-4">
                   <form className="flex gap-2">
                     <Input
@@ -283,7 +282,7 @@ const Footer = () => {
                   </div>
                 </div>
 
-                {/* نمادهای اعتماد - دسکتاپ */}
+                {/* Trust icons - desktop */}
                 <div className="hidden lg:flex justify-between items-center">
                   <div className="bg-white rounded-xl p-2">
                     <img
@@ -309,7 +308,7 @@ const Footer = () => {
                 </div>
               </div>
 
-              {/* ستون سمت چپ - درباره ما */}
+              {/* Left column - About us */}
               <div className="space-y-4">
                 <strong className="font-bold text-gray-800 text-lg">
                   زیبا بمانید
@@ -350,7 +349,7 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* نمادهای اعتماد - موبایل */}
+            {/* Trust Symbols - Mobile */}
             <div className="lg:hidden flex justify-between items-center mt-6">
               <div className="bg-white rounded-xl p-2">
                 <img
