@@ -82,7 +82,7 @@ const Hero: React.FC = () => {
             <a
               key={slide.id}
               href={slide.link}
-              className="keen-slider__slide block w-full rounded-xl overflow-hidden"
+              className="keen-slider__slide block w-full rounded-lg overflow-hidden"
             >
               <Image
                 src={slide.image}

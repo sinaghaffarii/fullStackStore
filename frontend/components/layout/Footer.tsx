@@ -23,7 +23,7 @@ const Footer = () => {
       {/* Top section - only displayed on desktop */}
       <section className="hidden lg:block absolute w-full -top-45 h-auto my-4">
         <div className="container mx-auto">
-          <div className="bg-black w-full py-3 flex rounded-xl justify-around items-center">
+          <div className="bg-black w-full py-3 flex rounded justify-around items-center">
             {/* Contact information */}
             <div className="flex flex-col py-2 w-full px-5">
               <a href="tel:02157826000" className="text-right">
@@ -284,21 +284,21 @@ const Footer = () => {
 
                 {/* Trust icons - desktop */}
                 <div className="hidden lg:flex justify-between items-center">
-                  <div className="bg-white rounded-xl p-2">
+                  <div className="bg-white rounded p-2">
                     <img
                       src="https://Trustseal.eNamad.ir/logo.aspx?id=85847&Code=Cr8BmH3ATXuWskUna2wf"
                       alt="نماد اعتماد الکترونیکی"
                       className="w-20 h-auto"
                     />
                   </div>
-                  <div className="bg-white rounded-xl p-2">
+                  <div className="bg-white rounded p-2">
                     <img
                       src="https://logo.samandehi.ir/logo.aspx?id=1010075&p=nbpdlymanbpdlymalymayndtujyn"
                       alt="نماد ساماندهی"
                       className="w-20 h-auto"
                     />
                   </div>
-                  <div className="bg-white rounded-xl p-2">
+                  <div className="bg-white rounded p-2">
                     <img
                       src="https://images.rojashop.com/pr:sharp/rs:fill:100:0:0/plain/s3://uploads/icons/logo-ecunion.png"
                       alt="اتحادیه"
@@ -351,21 +351,21 @@ const Footer = () => {
 
             {/* Trust Symbols - Mobile */}
             <div className="lg:hidden flex justify-between items-center mt-6">
-              <div className="bg-white rounded-xl p-2">
+              <div className="bg-white rounded p-2">
                 <img
                   src="https://Trustseal.eNamad.ir/logo.aspx?id=85847&Code=Cr8BmH3ATXuWskUna2wf"
                   alt="نماد اعتماد الکترونیکی"
                   className="w-16 h-auto"
                 />
               </div>
-              <div className="bg-white rounded-xl p-2">
+              <div className="bg-white rounded p-2">
                 <img
                   src="https://logo.samandehi.ir/logo.aspx?id=1010075&p=nbpdlymanbpdlymalymayndtujyn"
                   alt="نماد ساماندهی"
                   className="w-16 h-auto"
                 />
               </div>
-              <div className="bg-white rounded-xl p-2">
+              <div className="bg-white rounded p-2">
                 <img
                   src="https://images.rojashop.com/pr:sharp/rs:fill:100:0:0/plain/s3://uploads/icons/logo-ecunion.png"
                   alt="اتحادیه"

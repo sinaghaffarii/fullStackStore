@@ -79,7 +79,7 @@ const Header = () => {
           </div>
         </div>
 
-        <div className="relative flex flex-col md:flex-row items-center justify-between gap-4 border-t border-gray-100 py-2 ">
+        <div className="relative flex flex-col md:flex-row items-center justify-between gap-4 border-t border-gray-100 py-2">
           <div className="flex items-center gap-3 w-full md:w-auto">
             <div
               ref={menuRef}
@@ -119,14 +119,6 @@ const Header = () => {
             </Button>
             <Separator orientation="vertical" />
             <Button
-              icon={<RssIcon className="size-5" />}
-              variant="ghost"
-              className="text-gray-500 hover:text-primary whitespace-nowrap"
-            >
-              وبلاگ فاران
-            </Button>
-            <Separator orientation="vertical" />
-            <Button
               variant="ghost"
               className="text-gray-500 hover:text-primary whitespace-nowrap"
             >
@@ -136,7 +128,7 @@ const Header = () => {
 
           <div className="w-full md:w-80 lg:w-[500px]">
             <Input
-              className="bg-gray-100 border-0 focus:ring-2 focus:ring-primary transition-all "
+              className="bg-muted border focus:ring-2 focus:ring-primary transition-all h-12"
               iconPosition="right"
               rightIcon={<SearchIcon className="w-5 h-5 text-gray-400" />}
               placeholder="جستجوی نام محصول، دسته‌بندی و ..."

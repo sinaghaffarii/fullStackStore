@@ -268,3 +268,32 @@
     @apply bg-background text-foreground;
   }
 }
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* استایل‌های responsive */
+@media (max-width: 768px) {
+  .text-caption-12 {
+    font-size: 12px;
+  }
+}
+
+@media (min-width: 769px) {
+  .text-body-14 {
+    font-size: 14px;
+  }
+}

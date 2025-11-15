@@ -14,7 +14,7 @@ const Newsletter: React.FC = () => {
 
   return (
     <section className="py-16 bg-primary-light text-black">
-      <div className="mx-auto max-w-7xl px-4 text-center">
+      <div className="mx-auto max-w-6xl px-4 text-center">
         <h2 className="text-3xl font-bold mb-4">به خبرنامه فاران بپیوندید</h2>
         <p className="mb-8 text-base text-text-darkGray">
           برای دریافت جدیدترین تخفیف‌ها، برندها و پیشنهادات ویژه ایمیل خود را
@@ -30,7 +30,7 @@ const Newsletter: React.FC = () => {
             placeholder="ایمیل خود را وارد کنید"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="flex-1 p-3 rounded-lg sm:rounded-l-lg focus:outline-none"
+            className="flex-1 p-3 rounded-lg sm:rounded-l-lg focus:outline-none border bg-muted"
           />
           <button
             type="submit"

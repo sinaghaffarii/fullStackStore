@@ -26,7 +26,7 @@ const PromoBanner: React.FC = () => {
           <a
             key={banner.id}
             href={banner.link}
-            className="block rounded-xl overflow-hidden shadow hover:shadow-lg transition"
+            className="block rounded overflow-hidden shadow hover:shadow-lg transition"
           >
             <Image
               src={banner.image}
