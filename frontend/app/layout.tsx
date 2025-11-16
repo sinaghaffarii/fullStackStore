@@ -83,7 +83,7 @@ export default function RootLayout({
         <Providers>
           <StructuredData />
           <Header />
-          <main className="flex-1 mb-52">{children}</main>
+          <main className="flex-1 mb-52 w-11/12 md:w-full mx-auto">{children}</main>
           <Footer />
         </Providers>
       </body>

@@ -28,6 +28,7 @@ export interface Category {
   description?: string;
   parent_id?: string;
   children?: Category[];
+  href: string;
 }
 
 export interface Cart {
