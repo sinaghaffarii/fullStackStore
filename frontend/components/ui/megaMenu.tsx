@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 
-// تایپ‌های یکسان در تمام کامپوننت‌ها
 export interface MenuItem {
   title: string;
   href?: string;
@@ -96,7 +95,6 @@ export const menuData: Category[] = [
   },
 ];
 
-// تابع بازگشتی برای رندر زیرمنوها
 const renderSubcategories = (items: MenuItem[], level = 0) => {
   return items.map((item) => (
     <div
@@ -111,7 +109,7 @@ const renderSubcategories = (items: MenuItem[], level = 0) => {
             : 'text-gray-600 hover:text-pink-500 text-xs'
         }`}
       >
-        {'→ '.repeat(level)} {item.title}
+        {''.repeat(level)} {item.title}
       </Link>
       {item.children && renderSubcategories(item.children, level + 1)}
     </div>
