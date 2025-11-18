@@ -1,19 +1,11 @@
 import type { Metadata, Viewport } from 'next';
 
-import { Inter } from 'next/font/google';
-
 import './globals.css';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 import { StructuredData } from '@/components/seo/StructuredData';
 import { Providers } from '../src/lib/providers';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
-
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter',
-});
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -75,7 +67,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html dir="rtl" lang="fa" className={inter.variable}>
+    <html dir="rtl" lang="fa">
       <head>
         <GoogleAnalytics />
       </head>
@@ -83,7 +75,9 @@ export default function RootLayout({
         <Providers>
           <StructuredData />
           <Header />
-          <main className="flex-1 mb-52 w-11/12 md:w-full mx-auto">{children}</main>
+          <main className="flex-1 mb-52 w-11/12 md:w-full mx-auto">
+            {children}
+          </main>
           <Footer />
         </Providers>
       </body>
