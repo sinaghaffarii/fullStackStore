@@ -1,5 +1,4 @@
 import type { NextRequest } from 'next/server';
-
 import { NextResponse } from 'next/server';
 
 export function proxy(req: NextRequest) {
@@ -16,13 +15,18 @@ export function proxy(req: NextRequest) {
     return NextResponse.next();
   }
 
-  if (!isAuth && pathname.startsWith('/dashboard')) {
-    const redirect = NextResponse.redirect(new URL('/', req.url));
-    redirect.headers.set('x-middleware-cache', 'no-cache');
-    return redirect;
+  const publicPaths = ['/', '/products', '/login', '/register', '/categories'];
+  if (publicPaths.some((publicPath) => pathname.startsWith(publicPath))) {
+    return NextResponse.next();
   }
 
   if (pathname.startsWith('/dashboard')) {
+    if (!isAuth) {
+      const redirect = NextResponse.redirect(new URL('/login', req.url));
+      redirect.headers.set('x-middleware-cache', 'no-cache');
+      return redirect;
+    }
+
     if (role === 'customer') {
       const redirect = NextResponse.redirect(new URL('/', req.url));
       redirect.headers.set('x-middleware-cache', 'no-cache');
@@ -44,5 +48,5 @@ export function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/dashboard/:path*'],
+  matcher: ['/dashboard/:path*'],
 };

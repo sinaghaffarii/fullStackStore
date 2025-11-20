@@ -11,7 +11,6 @@ export interface MenuItem {
 export interface Category {
   title: string;
   children: MenuItem[];
-
 }
 
 export const menuData: Category[] = [
@@ -20,33 +19,33 @@ export const menuData: Category[] = [
     children: [
       {
         title: 'شامپو',
-        href: '/shop/hair/shampoo',
+        href: '/products/hair/shampoo',
         children: [
           {
             title: 'شامپو خشک',
-            href: '/shop/hair/shampoo/dry',
+            href: '/products/hair/shampoo/dry',
             children: [
               {
                 title: 'شامپو گیاهی خشک',
-                href: '/shop/hair/shampoo/dry/herbal',
+                href: '/products/hair/shampoo/dry/herbal',
               },
               {
                 title: 'شامپو شیمیایی خشک',
-                href: '/shop/hair/shampoo/dry/chemical',
+                href: '/products/hair/shampoo/dry/chemical',
               },
             ],
           },
           {
             title: 'شامپو چرب',
-            href: '/shop/hair/shampoo/oily',
+            href: '/products/hair/shampoo/oily',
             children: [
               {
                 title: 'شامپو ضد چربی',
-                href: '/shop/hair/shampoo/oily/anti-grease',
+                href: '/products/hair/shampoo/oily/anti-grease',
               },
               {
                 title: 'شامپو تنظیم کننده',
-                href: '/shop/hair/shampoo/oily/regulator',
+                href: '/products/hair/shampoo/oily/regulator',
               },
             ],
           },
@@ -54,43 +53,46 @@ export const menuData: Category[] = [
       },
       {
         title: 'نرم‌کننده',
-        href: '/shop/hair/conditioner',
+        href: '/products/hair/conditioner',
         children: [
-          { title: 'نرم‌کننده روزانه', href: '/shop/hair/conditioner/daily' },
-          { title: 'نرم‌کننده عمیق', href: '/shop/hair/conditioner/deep' },
+          {
+            title: 'نرم‌کننده روزانه',
+            href: '/products/hair/conditioner/daily',
+          },
+          { title: 'نرم‌کننده عمیق', href: '/products/hair/conditioner/deep' },
         ],
       },
-      { title: 'ماسک مو', href: '/shop/hair/mask' },
-      { title: 'روغن مو', href: '/shop/hair/oil' },
-      { title: 'اسپری مو', href: '/shop/hair/spray' },
+      { title: 'ماسک مو', href: '/products/hair/mask' },
+      { title: 'روغن مو', href: '/products/hair/oil' },
+      { title: 'اسپری مو', href: '/products/hair/spray' },
     ],
   },
   {
     title: 'رنگ مو و اکسیدان',
     children: [
-      { title: 'رنگ مو دائمی', href: '/shop/hair/hair-dye' },
-      { title: 'رنگ مو موقت', href: '/shop/hair/temporary-dye' },
-      { title: 'اکسیدان', href: '/shop/hair/oxidant' },
-      { title: 'دکلره', href: '/shop/hair/bleach' },
+      { title: 'رنگ مو دائمی', href: '/products/hair/hair-dye' },
+      { title: 'رنگ مو موقت', href: '/products/hair/temporary-dye' },
+      { title: 'اکسیدان', href: '/products/hair/oxidant' },
+      { title: 'دکلره', href: '/products/hair/bleach' },
     ],
   },
   {
     title: 'مراقبت از پوست',
     children: [
-      { title: 'مرطوب‌کننده', href: '/shop/skin/moisturizer' },
-      { title: 'شوینده صورت', href: '/shop/skin/cleanser' },
-      { title: 'ضد آفتاب', href: '/shop/skin/sunscreen' },
-      { title: 'تونر', href: '/shop/skin/toner' },
-      { title: 'سرم', href: '/shop/skin/serum' },
+      { title: 'مرطوب‌کننده', href: '/products/skin/moisturizer' },
+      { title: 'شوینده صورت', href: '/products/skin/cleanser' },
+      { title: 'ضد آفتاب', href: '/products/skin/sunscreen' },
+      { title: 'تونر', href: '/products/skin/toner' },
+      { title: 'سرم', href: '/products/skin/serum' },
     ],
   },
   {
     title: 'آرایشی',
     children: [
-      { title: 'فونداسیون', href: '/shop/makeup/foundation' },
-      { title: 'رژلب', href: '/shop/makeup/lipstick' },
-      { title: 'ریمل', href: '/shop/makeup/mascara' },
-      { title: 'سایه چشم', href: '/shop/makeup/eyeshadow' },
+      { title: 'فونداسیون', href: '/products/makeup/foundation' },
+      { title: 'رژلب', href: '/products/makeup/lipstick' },
+      { title: 'ریمل', href: '/products/makeup/mascara' },
+      { title: 'سایه چشم', href: '/products/makeup/eyeshadow' },
     ],
   },
 ];
