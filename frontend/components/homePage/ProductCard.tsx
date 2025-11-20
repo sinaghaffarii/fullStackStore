@@ -27,7 +27,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <a
       href={href}
-      className="group flex flex-col bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden h-full"
+      className="group flex flex-col bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden h-full"
     >
       {/* Image Container */}
       <div className="relative p-4">
