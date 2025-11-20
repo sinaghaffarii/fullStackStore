@@ -21,9 +21,10 @@ export const ProductCard = memo(function ProductCard({
   const cardRef = useRef<HTMLDivElement>(null);
   const [lazyRef, isVisible] = useLazyLoad<HTMLDivElement>(cardRef);
 
+  // border-b border-l nth-[5n]:border-l-0 nth-last-[-n+4]:border-b-0
   return (
     <div
-      className="p-2 bg-white border-b border-l nth-[4n]:border-l-0 nth-last-[-n+4]:border-b-0"
+      className="p-2 bg-white border rounded-lg"
       itemType="https://schema.org/Product"
       ref={lazyRef}
       itemScope
