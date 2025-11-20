@@ -1,3 +1,5 @@
+'use client';
+
 import DynamicBreadcrumb from '@/components/ui/dynamicBreadcrumb';
 import { notFound } from 'next/navigation';
 
@@ -5,9 +7,11 @@ import { ProductFilters } from '@/components/product/ProductFilters';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { ProductPagination } from '@/components/product/ProductPagination';
 import { CategoryHeader } from '@/components/product/CategoryHeader';
-import { ProductToolbar } from '@/components/product/ProductToolbar';
 
 import { Product, CategoryData, BreadcrumbSegment } from '@/src/types/product';
+import { BrushCleaning, Filter, Home, Package } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Tooltip } from '@/components/ui/tooltip';
 
 const slugToPersianMap: Record<string, string> = {
   hair: 'مو',
@@ -83,7 +87,7 @@ async function getCategoryData(slugs: string[]): Promise<CategoryData> {
     features: ['پرفروش', 'جدید', 'دارای تخفیف', 'تست شده'],
   };
 
-  const products: Product[] = Array(24)
+  const products: Product[] = Array(12)
     .fill(null)
     .map((_, i) => {
       const productId = i + 1;
@@ -148,35 +152,85 @@ export default async function ProductsPage({ params, searchParams }: Props) {
   const breadcrumbItems = generateBreadcrumbItems(slugs);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-6">
-        <div className="mb-6">
-          <DynamicBreadcrumb segments={breadcrumbItems} />
-        </div>
-
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="lg:w-64 shrink-0">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sticky top-4">
-              <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-200">
-                <h2 className="font-bold text-lg text-gray-900">
-                  فیلتر محصولات
-                </h2>
-                <button className="text-blue-600 text-sm font-medium hover:text-blue-800 transition-colors">
-                  پاک کردن همه
-                </button>
-              </div>
-              <ProductFilters filters={data.filters} />
+    <div className="min-h-screen bg-linear-to-br from-slate-50 to-blue-50/30">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="py-6">
+          <div className="mb-6">
+            <div className="flex items-center gap-2 text-sm text-slate-600 mb-2">
+              <Home className="w-4 h-4" />
+              <span>/</span>
+              <Package className="w-4 h-4" />
+              <span className="text-slate-500">محصولات</span>
             </div>
+            <DynamicBreadcrumb segments={breadcrumbItems} />
           </div>
 
-          <div className="flex-1">
-            <CategoryHeader title={data.title} description={data.description} />
+          <div className="flex flex-col lg:flex-row gap-6">
+            <div className="lg:w-72 shrink-0">
+              <div className="bg-white rounded-2xl shadow-xl p-5 border border-slate-100 sticky top-4 overflow-hidden">
+                <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500/5 rounded-full -translate-y-8 translate-x-8"></div>
+                <div className="absolute bottom-0 left-0 w-16 h-16 bg-indigo-500/5 rounded-full translate-y-8 -translate-x-8"></div>
 
-            <ProductToolbar productCount={data.products.length} />
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-200">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-indigo-500/10 rounded-lg">
+                        <Filter className="w-5 h-5 text-indigo-600" />
+                      </div>
+                      <h2 className="font-bold text-xl text-slate-800">
+                        فیلتر محصولات
+                      </h2>
+                    </div>
 
-            <ProductGrid products={data.products} />
+                    <Tooltip title="پاک کردن همه فیلترها">
+                      <Button
+                        variant={'ghost'}
+                        className="text-slate-500 hover:text-rose-500 hover:bg-rose-50 transition-all duration-300 rounded-xl p-2"
+                      >
+                        <BrushCleaning className="size-5" />
+                      </Button>
+                    </Tooltip>
+                  </div>
 
-            <ProductPagination currentPage={1} totalPages={6} />
+                  <div className="space-y-1">
+                    <ProductFilters filters={data.filters} />
+                  </div>
+
+                  <div className="flex gap-3 mt-6 pt-4 border-t border-slate-200">
+                    <Button className="flex-1 bg-linear-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-medium py-2.5 rounded-xl transition-all duration-300 shadow-lg hover:shadow-indigo-500/25">
+                      اعمال فیلتر
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="flex-1 border-slate-300 text-slate-600 hover:bg-slate-50 hover:text-slate-800 font-medium py-2.5 rounded-xl transition-all duration-300"
+                    >
+                      بازنشانی
+                    </Button>
+                  </div>
+
+                  <div className="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-200">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-slate-600">فیلترهای فعال:</span>
+                      <span className="text-indigo-600 font-medium">
+                        ۳ مورد
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex-1">
+              <CategoryHeader
+                title={data.title}
+                description={data.description}
+                productCount={data.products.length}
+              />
+
+              <ProductGrid products={data.products} />
+
+              <ProductPagination currentPage={1} totalPages={6} />
+            </div>
           </div>
         </div>
       </div>
