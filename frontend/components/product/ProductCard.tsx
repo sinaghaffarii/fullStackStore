@@ -4,9 +4,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { memo, useRef } from 'react';
 
-import type { Product } from '@/types';
+import type { Product } from '@/src/types/product';
 
-import { useLazyLoad } from '@/hooks/useIntersectionObserver';
+import { useLazyLoad } from '@/src/hooks/useIntersectionObserver';
 
 interface ProductCardProps {
   product: Product;
@@ -14,28 +14,29 @@ interface ProductCardProps {
 }
 
 export const ProductCard = memo(function ProductCard({
-  product,
+  product: { id, name, base_price, description, images },
   priority = false,
 }: ProductCardProps) {
+  const PLACEHOLDER_IMAGE = '/images/placeholder.jpg';
   const cardRef = useRef<HTMLDivElement>(null);
-  const [lazyRef, isVisible] = useLazyLoad(cardRef);
+  const [lazyRef, isVisible] = useLazyLoad<HTMLDivElement>(cardRef);
 
   return (
     <div
-      className="group bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden"
+      className="p-2 bg-white border-b border-l nth-[4n]:border-l-0 nth-last-[-n+4]:border-b-0"
       itemType="https://schema.org/Product"
       ref={lazyRef}
       itemScope
     >
-      <Link className="block" href={`/products/${product.id}`}>
+      <Link className="block" href={`/products/${id}`}>
         <div className="aspect-square relative overflow-hidden">
           {isVisible && (
             <Image
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-              alt={product.name}
+              alt={name}
               className="object-cover group-hover:scale-105 transition-transform duration-300"
-              src={product.images?.[0] || '/images/placeholder.jpg'}
+              src={images?.[0] || PLACEHOLDER_IMAGE}
               loading={priority ? 'eager' : 'lazy'}
               priority={priority}
             />
@@ -47,7 +48,7 @@ export const ProductCard = memo(function ProductCard({
             className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors"
             itemProp="name"
           >
-            {product.name}
+            {name}
           </h3>
 
           <div
@@ -56,18 +57,18 @@ export const ProductCard = memo(function ProductCard({
             itemProp="offers"
             itemScope
           >
-            <span itemProp="price">{product.base_price.toLocaleString()}</span>
+            <span itemProp="price">{base_price.toLocaleString()}</span>
             <span className="text-sm mr-1" itemProp="priceCurrency">
               تومان
             </span>
           </div>
 
-          {product.description && (
+          {description && (
             <p
               className="text-muted-foreground text-sm mt-2 line-clamp-2"
               itemProp="description"
             >
-              {product.description}
+              {description}
             </p>
           )}
         </div>

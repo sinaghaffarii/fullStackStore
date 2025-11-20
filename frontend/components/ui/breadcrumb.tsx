@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
-import {  ChevronLeft, MoreHorizontal } from 'lucide-react';
+import { ChevronLeft, MoreHorizontal } from 'lucide-react';
 
 import { cn } from '../../src/lib/utils';
 
@@ -62,13 +62,15 @@ function BreadcrumbPage({ className, ...props }: React.ComponentProps<'span'>) {
   );
 }
 
+// تغییر اصلی اینجا است - BreadcrumbSeparator باید span برگرداند نه li
 function BreadcrumbSeparator({
   children,
   className,
   ...props
-}: React.ComponentProps<'li'>) {
+}: React.ComponentProps<'span'>) {
+  // تغییر از li به span
   return (
-    <li
+    <span // تغییر از li به span
       data-slot="breadcrumb-separator"
       role="presentation"
       aria-hidden="true"
@@ -76,7 +78,7 @@ function BreadcrumbSeparator({
       {...props}
     >
       {children ?? <ChevronLeft />}
-    </li>
+    </span>
   );
 }
 
