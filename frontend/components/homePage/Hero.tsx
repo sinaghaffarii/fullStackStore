@@ -3,9 +3,6 @@
 import { useKeenSlider } from 'keen-slider/react';
 import Image from 'next/image';
 import React from 'react';
-import 'keen-slider/keen-slider.min.css';
-
-import { Button } from '../ui/button';
 
 const heroSlides = [
   {
@@ -102,8 +99,9 @@ const Hero: React.FC = () => {
             {Array.from({
               length: instanceRef.current.track.details.slides.length,
             }).map((_, idx) => (
-              <Button
+              <button
                 key={idx}
+                type="button"
                 onClick={() => instanceRef.current?.moveToIdx(idx)}
                 className={`rounded-full transition-all ${
                   currentSlide === idx

@@ -3,35 +3,40 @@ import React, { useState } from 'react';
 
 const AboutSection: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
+
   return (
-    <div className="space-y-4">
-      <strong className="text-lg font-semibold text-gray-800">
-        زیبا بمانید
-      </strong>
+    <section className="space-y-4">
+      <h3 className="text-base font-semibold text-gray-900">زیبا بمانید</h3>
 
       <div
-        className={`overflow-hidden transition-all duration-300 ${isExpanded ? 'h-auto' : 'h-48'}`}
+        aria-expanded={isExpanded}
+        className={`relative overflow-hidden text-sm leading-7 text-gray-600 transition-all duration-300 ${
+          isExpanded ? 'max-h-[420px]' : 'max-h-32'
+        }`}
       >
-        <p className="text-justify text-sm leading-7 text-gray-600">
+        <p>
           فاران شاپ یکی از معتبرترین فروشگاه‌های اینترنتی محصولات آرایشی،
-          بهداشتی و عطر است که با هدف ارائه بهترین و باکیفیت‌ترین محصولات به
-          مشتریان ایجاد شده است. فروشگاه فارانشاپ مجموعه‌ای گسترده از برندهای
-          معروف را در دسترس زیبادوستان قرار می‌دهد. (متن توصیفی کوتاه شده برای
-          خوانایی.)
+          بهداشتی و عطر است که با هدف ارائه‌ی محصولات اصیل و متنوع از برندهای
+          جهانی شکل گرفته است. ما تلاش می‌کنیم تجربه‌ای شفاف، سریع و لذت‌بخش
+          برای خرید آنلاین شما فراهم کنیم.
         </p>
+
+        {!isExpanded && (
+          <span className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-white to-transparent" />
+        )}
       </div>
 
       <button
-        className="flex items-center gap-1 text-sm text-blue-600 transition-colors hover:text-blue-800"
+        className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 transition-colors hover:text-blue-800"
         type="button"
-        onClick={() => setIsExpanded((s) => !s)}
+        onClick={() => setIsExpanded((prev) => !prev)}
       >
         {isExpanded ? 'نمایش کمتر' : 'نمایش بیشتر'}
         <ArrowDown
           className={`size-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
         />
       </button>
-    </div>
+    </section>
   );
 };
 

@@ -1,35 +1,36 @@
 'use client';
-import { Copyright } from 'lucide-react';
+
 import React from 'react';
 
 import AboutSection from './AboutSection';
 import ContactColumn from './ContactColumn';
-import LinksSection from './LinksSection';
-import TopSection from './TopSection';
+import FooterLegal from './Copyright';
+import LinkGroups from './LinkGroups';
+import Newsletter from './Newsletter';
+import TopStrip from './TopStrip';
 import TrustIcons from './TrustIcons';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="relative mx-auto mt-auto w-11/12 max-w-[1400px] bg-white">
-      <TopSection />
+    <footer className="relative mt-auto bg-white">
+      <div className="mx-auto flex w-11/12 max-w-[1400px] flex-col gap-10 py-12 lg:py-16">
+        <TopStrip />
 
-      <div className="container mx-auto pt-32 lg:pt-4">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
+        <div className="grid gap-10 lg:grid-cols-[1.2fr_1fr_1fr]">
           <ContactColumn />
 
-          <div className="col-span-1 lg:col-span-3">
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-              <LinksSection />
-              <AboutSection />
-            </div>
-
-            <TrustIcons isMobile />
+          <div className="space-y-8">
+            <LinkGroups />
+            <Newsletter variant="mobile" />
           </div>
-        </div>
-      </div>
 
-      <TrustIcons />
-      <Copyright />
+          <AboutSection />
+        </div>
+
+        <TrustIcons />
+
+        <FooterLegal />
+      </div>
     </footer>
   );
 };
