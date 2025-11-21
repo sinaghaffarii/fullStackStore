@@ -8,7 +8,6 @@ import { apiClient } from '../lib/apiClient';
 
 export const useAuth = () => {
   const queryClient = useQueryClient();
-
   const loginMutation = useMutation({
     mutationFn: (data: LoginInput) => apiClient.post('/auth/login', data),
   });
