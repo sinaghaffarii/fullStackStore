@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 
+import { Suspense } from 'react';
+
 import './globals.css';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 import { StructuredData } from '@/components/seo/StructuredData';
@@ -73,12 +75,14 @@ export default function RootLayout({
         <GoogleAnalytics />
       </head>
       <body className="flex min-h-screen flex-col bg-background font-sans antialiased">
-        <Providers>
-          <StructuredData />
-          <Header />
-          <main className="flex-1 sm:mb-52">{children}</main>
-          <Footer />
-        </Providers>
+        <Suspense fallback={<div />}>
+          <Providers>
+            <StructuredData />
+            <Header />
+            <main className="flex-1 sm:mb-52">{children}</main>
+            <Footer />
+          </Providers>
+        </Suspense>
       </body>
     </html>
   );
