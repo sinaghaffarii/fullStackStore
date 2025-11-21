@@ -1,0 +1,18 @@
+export const slugToPersianMap: Record<string, string> = {
+  hair: 'مو',
+  'hair-care': 'مراقبت مو',
+  shampoo: 'شامپو',
+  conditioner: 'نرم کننده',
+  'hair-color': 'رنگ مو',
+  'hair-oil': 'روغن مو',
+  'hair-mask': 'ماسک مو',
+  'hair-serum': 'سرم مو',
+  'hair-spray': 'اسپری مو',
+  'hair-gel': 'ژل مو',
+  'hair-mousse': 'موس مو',
+  'hair-cream': 'کرم مو',
+  'hair-wax': 'وکس مو',
+  'hair-pomade': 'پماد مو',
+  'hair-treatment': 'درمان مو',
+  'hair-accessories': 'اکسسوری مو',
+};
