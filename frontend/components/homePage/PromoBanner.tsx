@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
 import Image from 'next/image';
+import React from 'react';
 
 const banners = [
   {
@@ -20,20 +20,20 @@ const banners = [
 
 const PromoBanner: React.FC = () => {
   return (
-    <section className="py-8 bg-surface-solid-50">
-      <div className="mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-4">
+    <section className="bg-surface-solid-50 py-8">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-2">
         {banners.map((banner) => (
           <a
-            key={banner.id}
+            className="block overflow-hidden rounded-sm shadow-sm transition hover:shadow-lg"
             href={banner.link}
-            className="block rounded overflow-hidden shadow hover:shadow-lg transition"
+            key={banner.id}
           >
             <Image
-              src={banner.image}
-              alt={banner.alt}
-              width={1200}
               height={300}
-              className="w-full h-48 md:h-60 object-cover"
+              width={1200}
+              alt={banner.alt}
+              className="h-48 w-full object-cover md:h-60"
+              src={banner.image}
             />
           </a>
         ))}

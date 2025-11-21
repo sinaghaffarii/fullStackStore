@@ -1,11 +1,9 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { debounce, throttle } from 'lodash';
+import { useDebounce } from 'react-use';
 
-import type { Product } from '@/types';
+import type { Product } from '../types/product';
 
-import { apiClient } from '@/lib/apiClient';
-
-import { useDebounce } from './useDebounce';
+import { apiClient } from '../lib/apiClient';
 
 export function useProducts(
   filters: {
@@ -16,7 +14,7 @@ export function useProducts(
     sort?: string;
   } = {},
 ) {
-  const debouncedSearch = useDebounce(filters.search, 300);
+  const debouncedSearch = useDebounce(() => filters.search, 300);
 
   return useQuery({
     queryKey: ['products', { ...filters, search: debouncedSearch }],

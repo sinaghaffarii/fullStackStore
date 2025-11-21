@@ -1,6 +1,6 @@
 'use client';
-import React, { useState } from 'react';
 import Link from 'next/link';
+import React, { useState } from 'react';
 
 export interface MenuItem {
   title: string;
@@ -100,15 +100,15 @@ export const menuData: Category[] = [
 const renderSubcategories = (items: MenuItem[], level = 0) => {
   return items.map((item) => (
     <div
+      className={`${level > 0 ? 'mr-2 border-r-2 border-pink-100' : ''}`}
       key={item.title}
-      className={`${level > 0 ? 'border-r-2 border-pink-100 mr-2' : ''}`}
     >
       <Link
         href={item.href || '#'}
-        className={`block font-medium rounded-md px-3 py-2 transition-colors duration-200 ${
+        className={`block rounded-md px-3 py-2 font-medium transition-colors duration-200 ${
           level === 0
-            ? 'text-gray-700 hover:text-pink-600 hover:bg-pink-50 text-sm'
-            : 'text-gray-600 hover:text-pink-500 text-xs'
+            ? 'text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600'
+            : 'text-xs text-gray-600 hover:text-pink-500'
         }`}
       >
         {''.repeat(level)} {item.title}
@@ -123,10 +123,10 @@ const MegaMenu: React.FC = () => {
 
   return (
     <div
-      className="max-w-[800px] bg-white rounded-b-lg border border-t-0 shadow-lg overflow-hidden"
+      className="max-w-[800px] overflow-hidden rounded-b-lg border border-t-0 bg-white shadow-lg"
       onMouseLeave={() => setActiveIndex(0)}
     >
-      <div className="flex flex-row-reverse min-h-[300px]">
+      <div className="flex min-h-[300px] flex-row-reverse">
         {/* ستون چپ: زیر‌دسته‌ها */}
         <div className="w-2/3 p-4">
           {activeIndex !== null && (
@@ -143,11 +143,11 @@ const MegaMenu: React.FC = () => {
               <li
                 key={cat.title}
                 onMouseEnter={() => setActiveIndex(index)}
-                className={`px-6 py-3 cursor-pointer text-sm font-medium transition-colors border-r-2
+                className={`cursor-pointer border-r-2 px-6 py-3 text-sm font-medium transition-colors
                   ${
                     activeIndex === index
-                      ? 'bg-white text-pink-600 border-pink-600 shadow-sm'
-                      : 'text-gray-700 hover:bg-white border-transparent hover:text-pink-500'
+                      ? 'border-pink-600 bg-white text-pink-600 shadow-sm'
+                      : 'border-transparent text-gray-700 hover:bg-white hover:text-pink-500'
                   }`}
               >
                 {cat.title}

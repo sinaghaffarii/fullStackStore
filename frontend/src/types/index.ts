@@ -1,3 +1,5 @@
+import type { Product } from './product';
+
 export interface User {
   id: string;
   email: string;
@@ -5,30 +7,6 @@ export interface User {
   is_verified: boolean;
   created_at?: Date;
   updated_at?: Date;
-}
-
-export interface Product {
-  id: string;
-  name: string;
-  description?: string;
-  base_price: number;
-  category_id: string;
-  attributes: Record<string, any>;
-  stock_quantity: number;
-  is_active: boolean;
-  created_at?: Date;
-  updated_at?: Date;
-  category?: Category;
-  images?: string[];
-}
-
-export interface Category {
-  id: string;
-  name: string;
-  description?: string;
-  parent_id?: string;
-  children?: Category[];
-  href: string;
 }
 
 export interface Cart {

@@ -4,9 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import type { LoginInput } from '../../../../src/validations';
-
-import { Button } from '../../../../components/ui/button';
 import {
   Form,
   FormControl,
@@ -16,6 +13,10 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+
+import type { LoginInput } from '../../../../src/validations';
+
+import { Button } from '../../../../components/ui/button';
 import { useAuth } from '../../../../src/hooks/useAuth';
 import { loginSchema } from '../../../../src/validations';
 
@@ -47,7 +48,7 @@ export default function LoginPage() {
   };
 
   const onOTPSubmit = (data: { code: string }) => {
-    verifyOTPMutation.mutate({
+    verifyOTP({
       email,
       code: data.code,
     });
@@ -55,11 +56,11 @@ export default function LoginPage() {
 
   if (step === 'otp') {
     return (
-      <div className="container max-w-md mx-auto py-12">
+      <div className="container mx-auto max-w-md py-12">
         <div className="space-y-6">
           <div className="text-center">
             <h1 className="text-2xl font-bold">ورود به حساب</h1>
-            <p className="text-muted-foreground mt-2">
+            <p className="mt-2 text-muted-foreground">
               کد ارسال شده به {email} را وارد کنید
             </p>
           </div>
@@ -98,11 +99,11 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="container max-w-md mx-auto py-12">
+    <div className="container mx-auto max-w-md py-12">
       <div className="space-y-6">
         <div className="text-center">
           <h1 className="text-2xl font-bold">ورود به حساب</h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="mt-2 text-muted-foreground">
             برای ورود ایمیل خود را وارد کنید
           </p>
         </div>

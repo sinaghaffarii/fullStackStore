@@ -1,20 +1,17 @@
+/* eslint-disable max-lines */
 'use client';
-import { useState } from 'react';
-import { X, ChevronLeft, ShoppingBag, User, Heart } from 'lucide-react';
-import { Button } from '../ui/button';
+import { ChevronLeft, Heart, ShoppingBag, User, X } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
+
+import { Button } from '../ui/button';
 import { menuData } from '../ui/megaMenu';
 
-interface MenuItem {
+interface MenuItemType {
   title: string;
   href?: string;
-  children?: MenuItem[];
+  children?: MenuItemType[];
   icon?: string;
-}
-
-interface Category {
-  title: string;
-  children: MenuItem[];
 }
 
 const MenuItem = ({
@@ -24,7 +21,7 @@ const MenuItem = ({
   onToggle,
   onClose,
 }: {
-  item: MenuItem;
+  item: MenuItemType;
   level?: number;
   openMap: Record<string, boolean>;
   onToggle: (id: string) => void;
@@ -36,49 +33,49 @@ const MenuItem = ({
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between w-full">
+      <div className="flex w-full items-center justify-between">
         {hasChildren ? (
-          <button
-            className={`flex items-center justify-between w-full py-3 text-right transition-all duration-200 hover:bg-gray-50 ${
-              level > 0 ? 'text-gray-600' : 'text-gray-800 font-medium'
-            }`}
+          <Button
             style={{ paddingLeft: `${paddingLeft}px` }}
+            variant="ghost"
             onClick={() => onToggle(item.title)}
+            className={`flex w-full items-center justify-between rounded-none py-3 text-right transition-all duration-200 hover:bg-gray-50 ${
+              level > 0 ? 'text-gray-600' : 'font-medium text-gray-800'
+            }`}
           >
-            <span className="text-sm flex-1 text-right">{item.title}</span>
+            <span className="flex-1 text-right text-sm">{item.title}</span>
             <ChevronLeft
-              className={`w-4 h-4 transition-transform duration-300 ${
+              className={`size-4 transition-transform duration-300 ${
                 isOpen ? 'rotate-270' : 'rotate-180'
               }`}
             />
-          </button>
+          </Button>
         ) : (
           <Link
             href={item.href || '#'}
-            className={`block w-full py-3 text-right transition-all duration-200 hover:bg-gray-50 ${
-              level > 0 ? 'text-gray-600' : 'text-gray-800 font-medium'
-            }`}
             style={{ paddingLeft: `${paddingLeft}px` }}
             onClick={onClose}
+            className={`block w-full py-3 text-right transition-all duration-200 hover:bg-gray-50 ${
+              level > 0 ? 'text-gray-600' : 'font-medium text-gray-800'
+            }`}
           >
             <span className="text-sm">{item.title}</span>
           </Link>
         )}
       </div>
 
-      {/* نمایش زیرمنوها به صورت بازگشتی */}
       {hasChildren && isOpen && (
         <div
           className={`${level > 0 ? 'bg-gray-25' : 'bg-gray-50'} border-r-2 border-pink-100`}
         >
           {item.children?.map((child) => (
             <MenuItem
-              key={child.title}
               item={child}
+              key={child.title}
               level={level + 1}
-              openMap={openMap}
-              onToggle={onToggle}
               onClose={onClose}
+              onToggle={onToggle}
+              openMap={openMap}
             />
           ))}
         </div>
@@ -86,6 +83,143 @@ const MenuItem = ({
     </div>
   );
 };
+
+const SidebarHeader = ({ onClose }: { onClose: () => void }) => (
+  <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white p-4">
+    <div className="flex items-center gap-3">
+      <div className="flex size-8 items-center justify-center rounded-full bg-pink-600">
+        <span className="text-sm font-bold text-white">ف</span>
+      </div>
+      <div>
+        <h2 className="text-lg font-bold text-gray-800">فاران گالری</h2>
+        <p className="text-xs text-gray-500">فروشگاه تخصصی آرایشی و بهداشتی</p>
+      </div>
+    </div>
+    <Button
+      aria-label="بستن منو"
+      className="rounded-lg p-2 transition-colors hover:bg-gray-100"
+      variant="ghost"
+      onClick={onClose}
+    >
+      <X className="size-5" />
+    </Button>
+  </div>
+);
+
+const SidebarUserSection = () => (
+  <div className="mb-2 border-b border-gray-100 bg-linear-to-l from-pink-50 to-white p-4">
+    <div className="mb-3 flex items-center gap-4">
+      <div className="flex size-10 items-center justify-center rounded-full bg-pink-100">
+        <User className="size-5 text-pink-600" />
+      </div>
+      <div>
+        <p className="text-sm font-medium text-gray-800">سلام فارانی عزیز</p>
+        <p className="text-xs text-gray-500">خوش آمدید</p>
+      </div>
+    </div>
+    <div className="flex gap-2">
+      <Button size="sm" className="h-8 flex-1 text-xs" variant="outline">
+        <User className="ml-1 size-3" />
+        پروفایل
+      </Button>
+      <Button size="sm" className="h-8 flex-1 text-xs" variant="outline">
+        <Heart className="ml-1 size-3" />
+        علاقه‌مندی
+      </Button>
+    </div>
+  </div>
+);
+
+const SidebarMenu = ({
+  openMap,
+  toggle,
+  closeAll,
+}: {
+  openMap: Record<string, boolean>;
+  toggle: (id: string) => void;
+  closeAll: () => void;
+}) => (
+  <div className="py-2">
+    <div className="px-4 py-2">
+      <h3 className="mb-2 text-sm font-semibold text-gray-700">
+        دسته‌بندی محصولات
+      </h3>
+    </div>
+    {menuData.map((item) => (
+      <div
+        className="border-b border-gray-100 last:border-b-0"
+        key={item.title}
+      >
+        <MenuItem
+          item={item}
+          onClose={closeAll}
+          onToggle={toggle}
+          openMap={openMap}
+        />
+      </div>
+    ))}
+  </div>
+);
+
+const SidebarOtherLinks = ({ closeAll }: { closeAll: () => void }) => (
+  <div className="p-4">
+    <h3 className="mb-3 text-sm font-semibold text-gray-700">سایر بخش‌ها</h3>
+    <div className="space-y-2">
+      <Link
+        className="flex items-center justify-between py-2 text-sm text-gray-600 transition-colors hover:text-pink-600"
+        href="/brands"
+        onClick={closeAll}
+      >
+        <span>برندها</span>
+        <ShoppingBag className="size-4" />
+      </Link>
+      <Link
+        className="flex items-center justify-between py-2 text-sm text-gray-600 transition-colors hover:text-pink-600"
+        href="/consultation"
+        onClick={closeAll}
+      >
+        <span>مشاوره رایگان</span>
+        <User className="size-4" />
+      </Link>
+      <Link
+        className="flex items-center justify-between py-2 text-sm text-gray-600 transition-colors hover:text-pink-600"
+        href="/sale"
+        onClick={closeAll}
+      >
+        <span>فروش ویژه</span>
+        <Heart className="size-4" />
+      </Link>
+    </div>
+  </div>
+);
+
+const SidebarFooter = ({ closeAll }: { closeAll: () => void }) => (
+  <div className="absolute right-0 bottom-0 left-0 border-t border-gray-100 bg-white p-4">
+    <div className="space-y-2">
+      <Button
+        className="h-10 w-full justify-center gap-2 bg-pink-600 hover:bg-pink-700"
+        variant="default"
+        onClick={closeAll}
+      >
+        <ShoppingBag className="size-4" />
+        <span>مشاهده سبد خرید (۳)</span>
+      </Button>
+      <div className="flex justify-center gap-2 text-xs text-gray-500">
+        <Link className="hover:text-pink-600" href="/about" onClick={closeAll}>
+          درباره ما
+        </Link>
+        <span>•</span>
+        <Link
+          className="hover:text-pink-600"
+          href="/contact"
+          onClick={closeAll}
+        >
+          تماس با ما
+        </Link>
+      </div>
+    </div>
+  </div>
+);
 
 export default function MobileSidebar({
   open,
@@ -96,13 +230,8 @@ export default function MobileSidebar({
 }) {
   const [openMap, setOpenMap] = useState<Record<string, boolean>>({});
 
-  const toggle = (id: string) => {
-    setOpenMap((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
-
+  const toggle = (id: string) =>
+    setOpenMap((prev) => ({ ...prev, [id]: !prev[id] }));
   const closeAll = () => {
     setOpenMap({});
     onClose();
@@ -112,155 +241,21 @@ export default function MobileSidebar({
 
   return (
     <div className="fixed inset-0 z-50 flex">
-      {/* Overlay با انیمیشن */}
       <div
         className="fixed inset-0 bg-black/40 transition-opacity duration-300"
+        tabIndex={0}
         onClick={closeAll}
+        onKeyDown={(e) => e.key === 'Enter' && closeAll()}
+        role="button"
       />
-
-      {/* سایدبار با انیمیشن اسلاید */}
-      <aside className="relative w-80 max-w-[85vw] bg-white h-full shadow-xl transform transition-transform duration-300 ease-in-out ml-auto">
-        {/* هدر سایدبار */}
-        <div className="p-4 flex items-center justify-between border-b border-gray-100 bg-white sticky top-0 z-10">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-pink-600 rounded-full flex items-center justify-center">
-              <span className="text-white text-sm font-bold">ف</span>
-            </div>
-            <div>
-              <h2 className="text-lg font-bold text-gray-800">فاران گالری</h2>
-              <p className="text-xs text-gray-500">
-                فروشگاه تخصصی آرایشی و بهداشتی
-              </p>
-            </div>
-          </div>
-          <Button
-            variant="ghost"
-            onClick={closeAll}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            aria-label="بستن منو"
-          >
-            <X className="w-5 h-5" />
-          </Button>
-        </div>
-
+      <aside className="relative ml-auto h-full w-80 max-w-[85vw] transform bg-white shadow-xl transition-transform duration-300 ease-in-out">
+        <SidebarHeader onClose={closeAll} />
         <nav className="h-[calc(100vh-140px)] overflow-y-auto pb-4">
-          <div className="p-4 bg-linear-to-l from-pink-50 to-white border-b border-gray-100">
-            <div className="flex items-center gap-4 mb-3">
-              <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
-                <User className="w-5 h-5 text-pink-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-800">
-                  سلام فارانی عزیز
-                </p>
-                <p className="text-xs text-gray-500">خوش آمدید</p>
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex-1 text-xs h-8"
-              >
-                <User className="w-3 h-3 ml-1" />
-                پروفایل
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex-1 text-xs h-8"
-              >
-                <Heart className="w-3 h-3 ml-1" />
-                علاقه‌مندی
-              </Button>
-            </div>
-          </div>
-
-          <div className="py-2">
-            <div className="px-4 py-2">
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">
-                دسته‌بندی محصولات
-              </h3>
-            </div>
-
-            {menuData.map((item, index) => (
-              <div
-                key={item.title}
-                className="border-b border-gray-100 last:border-b-0"
-              >
-                <MenuItem
-                  item={item}
-                  openMap={openMap}
-                  onToggle={toggle}
-                  onClose={closeAll}
-                />
-              </div>
-            ))}
-          </div>
-
-          <div className="px-4 py-4">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3">
-              سایر بخش‌ها
-            </h3>
-            <div className="space-y-2">
-              <Link
-                href="/brands"
-                onClick={closeAll}
-                className="flex items-center justify-between py-2 text-sm text-gray-600 hover:text-pink-600 transition-colors"
-              >
-                <span>برندها</span>
-                <ShoppingBag className="w-4 h-4" />
-              </Link>
-              <Link
-                href="/consultation"
-                onClick={closeAll}
-                className="flex items-center justify-between py-2 text-sm text-gray-600 hover:text-pink-600 transition-colors"
-              >
-                <span>مشاوره رایگان</span>
-                <User className="w-4 h-4" />
-              </Link>
-              <Link
-                href="/sale"
-                onClick={closeAll}
-                className="flex items-center justify-between py-2 text-sm text-gray-600 hover:text-pink-600 transition-colors"
-              >
-                <span>فروش ویژه</span>
-                <Heart className="w-4 h-4" />
-              </Link>
-            </div>
-          </div>
+          <SidebarUserSection />
+          <SidebarMenu closeAll={closeAll} openMap={openMap} toggle={toggle} />
+          <SidebarOtherLinks closeAll={closeAll} />
         </nav>
-
-        {/* فوتر سایدبار */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100 bg-white">
-          <div className="space-y-2">
-            <Button
-              variant="default"
-              className="w-full justify-center gap-2 bg-pink-600 hover:bg-pink-700 h-10"
-              onClick={closeAll}
-            >
-              <ShoppingBag className="w-4 h-4" />
-              <span>مشاهده سبد خرید (۳)</span>
-            </Button>
-            <div className="flex gap-2 text-xs text-gray-500 justify-center">
-              <Link
-                href="/about"
-                onClick={closeAll}
-                className="hover:text-pink-600"
-              >
-                درباره ما
-              </Link>
-              <span>•</span>
-              <Link
-                href="/contact"
-                onClick={closeAll}
-                className="hover:text-pink-600"
-              >
-                تماس با ما
-              </Link>
-            </div>
-          </div>
-        </div>
+        <SidebarFooter closeAll={closeAll} />
       </aside>
     </div>
   );

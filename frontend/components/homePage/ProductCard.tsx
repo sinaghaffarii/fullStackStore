@@ -26,38 +26,38 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <a
+      className="group flex h-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:shadow-md"
       href={href}
-      className="group flex flex-col bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden h-full"
     >
       {/* Image Container */}
       <div className="relative p-4">
         <div className="relative aspect-square">
           <img
-            src={`${image}?w=300`}
             alt={name}
-            className="w-full h-full object-contain transition-transform group-hover:scale-105"
+            className="size-full object-contain transition-transform group-hover:scale-105"
+            src={`${image}?w=300`}
             loading="lazy"
           />
         </div>
 
         {/* Discount Badge */}
-        <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-md">
+        <div className="absolute top-2 left-2 rounded-md bg-red-600 px-2 py-1 text-xs font-bold text-white">
           {discountPercentage}٪
         </div>
       </div>
 
       {/* Content */}
-      <div className="flex flex-col flex-1 p-4 pt-0">
+      <div className="flex flex-1 flex-col p-4 pt-0">
         {/* Brand */}
-        <span className="text-xs text-gray-500 mb-1">{brand}</span>
+        <span className="mb-1 text-xs text-gray-500">{brand}</span>
 
         {/* Product Name */}
-        <h3 className="text-sm text-gray-800 line-clamp-2 mb-3 leading-5 flex-1">
+        <h3 className="mb-3 line-clamp-2 flex-1 text-sm leading-5 text-gray-800">
           {name}
         </h3>
 
         {/* Pricing */}
-        <div className="flex items-center justify-between mt-auto">
+        <div className="mt-auto flex items-center justify-between">
           <div className="flex items-center gap-1">
             {/* Discounted Price */}
             <span className="text-lg font-bold text-gray-900">
@@ -66,9 +66,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
             {/* Currency Icon */}
             <svg
-              className="w-4 h-4 text-gray-900"
-              viewBox="0 0 24 24"
+              className="size-4 text-gray-900"
               fill="currentColor"
+              viewBox="0 0 24 24"
             >
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 16v-6H8v-2h3V8h2v2h3v2h-3v6h-2z" />
             </svg>

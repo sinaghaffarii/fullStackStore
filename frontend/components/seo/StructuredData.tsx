@@ -1,9 +1,6 @@
 'use client';
-import { usePathname } from 'next/navigation';
 
 export function StructuredData() {
-  const pathname = usePathname();
-
   const baseStructuredData = {
     '@context': 'https://schema.org',
     '@graph': [

@@ -1,9 +1,11 @@
 'use client';
 
-import React from 'react';
-import Image from 'next/image';
 import { useKeenSlider } from 'keen-slider/react';
+import Image from 'next/image';
+import React from 'react';
 import 'keen-slider/keen-slider.min.css';
+
+import { Button } from '../ui/button';
 
 const heroSlides = [
   {
@@ -75,38 +77,38 @@ const Hero: React.FC = () => {
   );
 
   return (
-    <section className="w-11/12 md:w-full mx-auto py-6 bg-surface-solid-50">
-      <div className="mx-auto max-w-6xl relative min-h-[150px] lg:min-h-[400px]">
-        <div ref={sliderRef} className="keen-slider [&>*:last-child]:pl-3">
+    <section className="bg-surface-solid-50 mx-auto w-11/12 py-6 md:w-full">
+      <div className="relative mx-auto min-h-[150px] max-w-6xl lg:min-h-[400px]">
+        <div className="keen-slider [&>*:last-child]:pl-3" ref={sliderRef}>
           {heroSlides.map((slide) => (
             <a
-              key={slide.id}
+              className="keen-slider__slide block w-full overflow-hidden rounded-lg"
               href={slide.link}
-              className="keen-slider__slide block w-full rounded-lg overflow-hidden"
+              key={slide.id}
             >
               <Image
-                src={slide.image}
-                alt={slide.alt}
-                width={1200}
                 height={400}
-                className="w-full h-full object-cover"
+                width={1200}
+                alt={slide.alt}
+                className="size-full object-cover"
+                src={slide.image}
               />
             </a>
           ))}
         </div>
 
         {loaded && instanceRef.current && (
-          <div className="absolute -bottom-4 md:bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+          <div className="absolute -bottom-4 left-1/2 flex -translate-x-1/2 gap-2 md:bottom-4">
             {Array.from({
               length: instanceRef.current.track.details.slides.length,
             }).map((_, idx) => (
-              <button
+              <Button
                 key={idx}
                 onClick={() => instanceRef.current?.moveToIdx(idx)}
                 className={`rounded-full transition-all ${
                   currentSlide === idx
-                    ? 'w-4 h-2 bg-primary'
-                    : 'w-2 h-2 bg-secondary'
+                    ? 'h-2 w-4 bg-primary'
+                    : 'size-2 bg-secondary'
                 }`}
               />
             ))}

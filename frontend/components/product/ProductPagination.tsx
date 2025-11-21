@@ -3,6 +3,8 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 
+import { Button } from '../ui/button';
+
 interface ProductPaginationProps {
   totalPages: number;
   currentPage?: number;
@@ -21,36 +23,39 @@ export function ProductPagination({
   };
 
   return (
-    <div className="flex justify-center items-center gap-1">
-      <button
-        onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+    <div className="flex items-center justify-center gap-1">
+      <Button
+        className="flex size-8 items-center justify-center rounded-lg border border-gray-300 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
         disabled={currentPage === 1}
-        className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        variant="outline"
+        onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
       >
         <ChevronRight className="size-5" />
-      </button>
+      </Button>
 
       {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-        <button
+        <Button
           key={page}
+          variant="outline"
           onClick={() => handlePageChange(page)}
-          className={`w-8 h-8 flex items-center justify-center border rounded-lg text-sm ${
+          className={`flex size-8 items-center justify-center rounded-lg border text-sm ${
             page === currentPage
-              ? 'bg-blue-600 text-white border-blue-600'
+              ? 'border-blue-600 bg-blue-600 text-white'
               : 'border-gray-300 text-gray-700 hover:bg-gray-50'
           }`}
         >
           {page}
-        </button>
+        </Button>
       ))}
 
-      <button
-        onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+      <Button
+        className="flex size-8 items-center justify-center rounded-lg border border-gray-300 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
         disabled={currentPage === totalPages}
-        className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        variant="outline"
+        onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
       >
         <ChevronLeft className="size-5" />
-      </button>
+      </Button>
     </div>
   );
 }

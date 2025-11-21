@@ -13,28 +13,28 @@ const Newsletter: React.FC = () => {
   };
 
   return (
-    <section className="py-16 bg-primary-light text-black">
+    <section className="bg-primary-light py-16 text-black">
       <div className="mx-auto max-w-6xl px-4 text-center">
-        <h2 className="text-3xl font-bold mb-4">به خبرنامه فاران بپیوندید</h2>
-        <p className="mb-8 text-base text-text-darkGray">
+        <h2 className="mb-4 text-3xl font-bold">به خبرنامه فاران بپیوندید</h2>
+        <p className="text-text-darkGray mb-8 text-base">
           برای دریافت جدیدترین تخفیف‌ها، برندها و پیشنهادات ویژه ایمیل خود را
           وارد کنید.
         </p>
         <form
+          className="mx-auto flex max-w-md flex-col items-center justify-center gap-3 sm:flex-row"
           onSubmit={handleSubmit}
-          className="flex flex-col sm:flex-row justify-center items-center gap-3 max-w-md mx-auto"
         >
           <input
-            type="email"
             required
-            placeholder="ایمیل خود را وارد کنید"
+            className="flex-1 rounded-lg border bg-muted p-3 focus:outline-none sm:rounded-l-lg"
+            type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="flex-1 p-3 rounded-lg sm:rounded-l-lg focus:outline-none border bg-muted"
+            placeholder="ایمیل خود را وارد کنید"
           />
           <button
+            className="rounded-lg bg-secondary px-6 py-3 text-white transition hover:bg-secondary/90 sm:rounded-r-lg"
             type="submit"
-            className="bg-secondary text-white px-6 py-3 rounded-lg sm:rounded-r-lg hover:bg-secondary/90 transition"
           >
             عضویت
           </button>
