@@ -1,10 +1,29 @@
+import { Copyright as CopyrightIcon } from 'lucide-react';
 import React from 'react';
 
-const Copyright: React.FC = () => (
-  <div className="mt-8 w-full border-t border-gray-200 py-6 text-center text-sm text-gray-500">
-    استفاده از مطالب فروشگاه اینترنتی فاران فقط برای مقاصد غیرتجاری و با ذکر
-    منبع بلامانع است. کلیه حقوق این سایت متعلق به شرکت آریاس فاران می‌باشد.
+const FooterLegal: React.FC = () => (
+  <div className="mt-8 border-t border-gray-200 pt-6 text-center text-xs text-gray-500">
+    <div className="flex flex-wrap items-center justify-center gap-2 text-gray-600">
+      <CopyrightIcon className="size-4" />
+      <span>کلیه حقوق برای شرکت آریاس فاران محفوظ است.</span>
+      <a
+        className="underline-offset-4 hover:underline"
+        href="https://rojashop.com/posts/قوانین-و-مقررات"
+      >
+        قوانین و مقررات
+      </a>
+      <span aria-hidden>•</span>
+      <a
+        className="underline-offset-4 hover:underline"
+        href="https://rojashop.com/posts/حریم-خصوصی"
+      >
+        حریم خصوصی
+      </a>
+    </div>
+    <p className="mt-2">
+      استفاده از مطالب فقط برای مقاصد غیرتجاری و با ذکر منبع مجاز است.
+    </p>
   </div>
 );
 
-export default Copyright;
+export default FooterLegal;
