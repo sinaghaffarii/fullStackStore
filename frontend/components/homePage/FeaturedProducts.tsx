@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
 import { useKeenSlider } from 'keen-slider/react';
 import Image from 'next/image';
+import React, { useMemo, useState } from 'react';
 import 'keen-slider/keen-slider.min.css';
+
+import { Button } from '../ui/button';
 
 interface Product {
   id: number;
@@ -102,29 +104,29 @@ const FeaturedProducts: React.FC = () => {
   );
 
   return (
-    <section className="py-12 bg-white">
+    <section className="bg-white py-12">
       <div className="mx-auto max-w-7xl px-4">
-        <h2 className="text-2xl font-bold mb-6 text-text-darkGray">
+        <h2 className="text-text-darkGray mb-6 text-2xl font-bold">
           پیشنهاد ویژه
         </h2>
-        <div ref={sliderRef} className="keen-slider [&>*:last-child]:pr-3">
+        <div className="keen-slider [&>*:last-child]:pr-3" ref={sliderRef}>
           {products.map((prod) => (
             <a
-              key={prod.id}
+              className="keen-slider__slide bg-surface-solid-50 block overflow-hidden rounded-lg border shadow-md transition-shadow duration-200 hover:shadow-md"
               href={prod.link}
-              className="keen-slider__slide block overflow-hidden rounded-lg shadow-md border hover:shadow-md transition-shadow duration-200 bg-surface-solid-50"
+              key={prod.id}
             >
-              <div className="w-full h-48 sm:h-56 lg:h-64 overflow-hidden">
+              <div className="h-48 w-full overflow-hidden sm:h-56 lg:h-64">
                 <Image
-                  src={prod.image}
-                  alt={prod.name}
-                  width={400}
                   height={400}
-                  className="w-full h-full object-cover"
+                  width={400}
+                  alt={prod.name}
+                  className="size-full object-cover"
+                  src={prod.image}
                 />
               </div>
               <div className="p-4">
-                <p className="text-base font-medium text-text-darkGray text-center">
+                <p className="text-text-darkGray text-center text-base font-medium">
                   {prod.name}
                 </p>
               </div>
@@ -133,19 +135,19 @@ const FeaturedProducts: React.FC = () => {
         </div>
 
         {loaded && instanceRef.current && (
-          <div className="flex justify-center gap-2 mt-6">
+          <div className="mt-6 flex justify-center gap-2">
             {Array.from({
               length: instanceRef.current.track.details.slides.length,
             }).map((_, idx) => (
-              <button
+              <Button
+                aria-label={`Go to slide ${idx + 1}`}
                 key={idx}
                 onClick={() => instanceRef.current?.moveToIdx(idx)}
                 className={`rounded-full transition-all ${
                   currentSlide === idx
-                    ? 'w-4 h-2 bg-primary'
-                    : 'w-2 h-2 bg-secondary'
+                    ? 'h-2 w-4 bg-primary'
+                    : 'size-2 bg-secondary'
                 }`}
-                aria-label={`Go to slide ${idx + 1}`}
               />
             ))}
           </div>

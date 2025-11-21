@@ -19,7 +19,7 @@ export const productSchema = z.object({
   category_id: z.string().min(1, 'دسته‌بندی الزامی است'),
   stock_quantity: z.number().min(0, 'تعداد باید مثبت باشد'),
   is_active: z.boolean().default(true),
-  attributes: z.record(z.any()).default({}),
+  attributes: z.record(z.string(), z.any()).default({}),
 });
 
 export const checkoutSchema = z.object({

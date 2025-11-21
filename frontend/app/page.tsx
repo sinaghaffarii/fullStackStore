@@ -1,4 +1,4 @@
-import CarouselProducts from '@/components/homePage/CarouselProducts';
+import CarouselProducts from '@/components/homePage/carousel/CarouselProducts';
 import Categories from '@/components/homePage/Categories';
 import Hero from '@/components/homePage/Hero';
 import Newsletter from '@/components/homePage/Newsletter';
@@ -82,9 +82,10 @@ export default function Home() {
       <Categories />
 
       <CarouselProducts
-        products={productsData}
         title="حراج ویژه تابستان"
+        viewAllLink="/summer-sale"
         description="تخفیف‌های استثنایی برای فصل گرم"
+        products={productsData}
         specialOffer={{
           title: 'حراج بزرگ تابستانه',
           subtitle: 'تا 70% تخفیف',
@@ -96,31 +97,32 @@ export default function Home() {
           },
           backgroundColor: 'from-orange-500 to-red-600',
         }}
-        viewAllLink="/summer-sale"
       />
       <CarouselProducts
-        products={productsData}
         title="جلوه نوروزی"
+        viewAllLink="/new-year-products"
+        autoPlay
         description="محصولات ویژه سال نو"
+        products={productsData}
         specialOffer={{
           title: 'شگفت‌انگیزهای نوروز',
           subtitle: 'آغاز سال نو با تخفیف‌های ویژه',
           href: '/tags/new-year',
           backgroundColor: 'from-green-500 to-emerald-600',
         }}
-        viewAllLink="/new-year-products"
-        autoPlay={true}
       />
       <CarouselProducts
-        products={productsData}
         title="پیشنهادهای ویژه"
         viewAllLink="/all-products"
+        products={productsData}
         showArrows={false}
       />
       <CarouselProducts
-        products={productsData}
         title="Black Friday"
+        viewAllLink="/black-friday"
+        autoPlay
         description="فقط 24 ساعت فرصت دارید!"
+        products={productsData}
         specialOffer={{
           title: 'شب سیاه جمعه',
           subtitle: 'تخفیف‌های باورنکردنی',
@@ -134,8 +136,6 @@ export default function Home() {
           headerImage: '/images/black-friday-header.png',
           mainImage: '/images/black-friday-main.png',
         }}
-        viewAllLink="/black-friday"
-        autoPlay={true}
       />
 
       <PromoBanner />

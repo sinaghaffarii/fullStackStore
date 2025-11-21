@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export const useLazyLoad = <T extends HTMLElement>(
   ref: React.RefObject<T | null>,

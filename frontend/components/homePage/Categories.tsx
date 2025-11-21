@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
-import Image from 'next/image';
 import { useKeenSlider } from 'keen-slider/react';
+import Image from 'next/image';
+import React from 'react';
 import 'keen-slider/keen-slider.min.css';
 
 const categories = [
@@ -50,25 +50,25 @@ const Categories: React.FC = () => {
   });
 
   return (
-    <section className="py-10 bg-white">
+    <section className="bg-white py-10">
       {/* Mobile: Keen Slider */}
-      <div className="sm:hidden px-4">
-        <div ref={sliderRef as any} className="keen-slider -mx-2">
+      <div className="px-4 sm:hidden">
+        <div className="keen-slider -mx-2" ref={sliderRef as any}>
           {categories.map((cat) => (
             <a
-              key={cat.id}
+              className="keen-slider__slide block w-16 shrink-0 px-2"
               href={cat.link}
-              className="keen-slider__slide block shrink-0 w-16 px-2"
+              key={cat.id}
             >
-              <div className="flex flex-col items-center justify-center p-2 rounded">
+              <div className="flex flex-col items-center justify-center rounded-sm p-2">
                 <Image
-                  src={cat.image}
-                  alt={cat.name}
-                  width={80}
                   height={80}
-                  className="w-20 h-20 object-contain mb-2 mx-auto"
+                  width={80}
+                  alt={cat.name}
+                  className="mx-auto mb-2 size-20 object-contain"
+                  src={cat.image}
                 />
-                <span className="text-text-darkGray text-center font-medium text-sm">
+                <span className="text-text-darkGray text-center text-sm font-medium">
                   {cat.name}
                 </span>
               </div>
@@ -78,19 +78,19 @@ const Categories: React.FC = () => {
       </div>
 
       {/* Desktop / Tablet: Grid */}
-      <div className="hidden sm:grid mx-auto max-w-6xl grid-cols-4 sm:grid-cols-6 gap-4">
+      <div className="mx-auto hidden max-w-6xl grid-cols-4 gap-4 sm:grid sm:grid-cols-6">
         {categories.map((cat) => (
           <a
-            key={cat.id}
+            className="group flex flex-col items-center justify-center rounded-full p-4 transition"
             href={cat.link}
-            className="group flex flex-col items-center justify-center p-4 rounded-full transition"
+            key={cat.id}
           >
             <Image
-              src={cat.image}
-              alt={cat.name}
-              width={100}
               height={100}
-              className="w-20 h-20 object-contain mb-2"
+              width={100}
+              alt={cat.name}
+              className="mb-2 size-20 object-contain"
+              src={cat.image}
             />
             <span className="text-text-darkGray text-center font-medium">
               {cat.name}

@@ -10,7 +10,7 @@ export default function CartPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">سبد خرید</h1>
+          <h1 className="mb-4 text-2xl font-bold">سبد خرید</h1>
           <p className="text-muted-foreground">سبد خرید شما خالی است</p>
         </div>
       </div>
@@ -19,7 +19,7 @@ export default function CartPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">سبد خرید</h1>
         <Button variant="outline" onClick={clearCart}>
           پاک کردن سبد
@@ -27,14 +27,14 @@ export default function CartPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2 space-y-4">
+        <div className="space-y-4 lg:col-span-2">
           {items.map((item) => (
-            <div>cart items {item.product?.name}</div>
+            <div key={item.id}>cart items {item.product?.name}</div>
             // <CartItem item={item} key={item.id} />
           ))}
         </div>
 
-        <div className="bg-muted p-6 rounded-lg space-y-4">
+        <div className="space-y-4 rounded-lg bg-muted p-6">
           <div className="flex justify-between text-lg font-semibold">
             <span>جمع کل:</span>
             <span>{totalPrice.toLocaleString()} تومان</span>

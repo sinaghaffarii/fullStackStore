@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-import type { CartItem, Product } from '../types';
+import type { CartItem } from '../types';
+import type { Product } from '../types/product';
 
 interface CartState {
   items: CartItem[];
@@ -21,13 +22,13 @@ export const useCartStore = create<CartState>()(
       addItem: (product, quantity = 1) => {
         set((state) => {
           const existingItem = state.items.find(
-            (item) => item.product_id === product.id,
+            (item) => item.product_id === product.id.toString(),
           );
 
           if (existingItem) {
             return {
               items: state.items.map((item) =>
-                item.product_id === product.id
+                item.product_id === product.id.toString()
                   ? { ...item, quantity: item.quantity + quantity }
                   : item,
               ),
@@ -39,7 +40,8 @@ export const useCartStore = create<CartState>()(
               ...state.items,
               {
                 id: Math.random().toString(36).substr(2, 9),
-                product_id: product.id,
+                cart_id: Math.random().toString(36).substr(2, 9), // Add cart_id
+                product_id: product.id.toString(), // Convert product.id to string
                 quantity,
                 product,
               } as CartItem,

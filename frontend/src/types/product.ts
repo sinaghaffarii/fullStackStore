@@ -1,5 +1,3 @@
-// d:\Projects\fullstack-store\frontend\src\types\product.ts
-
 export interface Product {
   id: number;
   slug: string;

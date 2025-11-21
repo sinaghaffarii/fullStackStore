@@ -1,5 +1,7 @@
 'use client';
 
+import { Filter, Grid3X3, Sparkles } from 'lucide-react';
+
 import { Button } from '../ui/button';
 import {
   Select,
@@ -9,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
-import { Sparkles, Filter, Grid3X3 } from 'lucide-react';
 
 interface CategoryHeaderProps {
   title: string;
@@ -23,85 +24,85 @@ export function CategoryHeader({
   productCount,
 }: CategoryHeaderProps) {
   return (
-    <div className="bg-linear-to-r from-slate-900 to-indigo-900 rounded-2xl shadow-2xl p-6 mb-8 border border-slate-700 relative overflow-hidden">
+    <div className="relative mb-8 overflow-hidden rounded-2xl border border-slate-700 bg-linear-to-r from-slate-900 to-indigo-900 p-6 shadow-2xl">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-linear-to-br from-purple-500 to-pink-500 rounded-full -translate-y-32 translate-x-32"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-linear-to-tr from-cyan-500 to-blue-500 rounded-full translate-y-24 -translate-x-24"></div>
+        <div className="absolute top-0 right-0 size-64 translate-x-32 -translate-y-32 rounded-full bg-linear-to-br from-purple-500 to-pink-500"></div>
+        <div className="absolute bottom-0 left-0 size-48 -translate-x-24 translate-y-24 rounded-full bg-linear-to-tr from-cyan-500 to-blue-500"></div>
       </div>
 
       <div className="relative z-10">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex-1">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 bg-indigo-500/20 rounded-lg">
-                <Grid3X3 className="w-5 h-5 text-indigo-300" />
+            <div className="mb-3 flex items-center gap-3">
+              <div className="rounded-lg bg-indigo-500/20 p-2">
+                <Grid3X3 className="size-5 text-indigo-300" />
               </div>
-              <h1 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2">
+              <h1 className="flex items-center gap-2 text-2xl font-bold text-white md:text-3xl">
                 {title}
-                <span className="inline-flex items-center gap-1 text-sm font-medium bg-indigo-500/30 text-indigo-100 px-2.5 py-0.5 rounded-full">
-                  <Sparkles className="w-3 h-3" />
+                <span className="inline-flex items-center gap-1 rounded-full bg-indigo-500/30 px-2.5 py-0.5 text-sm font-medium text-indigo-100">
+                  <Sparkles className="size-3" />
                   {productCount} محصول
                 </span>
               </h1>
             </div>
 
-            <p className="text-slate-300 text-base max-w-2xl leading-relaxed">
+            <p className="max-w-2xl text-base leading-relaxed text-slate-300">
               {description}
             </p>
 
-            <div className="flex flex-wrap gap-3 mt-4">
-              <div className="flex items-center gap-2 text-slate-300 text-sm bg-slate-800/50 px-3 py-1.5 rounded-lg">
-                <Filter className="w-4 h-4" />
+            <div className="mt-4 flex flex-wrap gap-3">
+              <div className="flex items-center gap-2 rounded-lg bg-slate-800/50 px-3 py-1.5 text-sm text-slate-300">
+                <Filter className="size-4" />
                 <span>فیلترهای فعال: ۲</span>
               </div>
-              <button className="text-sm text-cyan-300 hover:text-cyan-200 transition-colors bg-cyan-900/30 hover:bg-cyan-900/50 px-3 py-1.5 rounded-lg">
+              <Button className="rounded-lg bg-cyan-900/30 px-3 py-1.5 text-sm text-cyan-300 transition-colors hover:bg-cyan-900/50 hover:text-cyan-200">
                 حذف همه فیلترها
-              </button>
+              </Button>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row">
             <div className="flex items-center gap-2">
               <Select>
-                <SelectTrigger className="w-full sm:w-[200px] bg-white/10 border-slate-600 text-white hover:bg-white/15 transition-colors">
+                <SelectTrigger className="w-full border-slate-600 bg-white/10 text-white transition-colors hover:bg-white/15 sm:w-[200px]">
                   <SelectValue placeholder="مرتب سازی" />
                 </SelectTrigger>
-                <SelectContent className="bg-slate-800 border-slate-600 text-white">
+                <SelectContent className="border-slate-600 bg-slate-800 text-white">
                   <SelectGroup>
                     <SelectItem
-                      value="0"
                       className="focus:bg-slate-700 focus:text-white"
+                      value="0"
                     >
                       پیش‌فرض
                     </SelectItem>
                     <SelectItem
-                      value="1"
                       className="focus:bg-slate-700 focus:text-white"
+                      value="1"
                     >
                       ارزان‌ترین
                     </SelectItem>
                     <SelectItem
-                      value="2"
                       className="focus:bg-slate-700 focus:text-white"
+                      value="2"
                     >
                       گران‌ترین
                     </SelectItem>
                     <SelectItem
-                      value="3"
                       className="focus:bg-slate-700 focus:text-white"
+                      value="3"
                     >
                       پرفروش‌ترین
                     </SelectItem>
                     <SelectItem
-                      value="4"
                       className="focus:bg-slate-700 focus:text-white"
+                      value="4"
                     >
                       محبوب‌ترین
                     </SelectItem>
                     <SelectItem
-                      value="5"
                       className="focus:bg-slate-700 focus:text-white"
+                      value="5"
                     >
                       جدیدترین
                     </SelectItem>
@@ -110,8 +111,8 @@ export function CategoryHeader({
               </Select>
             </div>
 
-            <Button className="px-4 py-2 bg-linear-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-lg font-medium transition-all duration-300 shadow-lg hover:shadow-indigo-500/25 flex items-center justify-center gap-2">
-              <Filter className="w-4 h-4" />
+            <Button className="flex items-center justify-center gap-2 rounded-lg bg-linear-to-r from-indigo-500 to-purple-600 px-4 py-2 font-medium text-white shadow-lg transition-all duration-300 hover:from-indigo-600 hover:to-purple-700 hover:shadow-indigo-500/25">
+              <Filter className="size-4" />
               فیلترها
             </Button>
           </div>

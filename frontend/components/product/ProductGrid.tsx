@@ -1,8 +1,8 @@
 'use client';
 
+import type { Product } from '@/src/types/product';
+
 import { ProductCard } from './ProductCard';
-// این خط را تغییر دهید:
-import { Product } from '@/src/types/product';
 
 interface ProductGridProps {
   products: Product[];
@@ -10,7 +10,7 @@ interface ProductGridProps {
 
 export function ProductGrid({ products }: ProductGridProps) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 mb-6 gap-2">
+    <div className="mb-6 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}

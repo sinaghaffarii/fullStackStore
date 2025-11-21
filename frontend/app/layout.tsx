@@ -1,11 +1,14 @@
 import type { Metadata, Viewport } from 'next';
 
+import { Suspense } from 'react';
+
 import './globals.css';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 import { StructuredData } from '@/components/seo/StructuredData';
-import { Providers } from '../src/lib/providers';
+
+import Footer from '../components/layout/footer';
 import Header from '../components/layout/Header';
-import Footer from '../components/layout/Footer';
+import { Providers } from '../src/lib/providers';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -71,13 +74,15 @@ export default function RootLayout({
       <head>
         <GoogleAnalytics />
       </head>
-      <body className="min-h-screen flex flex-col bg-background font-sans antialiased">
-        <Providers>
-          <StructuredData />
-          <Header />
-          <main className="flex-1 sm:mb-52">{children}</main>
-          <Footer />
-        </Providers>
+      <body className="flex min-h-screen flex-col bg-background font-sans antialiased">
+        <Suspense fallback={<div />}>
+          <Providers>
+            <StructuredData />
+            <Header />
+            <main className="flex-1 sm:mb-52">{children}</main>
+            <Footer />
+          </Providers>
+        </Suspense>
       </body>
     </html>
   );
