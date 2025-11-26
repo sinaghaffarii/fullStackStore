@@ -62,7 +62,7 @@ const Header = () => {
         {!isMobile ? (
           <div className="flex items-center justify-between py-4">
             <h1 className="text-2xl font-bold whitespace-nowrap text-primary">
-              PersianVape
+              FaranGallery
             </h1>
 
             <div className="flex items-center gap-3">
@@ -104,7 +104,7 @@ const Header = () => {
 
             {/* وسط: لوگو */}
             <h1 className="flex-1 text-center text-xl font-bold whitespace-nowrap text-primary">
-              PersianVape
+              FaranGallery
             </h1>
 
             {/* سمت چپ: پروفایل و سبد خرید */}

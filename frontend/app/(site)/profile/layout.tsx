@@ -16,7 +16,7 @@ export default function ProfileLayout({
           </aside>
 
           {/* محتوای اصلی - children هر صفحه */}
-          <main className="min-h-[500px] flex-1 rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+          <main className="min-h-[500px] flex-1 rounded-lg border border-gray-100 bg-white p-6 shadow-sm">
             {children}
           </main>
         </div>

@@ -6,6 +6,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { Home } from 'lucide-react';
 
 interface BreadcrumbSegment {
   title: string;
@@ -22,6 +23,7 @@ export default function DynamicBreadcrumb({
   return (
     <Breadcrumb className="mb-8">
       <BreadcrumbList>
+        <Home className="size-4" />
         {segments.map((segment, index) => (
           <BreadcrumbItem key={index}>
             {index > 0 && <BreadcrumbSeparator />}

@@ -43,7 +43,7 @@ const DesktopSidebar = ({
   children: React.ReactNode;
 }) => (
   <div className="hidden shrink-0 lg:block lg:w-72">
-    <div className="sticky top-4 overflow-hidden rounded-2xl border border-slate-100 bg-white p-5 shadow-xl">
+    <div className="sticky top-4 overflow-hidden rounded-lg border border-slate-100 bg-white p-5 shadow-xl">
       <div className="absolute top-0 right-0 size-20 translate-x-8 -translate-y-8 rounded-full bg-blue-500/5"></div>
       <div className="absolute bottom-0 left-0 size-16 -translate-x-8 translate-y-8 rounded-full bg-indigo-500/5"></div>
 
@@ -58,7 +58,7 @@ const DesktopSidebar = ({
 
           <Tooltip title="پاک کردن همه فیلترها">
             <Button
-              className="rounded-xl p-2 text-slate-500 transition-all duration-300 hover:bg-rose-50 hover:text-rose-500"
+              className="rounded-lg p-2 text-slate-500 transition-all duration-300 hover:bg-rose-50 hover:text-rose-500"
               type="button"
               variant="ghost"
               onClick={onReset}
@@ -72,14 +72,14 @@ const DesktopSidebar = ({
 
         <div className="mt-6 flex gap-3 border-t border-slate-200 pt-4">
           <Button
-            className="flex-1 rounded-xl bg-linear-to-r from-indigo-600 to-blue-600 py-2.5 font-medium text-white shadow-lg transition-all duration-300 hover:from-indigo-700 hover:to-blue-700 hover:shadow-indigo-500/25"
+            className="flex-1 rounded-lg bg-linear-to-r from-indigo-600 to-blue-600 py-2.5 font-medium text-white shadow-lg transition-all duration-300 hover:from-indigo-700 hover:to-blue-700 hover:shadow-indigo-500/25"
             type="button"
             onClick={onApply}
           >
             اعمال فیلتر
           </Button>
           <Button
-            className="flex-1 rounded-xl border-slate-300 py-2.5 font-medium text-slate-600 transition-all duration-300 hover:bg-slate-50 hover:text-slate-800"
+            className="flex-1 rounded-lg border-slate-300 py-2.5 font-medium text-slate-600 transition-all duration-300 hover:bg-slate-50 hover:text-slate-800"
             type="button"
             variant="outline"
             onClick={onReset}
@@ -89,7 +89,7 @@ const DesktopSidebar = ({
         </div>
 
         {activeFilterCount > 0 && (
-          <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3">
+          <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-3">
             <div className="flex items-center justify-between text-sm">
               <span className="text-slate-600">فیلترهای فعال:</span>
               <span className="font-medium text-indigo-600">

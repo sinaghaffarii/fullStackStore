@@ -10,7 +10,7 @@ interface UserInfoCardProps {
 
 export const UserInfoCard = ({ name, avatarUrl }: UserInfoCardProps) => {
   return (
-    <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+    <div className="rounded-lg border border-gray-100 bg-white p-4 shadow-sm">
       <div className="mb-4 flex items-center gap-3 border-b border-gray-50 pb-4">
         <Avatar className="size-12 border border-gray-200">
           <AvatarImage alt={name} src={avatarUrl} />

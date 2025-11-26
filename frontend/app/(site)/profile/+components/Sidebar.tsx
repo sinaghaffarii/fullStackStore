@@ -35,7 +35,7 @@ export const ProfileSidebar = () => {
   const pathname = usePathname();
 
   return (
-    <nav className="overflow-hidden rounded-xl border border-gray-100 bg-white py-2 shadow-sm">
+    <nav className="overflow-hidden rounded-lg border border-gray-100 bg-white py-2 shadow-sm">
       <ul className="flex flex-col">
         {menuItems.map((item) => {
           const isActive = pathname === item.href;

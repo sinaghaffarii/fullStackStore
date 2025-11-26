@@ -32,7 +32,7 @@ export function CategoryHeader({
   onOpenMobileFilters,
 }: CategoryHeaderProps) {
   return (
-    <div className="relative mb-8 overflow-hidden rounded-2xl border border-slate-700 bg-linear-to-r from-slate-900 to-indigo-900 p-6 shadow-2xl">
+    <div className="relative mb-8 overflow-hidden rounded-lg border border-slate-700 bg-linear-to-r from-slate-900 to-indigo-900 p-6 shadow-2xl">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-0 right-0 size-64 translate-x-32 -translate-y-32 rounded-full bg-linear-to-br from-purple-500 to-pink-500"></div>

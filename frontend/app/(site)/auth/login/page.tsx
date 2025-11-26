@@ -33,9 +33,9 @@ export default function LoginPage() {
 
       <div className="pointer-events-none absolute size-[500px] -translate-y-10 rounded-full bg-primary/5 blur-3xl"></div>
 
-      <div className="relative w-full max-w-[420px] rounded-xl border border-gray-100 bg-white p-8 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.1)] md:p-10">
+      <div className="relative w-full max-w-[420px] rounded-lg border border-gray-100 bg-white p-8 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.1)] md:p-10">
         <div className="mb-8 text-center">
-          <div className="mb-6 inline-flex size-14 items-center justify-center rounded-xl bg-primary/5 text-primary shadow-sm ring-1 ring-primary/10">
+          <div className="mb-6 inline-flex size-14 items-center justify-center rounded-lg bg-primary/5 text-primary shadow-sm ring-1 ring-primary/10">
             {step === 'email' ? (
               <KeyRound size={26} strokeWidth={1.5} />
             ) : (

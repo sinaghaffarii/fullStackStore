@@ -70,7 +70,8 @@ export const ProductCard = memo(function ProductCard({
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
               alt={name}
               className="object-cover transition-transform duration-400 group-hover:scale-105"
-              src={images?.[0] || PLACEHOLDER_IMAGE}
+              src="/images/products/product_1.jpg"
+              // src={images?.[0] || PLACEHOLDER_IMAGE}
               loading={priority ? 'eager' : 'lazy'}
               priority={priority}
             />
@@ -78,7 +79,7 @@ export const ProductCard = memo(function ProductCard({
 
           <div className="absolute top-3 left-3 opacity-0 transition-all delay-200 duration-500 group-hover:opacity-100">
             <Button
-              className="transform rounded-xl bg-white/90 p-2 text-slate-700 shadow-lg transition-all duration-300 hover:scale-105 hover:bg-white hover:text-rose-500"
+              className="transform rounded-lg bg-white/90 p-2 text-slate-700 shadow-lg transition-all duration-300 hover:scale-105 hover:bg-white hover:text-rose-500"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();

@@ -87,7 +87,7 @@ export default function Home() {
       <PromoBanners heightClass="h-40 md:h-72" count={4} />
 
       <section className="mx-auto mt-10 w-11/12 max-w-7xl">
-        <div className="relative h-32 w-full overflow-hidden rounded-xl bg-gray-300 md:h-48">
+        <div className="relative h-32 w-full overflow-hidden rounded-lg bg-gray-300 md:h-48">
           <Image
             fill
             alt="Big Banner"

@@ -49,7 +49,7 @@ export const FavoriteProductCard = ({
   return (
     <div
       className={cn(
-        'group relative rounded-xl border border-gray-200 bg-white p-4 transition-all hover:shadow-md',
+        'group relative rounded-lg border border-gray-200 bg-white p-4 transition-all hover:shadow-md',
         isRemoving && 'pointer-events-none opacity-50',
       )}
     >

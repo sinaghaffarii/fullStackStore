@@ -52,7 +52,7 @@ export const TicketCard = ({
 
   return (
     <Link
-      className="group block rounded-xl border border-gray-200 bg-white p-4 transition-all hover:shadow-md"
+      className="group block rounded-lg border border-gray-200 bg-white p-4 transition-all hover:shadow-md"
       href={`/profile/tickets/${id}`}
     >
       <div className="mb-3 flex items-start justify-between">

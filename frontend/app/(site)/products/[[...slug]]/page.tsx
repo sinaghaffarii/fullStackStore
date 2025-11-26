@@ -1,7 +1,6 @@
 /* eslint-disable max-lines */
 'use client';
 
-import { Home, Package } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import React, { useRef, useState } from 'react';
 
@@ -121,7 +120,6 @@ export default function ProductsPage({ params }: Props) {
     slug?: string[];
   } | null>(null);
 
-  // ✅ اضافه کردن ref و state برای تعداد فیلترهای فعال
   const filtersRef = useRef<ProductFiltersWrapperRef>(null);
   const [activeFilterCount, setActiveFilterCount] = useState(0);
 
@@ -137,7 +135,6 @@ export default function ProductsPage({ params }: Props) {
   const data = getCategoryData(slugs);
   const breadcrumbItems = generateBreadcrumbItems(slugs);
 
-  // ✅ توابع handler برای CategoryHeader
   const handleOpenMobileFilters = () => {
     filtersRef.current?.openMobileDialog();
   };
@@ -148,38 +145,32 @@ export default function ProductsPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 to-blue-50/30">
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto w-11/12 max-w-7xl">
         <div className="py-6">
           <div className="mb-6">
-            <div className="mb-2 flex items-center gap-2 text-sm text-slate-600">
-              <Home className="size-4" />
-              <span>/</span>
-              <Package className="size-4" />
-              <span className="text-slate-500">محصولات</span>
-            </div>
             <DynamicBreadcrumb segments={breadcrumbItems} />
           </div>
 
-          <div className="flex flex-col gap-6 lg:flex-row">
-            {/* ✅ اضافه کردن ref و onFilterCountChange */}
-            <ProductFiltersWrapper
-              filters={data.filters}
-              ref={filtersRef}
-              searchParams={searchParams}
-              onFilterCountChange={setActiveFilterCount}
-            />
+          <CategoryHeader
+            title={data.title}
+            activeFilterCount={activeFilterCount}
+            description={data.description}
+            onClearFilters={handleClearFilters}
+            onOpenMobileFilters={handleOpenMobileFilters}
+            productCount={data.products.length}
+          />
 
-            <div className="flex-1">
-              {/* ✅ اضافه کردن props های لازم */}
-              <CategoryHeader
-                title={data.title}
-                activeFilterCount={activeFilterCount}
-                description={data.description}
-                onClearFilters={handleClearFilters}
-                onOpenMobileFilters={handleOpenMobileFilters}
-                productCount={data.products.length}
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-6">
+            <div className="shrink-0 lg:w-72">
+              <ProductFiltersWrapper
+                filters={data.filters}
+                ref={filtersRef}
+                searchParams={searchParams}
+                onFilterCountChange={setActiveFilterCount}
               />
+            </div>
 
+            <div className="min-w-0 flex-1">
               <ProductGrid products={data.products} />
 
               <ProductPagination currentPage={1} totalPages={6} />

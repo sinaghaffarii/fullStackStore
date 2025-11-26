@@ -92,7 +92,7 @@ export default function TicketDetailPage() {
       </div>
 
       {/* پیام‌ها */}
-      <div className="max-h-[600px] min-h-[400px] space-y-4 overflow-y-auto rounded-xl bg-gray-50 p-4">
+      <div className="max-h-[600px] min-h-[400px] space-y-4 overflow-y-auto rounded-lg bg-gray-50 p-4">
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -126,7 +126,7 @@ export default function TicketDetailPage() {
             >
               <div
                 className={cn(
-                  'rounded-2xl p-4 shadow-sm',
+                  'rounded-lg p-4 shadow-sm',
                   msg.sender === 'user'
                     ? 'rounded-tr-none bg-rose-600 text-white'
                     : 'rounded-tl-none bg-white text-gray-800',
@@ -148,7 +148,7 @@ export default function TicketDetailPage() {
       </div>
 
       {/* فرم ارسال پیام */}
-      <div className="rounded-xl border border-gray-200 bg-white p-4">
+      <div className="rounded-lg border border-gray-200 bg-white p-4">
         <div className="flex gap-3">
           <Textarea
             className="flex-1 resize-none"
