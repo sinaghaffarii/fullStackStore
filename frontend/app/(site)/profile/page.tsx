@@ -1,5 +1,3 @@
-import { User } from 'lucide-react';
-
 import { Label } from '@/components/ui/label';
 
 import { SectionHeader } from './+components/SectionHeader';
@@ -7,7 +5,7 @@ import { SectionHeader } from './+components/SectionHeader';
 export default function ProfilePage() {
   return (
     <div className="space-y-6">
-      <SectionHeader title="حساب کاربری" icon={<User className="size-5" />} />
+      <SectionHeader title="حساب کاربری" />
 
       <div className="space-y-4">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
