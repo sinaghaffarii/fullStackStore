@@ -1,6 +1,6 @@
 'use client';
 
-import { HelpCircle, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -60,10 +60,7 @@ export default function TicketsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <SectionHeader
-          title="تیکت های پشتیبانی"
-          icon={<HelpCircle className="size-5" />}
-        />
+        <SectionHeader title="تیکت های پشتیبانی" />
         <Button
           className="bg-rose-600 hover:bg-rose-700"
           onClick={() => setIsDialogOpen(true)}

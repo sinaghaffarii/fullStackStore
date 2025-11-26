@@ -1,6 +1,5 @@
 'use client';
 
-import { Heart } from 'lucide-react';
 import { useState } from 'react';
 
 import { EmptyState } from '../+components/EmptyState';
@@ -53,10 +52,7 @@ export default function FavoritesPage() {
 
   return (
     <div className="space-y-6">
-      <SectionHeader
-        title="علاقه مندی های من"
-        icon={<Heart className="size-5" />}
-      />
+      <SectionHeader title="علاقه مندی های من" />
 
       {favorites.length === 0 ? (
         <EmptyState message="محصولی در لیست علاقه‌مندی‌های شما وجود ندارد" />
