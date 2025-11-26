@@ -4,11 +4,7 @@ import { Suspense } from 'react';
 
 import './globals.css';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
-import { StructuredData } from '@/components/seo/StructuredData';
-
-import Footer from '../components/layout/footer';
-import Header from '../components/layout/Header';
-import { Providers } from '../src/lib/providers';
+import { Providers } from '@/src/lib/providers';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -74,14 +70,9 @@ export default function RootLayout({
       <head>
         <GoogleAnalytics />
       </head>
-      <body className="flex min-h-screen flex-col bg-background font-sans antialiased">
+      <body className="flex min-h-screen flex-col font-sans antialiased">
         <Suspense fallback={<div />}>
-          <Providers>
-            <StructuredData />
-            <Header />
-            <main className="flex-1 sm:mb-52">{children}</main>
-            <Footer />
-          </Providers>
+          <Providers>{children}</Providers>
         </Suspense>
       </body>
     </html>

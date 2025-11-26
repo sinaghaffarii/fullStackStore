@@ -11,7 +11,7 @@ const userMenuLinks = [
     href: 'https://rojashop.com/posts/درباره-ما',
     text: 'درباره ما',
   },
-  { id: 'branches', href: '/branches', text: 'فروشگاه‌های فاران' },
+  { id: 'branches', href: '/branches', text: 'فروشگاه‌های پرشین ویپ' },
   {
     id: 'order-guide',
     href: 'https://rojashop.com/posts/راهنمای-سفارش-و-خرید',

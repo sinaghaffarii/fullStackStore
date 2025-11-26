@@ -18,8 +18,7 @@ module.exports = {
       `${process.env.NEXT_PUBLIC_SITE_URL}/sitemap-blog.xml`,
     ],
   },
-  transform: async (config, path) => {
-    // اولویت‌بندی داینامیک برای صفحات
+  transform: (config, path) => {
     let priority = config.priority;
     let changefreq = config.changefreq;
 

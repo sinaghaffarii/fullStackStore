@@ -27,7 +27,7 @@ export default function Error({
     <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-slate-50 to-slate-100 px-4">
       <div className="mx-auto max-w-2xl text-center">
         <div
-          className={`mb-8 rounded-2xl border-2 p-6 ${colors.bg} ${colors.border} inline-block`}
+          className={`mb-8 rounded-lg border-2 p-6 ${colors.bg} ${colors.border} inline-block`}
         >
           <div className="mb-4 text-6xl">{errorData.icon}</div>
         </div>

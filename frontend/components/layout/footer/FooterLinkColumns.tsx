@@ -46,12 +46,12 @@ const LINK_GROUPS = [
         text: 'ارسال هدیه',
         href: 'https://rojashop.com/posts/ارسال-هدیه-برای-عزیزان',
       },
-      { id: 'branches', text: 'فروشگاه‌های فاران', href: '/branches' },
+      { id: 'branches', text: 'فروشگاه‌های پرشین ویپ', href: '/branches' },
     ],
   },
   {
     id: 'about',
-    title: 'درباره فاران',
+    title: 'درباره پرشین ویپ',
     links: [
       {
         id: 'about-us',

@@ -4,7 +4,7 @@ import React from 'react';
 import Newsletter from './Newsletter';
 
 const TopStrip: React.FC = () => (
-  <section className="relative hidden w-full rounded-3xl bg-gray-900/95 px-8 py-6 text-white lg:block">
+  <section className="relative hidden w-full rounded-lg bg-gray-900/95 px-8 py-6 text-white lg:block">
     <div className="grid grid-cols-3 gap-6">
       <div>
         <p className="text-primary-200 text-sm font-semibold">پشتیبانی:</p>

@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable max-lines-per-function */
 'use client';
 import {
@@ -71,7 +72,7 @@ const Header = () => {
                 variant="outline"
               >
                 <UserIcon className="size-5" />
-                <span className="hidden sm:inline">سلام فارانی عزیز</span>
+                <span className="hidden sm:inline">سلام پرشین ویپی عزیز</span>
               </Button>
 
               <Separator className="h-6 bg-gray-300" orientation="vertical" />
@@ -176,7 +177,7 @@ const Header = () => {
                 className="whitespace-nowrap text-gray-500 hover:text-primary"
                 variant="ghost"
               >
-                فروش ویژه فاران
+                فروش ویژه پرشین ویپ
               </Button>
             </div>
 

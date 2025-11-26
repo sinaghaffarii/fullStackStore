@@ -17,7 +17,7 @@ const ICONS = [
 const TrustIcons: React.FC<Props> = ({ className = '' }) => (
   <section
     aria-label="نمادهای اعتماد"
-    className={`grid gap-4 rounded-xl border border-gray-100 bg-gray-50 p-4 sm:grid-cols-2 lg:grid-cols-3 ${className}`}
+    className={`grid gap-4 rounded-lg border border-gray-100 bg-gray-50 p-4 sm:grid-cols-2 lg:grid-cols-3 ${className}`}
   >
     {ICONS.map((icon) => (
       <div
