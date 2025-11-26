@@ -57,7 +57,7 @@ export const ProductCard = memo(function ProductCard({
 
   return (
     <div
-      className="group transform overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-lg transition-all duration-500 hover:border-indigo-100 hover:shadow-2xl"
+      className="group transform overflow-hidden rounded-lg border border-slate-100 bg-white shadow-lg transition-all duration-500 hover:border-indigo-100 hover:shadow-2xl"
       itemType="https://schema.org/Product"
       ref={lazyRef}
       itemScope

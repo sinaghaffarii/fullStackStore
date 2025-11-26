@@ -8,19 +8,19 @@ const heroSlides = [
   {
     id: 1,
     image: '/images/homePage/headerSlider1.jpeg',
-    link: '/tags/takhfif50',
+    link: '/',
     alt: '400کالا40%',
   },
   {
     id: 2,
     image: '/images/homePage/headerSlider2.jpeg',
-    link: '/landing/game',
+    link: '/',
     alt: 'بازی بلک بیوتی',
   },
   {
     id: 3,
     image: '/images/homePage/headerSlider3.jpeg',
-    link: '/brands/syn-skin',
+    link: '',
     alt: 'ساین اسکین',
   },
 ];
@@ -75,7 +75,7 @@ const Hero: React.FC = () => {
 
   return (
     <section className="bg-surface-solid-50 mx-auto w-11/12 py-6 md:w-full">
-      <div className="relative mx-auto min-h-[150px] max-w-6xl lg:min-h-[400px]">
+      <div className="relative mx-auto min-h-[100px] max-w-7xl lg:min-h-[250px]">
         <div className="keen-slider [&>*:last-child]:pl-3" ref={sliderRef}>
           {heroSlides.map((slide) => (
             <a
@@ -87,7 +87,7 @@ const Hero: React.FC = () => {
                 height={400}
                 width={1200}
                 alt={slide.alt}
-                className="size-full object-cover"
+                className="size-full object-fill"
                 src={slide.image}
               />
             </a>

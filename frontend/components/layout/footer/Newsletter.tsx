@@ -21,7 +21,7 @@ const Newsletter: React.FC<Props> = ({ variant = 'desktop' }) => {
           className="text-sm font-semibold text-gray-300"
           id={`newsletter-${variant}`}
         >
-          از تخفیف‌ها و جدیدترین‌های فاران شاپ باخبر شوید
+          از تخفیف‌ها و جدیدترین‌های پرشین ویپ شاپ باخبر شوید
         </p>
         <p className="text-xs text-gray-400">
           با ثبت ایمیل یا شماره، زودتر از بقیه از کمپین‌ها مطلع شوید.

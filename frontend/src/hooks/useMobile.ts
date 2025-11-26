@@ -1,27 +1,36 @@
 'use client';
-import { useEffect, useState } from 'react';
+
+import { useCallback, useSyncExternalStore } from 'react';
 
 export function useMobile(breakpoint = 768) {
-  const mq = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
-  const [isMobile, setIsMobile] = useState<boolean>(mq.matches);
+  const subscribe = useCallback(
+    (callback: () => void) => {
+      const mq = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
 
-  useEffect(() => {
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-
-    if (mq.addEventListener) {
-      mq.addEventListener('change', handler);
-    } else {
-      mq.addListener(handler);
-    }
-
-    return () => {
-      if (mq.removeEventListener) {
-        mq.removeEventListener('change', handler);
+      if (mq.addEventListener) {
+        mq.addEventListener('change', callback);
       } else {
-        mq.removeListener(handler);
+        mq.addListener(callback);
       }
-    };
-  }, [mq]);
 
-  return isMobile;
+      return () => {
+        if (mq.removeEventListener) {
+          mq.removeEventListener('change', callback);
+        } else {
+          mq.removeListener(callback);
+        }
+      };
+    },
+    [breakpoint],
+  );
+
+  const getSnapshot = () => {
+    return window.matchMedia(`(max-width: ${breakpoint - 1}px)`).matches;
+  };
+
+  const getServerSnapshot = () => {
+    return false;
+  };
+
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

@@ -1,44 +1,20 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
+import { CheckCircle2, KeyRound } from 'lucide-react';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 
 import type { LoginInput } from '../../../../src/validations';
 
-import { Button } from '../../../../components/ui/button';
 import { useAuth } from '../../../../src/hooks/useAuth';
-import { loginSchema } from '../../../../src/validations';
+import { EmailForm } from '../+components/EmailForm';
+import { OTPForm } from '../+components/OtpForm';
 
 export default function LoginPage() {
   const [step, setStep] = useState<'email' | 'otp'>('email');
   const [email, setEmail] = useState('');
   const { login, verifyOTP, isLoggingIn, isVerifyingOTP } = useAuth();
 
-  const emailForm = useForm<LoginInput>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-    },
-  });
-
-  const otpForm = useForm<{ code: string }>({
-    defaultValues: {
-      code: '',
-    },
-  });
-
-  const onEmailSubmit = (data: LoginInput) => {
+  const handleEmailSubmit = (data: LoginInput) => {
     login(data, {
       onSuccess: () => {
         setEmail(data.email);
@@ -47,95 +23,67 @@ export default function LoginPage() {
     });
   };
 
-  const onOTPSubmit = (data: { code: string }) => {
-    verifyOTP({
-      email,
-      code: data.code,
-    });
+  const handleOTPSubmit = (data: { code: string }) => {
+    verifyOTP({ email, code: data.code });
   };
 
-  if (step === 'otp') {
-    return (
-      <div className="container mx-auto max-w-md py-12">
-        <div className="space-y-6">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold">ورود به حساب</h1>
-            <p className="mt-2 text-muted-foreground">
-              کد ارسال شده به {email} را وارد کنید
-            </p>
-          </div>
-
-          <Form {...otpForm}>
-            <form
-              className="space-y-4"
-              onSubmit={otpForm.handleSubmit(onOTPSubmit)}
-            >
-              <FormField
-                name="code"
-                control={otpForm.control}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>کد تأیید</FormLabel>
-                    <FormControl>
-                      <Input {...field} maxLength={6} placeholder="123456" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <Button
-                className="w-full"
-                disabled={isVerifyingOTP}
-                type="submit"
-              >
-                {isVerifyingOTP ? 'در حال تأیید...' : 'تأیید'}
-              </Button>
-            </form>
-          </Form>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="container mx-auto max-w-md py-12">
-      <div className="space-y-6">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold">ورود به حساب</h1>
-          <p className="mt-2 text-muted-foreground">
-            برای ورود ایمیل خود را وارد کنید
+    <div className="relative flex min-h-[80svh] w-full items-center justify-center overflow-hidden bg-[#F9FAFB] px-4 py-12">
+      <div className="absolute inset-0 size-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear_gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px]"></div>
+
+      <div className="pointer-events-none absolute size-[500px] -translate-y-10 rounded-full bg-primary/5 blur-3xl"></div>
+
+      <div className="relative w-full max-w-[420px] rounded-xl border border-gray-100 bg-white p-8 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.1)] md:p-10">
+        <div className="mb-8 text-center">
+          <div className="mb-6 inline-flex size-14 items-center justify-center rounded-xl bg-primary/5 text-primary shadow-sm ring-1 ring-primary/10">
+            {step === 'email' ? (
+              <KeyRound size={26} strokeWidth={1.5} />
+            ) : (
+              <CheckCircle2 size={26} strokeWidth={1.5} />
+            )}
+          </div>
+          <h1 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">
+            {step === 'email' ? 'خوش‌آمدید' : 'تأیید شماره همراه'}
+          </h1>
+          <p className="text-[15px] leading-relaxed text-gray-500">
+            {step === 'email' ? (
+              'برای ورود یا ثبت‌نام، شماره موبایل خود را وارد کنید'
+            ) : (
+              <>
+                کد ارسال شده به
+                <span className="dir-ltr inline-block font-semibold text-gray-800">
+                  {email}
+                </span>
+                را وارد کنید
+              </>
+            )}
           </p>
         </div>
 
-        <Form {...emailForm}>
-          <form
-            className="space-y-4"
-            onSubmit={emailForm.handleSubmit(onEmailSubmit)}
-          >
-            <FormField
-              name="email"
-              control={emailForm.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>ایمیل</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="email"
-                      placeholder="example@email.com"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+        <div className="relative">
+          {step === 'email' ? (
+            <EmailForm isLoading={isLoggingIn} onSubmit={handleEmailSubmit} />
+          ) : (
+            <OTPForm
+              isLoading={isVerifyingOTP}
+              onBack={() => setStep('email')}
+              onSubmit={handleOTPSubmit}
             />
+          )}
+        </div>
 
-            <Button className="w-full" disabled={isLoggingIn} type="submit">
-              {isLoggingIn ? 'در حال ارسال کد...' : 'ارسال کد تأیید'}
-            </Button>
-          </form>
-        </Form>
+        <div className="mt-10 border-t border-gray-50 pt-6 text-center">
+          <p className="text-xs leading-5 text-gray-400 md:text-sm">
+            با ورود به سیستم،
+            <button
+              className="cursor-pointer border-none bg-transparent p-0 text-gray-600 underline hover:text-primary"
+              type="button"
+            >
+              قوانین و مقررات
+            </button>
+            استفاده از سرویس را می‌پذیرید.
+          </p>
+        </div>
       </div>
     </div>
   );

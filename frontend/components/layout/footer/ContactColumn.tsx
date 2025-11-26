@@ -5,13 +5,13 @@ const ContactColumn: React.FC = () => (
   <section aria-labelledby="footer-contact" className="space-y-4">
     <div className="flex items-center justify-between gap-4">
       <h2 className="text-2xl font-semibold text-primary" id="footer-contact">
-        FaranGallery
+        PersianVape
       </h2>
       <a
         className="rounded-sm bg-black px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-gray-900 lg:hidden"
         href="tel:+982157826000"
       >
-        تماس با فاران
+        تماس با پرشین ویپ
       </a>
     </div>
 
@@ -36,7 +36,7 @@ const ContactColumn: React.FC = () => (
             className="text-black underline-offset-4 hover:underline"
             href="https://rojashop.com/branches"
           >
-            فروشگاه‌های فاران
+            فروشگاه‌های پرشین ویپ
           </a>
         </div>
       </div>

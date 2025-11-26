@@ -1,9 +1,3 @@
 declare module '*.css';
-
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}
-
-export {};
+declare module '*.scss';
+declare module '*.sass';

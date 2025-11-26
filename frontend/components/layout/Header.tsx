@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable max-lines-per-function */
 'use client';
 import {
@@ -61,7 +62,7 @@ const Header = () => {
         {!isMobile ? (
           <div className="flex items-center justify-between py-4">
             <h1 className="text-2xl font-bold whitespace-nowrap text-primary">
-              FaranGallery
+              PersianVape
             </h1>
 
             <div className="flex items-center gap-3">
@@ -71,7 +72,7 @@ const Header = () => {
                 variant="outline"
               >
                 <UserIcon className="size-5" />
-                <span className="hidden sm:inline">سلام فارانی عزیز</span>
+                <span className="hidden sm:inline">سلام پرشین ویپی عزیز</span>
               </Button>
 
               <Separator className="h-6 bg-gray-300" orientation="vertical" />
@@ -103,7 +104,7 @@ const Header = () => {
 
             {/* وسط: لوگو */}
             <h1 className="flex-1 text-center text-xl font-bold whitespace-nowrap text-primary">
-              FaranGallery
+              PersianVape
             </h1>
 
             {/* سمت چپ: پروفایل و سبد خرید */}
@@ -176,7 +177,7 @@ const Header = () => {
                 className="whitespace-nowrap text-gray-500 hover:text-primary"
                 variant="ghost"
               >
-                فروش ویژه فاران
+                فروش ویژه پرشین ویپ
               </Button>
             </div>
 

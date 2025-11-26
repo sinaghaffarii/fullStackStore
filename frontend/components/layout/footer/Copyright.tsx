@@ -5,7 +5,7 @@ const FooterLegal: React.FC = () => (
   <div className="mt-8 border-t border-gray-200 pt-6 text-center text-xs text-gray-500">
     <div className="flex flex-wrap items-center justify-center gap-2 text-gray-600">
       <CopyrightIcon className="size-4" />
-      <span>کلیه حقوق برای شرکت آریاس فاران محفوظ است.</span>
+      <span>کلیه حقوق برای شرکت آریاس پرشین ویپ محفوظ است.</span>
       <a
         className="underline-offset-4 hover:underline"
         href="https://rojashop.com/posts/قوانین-و-مقررات"

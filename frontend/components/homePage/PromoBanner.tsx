@@ -1,40 +1,46 @@
 'use client';
-
 import Image from 'next/image';
 import React from 'react';
 
-const banners = [
-  {
-    id: 1,
-    image: '/images/homePage/headerSlider3.jpeg',
-    link: '/tags/takhfif50',
-    alt: 'تخفیف ویژه',
-  },
-  {
-    id: 2,
-    image: '/images/homePage/headerSlider4.jpeg',
-    link: '/landing/game',
-    alt: 'بازی بلک بیوتی',
-  },
-];
+import { cn } from '@/src/lib/utils';
 
-const PromoBanner: React.FC = () => {
+interface Props {
+  count: 2 | 4;
+  heightClass?: string;
+}
+
+const PromoBanners: React.FC<Props> = ({ count, heightClass = 'h-48' }) => {
+  const banners = Array.from({ length: count }).map((_, i) => ({ id: i }));
+
   return (
-    <section className="bg-surface-solid-50 py-8">
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-2">
+    <section className="mx-auto mt-10 w-11/12 max-w-7xl">
+      <div
+        className={cn(
+          'grid gap-4',
+          count === 2
+            ? 'grid-cols-1 md:grid-cols-2'
+            : 'grid-cols-2 md:grid-cols-4',
+        )}
+      >
         {banners.map((banner) => (
+          // eslint-disable-next-line jsx-a11y/anchor-is-valid
           <a
-            className="block overflow-hidden rounded-sm shadow-sm transition hover:shadow-lg"
-            href={banner.link}
+            className="relative block overflow-hidden rounded-lg shadow-sm transition hover:shadow-lg"
+            href="#"
             key={banner.id}
           >
-            <Image
-              height={300}
-              width={1200}
-              alt={banner.alt}
-              className="h-48 w-full object-cover md:h-60"
-              src={banner.image}
-            />
+            <div className={cn('relative w-full bg-gray-300', heightClass)}>
+              <div className="absolute inset-0 flex items-center justify-center font-bold text-gray-500">
+                Banner {banner.id + 1}
+              </div>
+
+              <Image
+                fill
+                alt="Banner"
+                className="object-cover opacity-0"
+                src="/images/homePage/baner1.jpg"
+              />
+            </div>
           </a>
         ))}
       </div>
@@ -42,4 +48,4 @@ const PromoBanner: React.FC = () => {
   );
 };
 
-export default PromoBanner;
+export default PromoBanners;
