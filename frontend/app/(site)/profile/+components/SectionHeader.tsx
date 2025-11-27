@@ -38,7 +38,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
 
       {viewAllLink && (
         <Link
-          className="group flex shrink-0 items-center gap-1 text-sm font-medium text-brand-gray-600 transition-colors hover:text-primary"
+          className="group text-brand-gray-600 flex shrink-0 items-center gap-1 text-sm font-medium transition-colors hover:text-primary"
           href={viewAllLink}
         >
           {viewAllText}

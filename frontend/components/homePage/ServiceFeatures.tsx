@@ -10,7 +10,7 @@ const features = [
 
 const ServiceFeatures = () => {
   return (
-    <section className="mx-auto mt-10 w-11/12 max-w-7xl rounded-lg bg-white px-4 py-8 shadow">
+    <section className="mx-auto mt-10 w-11/12 max-w-7xl rounded-lg bg-white px-4 py-8 shadow-sm">
       <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
         {features.map((item, idx) => (
           <div
