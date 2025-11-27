@@ -1,3 +1,5 @@
+import { Home } from 'lucide-react';
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,7 +8,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { Home } from 'lucide-react';
 
 interface BreadcrumbSegment {
   title: string;
