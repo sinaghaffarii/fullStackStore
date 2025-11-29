@@ -111,7 +111,7 @@ const CarouselProducts: React.FC<Props> = ({
 
   return (
     <section className={cn('py-10 md:py-14', className)}>
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto w-11/12 max-w-7xl">
         {(title || viewAllLink) && (
           <div className="mb-6 flex flex-col gap-2 md:mb-8 lg:flex-row lg:items-center lg:justify-between">
             <div className={cn('flex flex-col gap-2', titleClassName)}>
