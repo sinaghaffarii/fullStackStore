@@ -91,7 +91,7 @@ const SidebarHeader = ({ onClose }: { onClose: () => void }) => (
         <span className="text-sm font-bold text-white">ف</span>
       </div>
       <div>
-        <h2 className="text-lg font-bold text-gray-800">پرشین ویپ گالری</h2>
+        <h2 className="text-lg font-bold text-gray-800">فاران آرایشی گالری</h2>
         <p className="text-xs text-gray-500">فروشگاه تخصصی آرایشی و بهداشتی</p>
       </div>
     </div>
@@ -114,7 +114,7 @@ const SidebarUserSection = () => (
       </div>
       <div>
         <p className="text-sm font-medium text-gray-800">
-          سلام پرشین ویپی عزیز
+          سلام فاران آرایشیی عزیز
         </p>
         <p className="text-xs text-gray-500">خوش آمدید</p>
       </div>

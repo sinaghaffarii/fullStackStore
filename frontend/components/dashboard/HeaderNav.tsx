@@ -205,7 +205,7 @@ export function HeaderNav({ className }: HeaderNavProps) {
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuContent align="start" className="w-56">
             <DropdownMenuLabel>
               <div className="flex flex-col gap-1">
                 <span className="font-semibold">محمد احمدی</span>
@@ -216,24 +216,24 @@ export function HeaderNav({ className }: HeaderNavProps) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <User className="ml-2 size-4" />
+              <User className="me-2 size-4" />
               پروفایل
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Settings className="ml-2 size-4" />
+              <Settings className="me-2 size-4" />
               تنظیمات
             </DropdownMenuItem>
             <DropdownMenuItem onClick={toggleTheme}>
               {isDark ? (
-                <Sun className="ml-2 size-4" />
+                <Sun className="me-2 size-4" />
               ) : (
-                <Moon className="ml-2 size-4" />
+                <Moon className="me-2 size-4" />
               )}
               {isDark ? 'حالت روشن' : 'حالت تاریک'}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="text-destructive focus:text-destructive">
-              <LogOut className="ml-2 size-4" />
+              <LogOut className="me-2 size-4" />
               خروج
             </DropdownMenuItem>
           </DropdownMenuContent>

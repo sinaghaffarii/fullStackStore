@@ -4,16 +4,11 @@
 import {
   Bitcoin,
   Building2,
-  Calendar,
-  Coffee,
   CreditCard,
-  Factory,
   FileText,
-  Hotel,
   Inbox,
   Lightbulb,
   MessageSquare,
-  MousePointer2,
   Network,
   Settings,
   ShoppingCart,
@@ -50,6 +45,7 @@ interface NavItem {
   icon: React.ElementType;
   isActive?: boolean;
   badge?: string;
+  color?: string;
 }
 
 interface NavSection {
@@ -64,7 +60,7 @@ const sidebarData: {
   user: { name: string; email: string; avatar: string };
 } = {
   brand: {
-    name: 'انعکاس',
+    name: 'فروشگاه آرایشی',
     logo: '/logo.svg',
   },
   navigation: [
@@ -72,116 +68,187 @@ const sidebarData: {
       label: 'داشبوردها',
       items: [
         {
-          title: 'تجارت الکترونیک',
+          title: 'داشبورد اصلی',
           url: '/admin',
           icon: ShoppingCart,
           isActive: true,
+          color: 'text-blue-600',
         },
         {
-          title: 'مدیریت ارتباط با مشتریان',
-          url: '/admin/crm',
-          icon: Users,
-        },
-        {
-          title: 'بیمارستان',
-          url: '/admin/hospital',
-          icon: Building2,
-        },
-        {
-          title: 'کارخانه',
-          url: '/admin/factory',
-          icon: Factory,
-        },
-        {
-          title: 'بانکداری',
-          url: '/admin/banking',
-          icon: CreditCard,
-        },
-        {
-          title: 'کافه',
-          url: '/admin/cafe',
-          icon: Coffee,
-        },
-        {
-          title: 'رمزارز',
-          url: '/admin/crypto',
-          icon: Bitcoin,
-        },
-        {
-          title: 'هتل',
-          url: '/admin/hotel',
-          icon: Hotel,
-        },
-      ],
-    },
-    {
-      label: 'برنامه‌ها',
-      items: [
-        {
-          title: 'صندوق دریافت',
-          url: '/admin/inbox',
-          icon: Inbox,
-          badge: '۴',
-        },
-        {
-          title: 'مدیریت فایل - لیست',
-          url: '/admin/files/list',
-          icon: FileText,
-        },
-        {
-          title: 'مدیریت فایل - شبکه',
-          url: '/admin/files/grid',
-          icon: Network,
-        },
-        {
-          title: 'نقطه فروش',
-          url: '/admin/pos',
-          icon: Store,
-        },
-        {
-          title: 'چت',
-          url: '/admin/chat',
-          icon: MessageSquare,
-        },
-        {
-          title: 'تقویم',
-          url: '/admin/calendar',
-          icon: Calendar,
-        },
-      ],
-    },
-    {
-      label: 'ابزارک‌های کاربری',
-      items: [
-        {
-          title: 'خلاقانه',
-          url: '/admin/widgets/creative',
-          icon: Lightbulb,
-        },
-        {
-          title: 'پویا',
-          url: '/admin/widgets/dynamic',
+          title: 'گزارش فروش',
+          url: '/admin/analytics',
           icon: Sparkles,
-        },
-        {
-          title: 'تعاملی',
-          url: '/admin/widgets/interactive',
-          icon: MousePointer2,
+          color: 'text-amber-600',
         },
       ],
     },
     {
-      label: 'مدیریت کاربر',
+      label: 'مدیریت محصولات',
       items: [
         {
-          title: 'لیست کاربران',
-          url: '/admin/users',
-          icon: Users,
+          title: 'لیست محصولات',
+          url: '/admin/products',
+          icon: Store,
+          color: 'text-purple-600',
         },
         {
-          title: 'تنظیمات',
+          title: 'دسته‌بندی‌ها',
+          url: '/admin/categories',
+          icon: Building2,
+          color: 'text-pink-600',
+        },
+        {
+          title: 'برندها',
+          url: '/admin/brands',
+          icon: Lightbulb,
+          color: 'text-yellow-600',
+        },
+        {
+          title: 'موجودی انبار',
+          url: '/admin/inventory',
+          icon: FileText,
+          color: 'text-orange-600',
+        },
+      ],
+    },
+    {
+      label: 'سفارشات و فروش',
+      items: [
+        {
+          title: 'لیست سفارشات',
+          url: '/admin/orders',
+          icon: ShoppingCart,
+          badge: '۱۲',
+          color: 'text-green-600',
+        },
+        {
+          title: 'فاکتورها',
+          url: '/admin/invoices',
+          icon: FileText,
+          color: 'text-blue-500',
+        },
+        {
+          title: 'بازگشت کالا',
+          url: '/admin/returns',
+          icon: Inbox,
+          color: 'text-red-600',
+        },
+        {
+          title: 'کوپن‌ها و تخفیف‌ها',
+          url: '/admin/coupons',
+          icon: Bitcoin,
+          color: 'text-emerald-600',
+        },
+      ],
+    },
+    {
+      label: 'مدیریت کاربران',
+      items: [
+        {
+          title: 'لیست مشتریان',
+          url: '/admin/customers',
+          icon: Users,
+          color: 'text-cyan-600',
+        },
+        {
+          title: 'نیروی فروش',
+          url: '/admin/staff',
+          icon: Users,
+          color: 'text-indigo-600',
+        },
+        {
+          title: 'سطح دسترسی',
+          url: '/admin/roles',
+          icon: Settings,
+          color: 'text-slate-600',
+        },
+      ],
+    },
+    {
+      label: 'پشتیبانی و ارتباطات',
+      items: [
+        {
+          title: 'تیکت‌های پشتیبانی',
+          url: '/admin/tickets',
+          icon: MessageSquare,
+          badge: '۵',
+          color: 'text-rose-600',
+        },
+        {
+          title: 'نظرات و بررسی‌ها',
+          url: '/admin/reviews',
+          icon: Sparkles,
+          color: 'text-violet-600',
+        },
+        {
+          title: 'پیام‌ها',
+          url: '/admin/messages',
+          icon: Inbox,
+          color: 'text-fuchsia-600',
+        },
+        {
+          title: 'خبرنامه',
+          url: '/admin/newsletter',
+          icon: FileText,
+          color: 'text-teal-600',
+        },
+      ],
+    },
+    {
+      label: 'مالی و گزارشات',
+      items: [
+        {
+          title: 'گزارش درآمد',
+          url: '/admin/revenue',
+          icon: CreditCard,
+          color: 'text-lime-600',
+        },
+        {
+          title: 'سود و زیان',
+          url: '/admin/profit',
+          icon: CreditCard,
+          color: 'text-green-700',
+        },
+        {
+          title: 'تراکنش‌ها',
+          url: '/admin/transactions',
+          icon: CreditCard,
+          color: 'text-blue-700',
+        },
+        {
+          title: 'گزارش‌ها',
+          url: '/admin/reports',
+          icon: FileText,
+          color: 'text-indigo-700',
+        },
+      ],
+    },
+    {
+      label: 'تنظیمات',
+      items: [
+        {
+          title: 'اطلاعات فروشگاه',
+          url: '/admin/settings/store',
+          icon: Store,
+          color: 'text-orange-500',
+        },
+        {
+          title: 'روش‌های پرداخت',
+          url: '/admin/settings/payment',
+          icon: CreditCard,
+          color: 'text-green-600',
+        },
+        {
+          title: 'روش‌های ارسال',
+          url: '/admin/settings/shipping',
+          icon: Network,
+          color: 'text-purple-500',
+        },
+        {
+          title: 'تنظیمات عمومی',
           url: '/admin/settings',
           icon: Settings,
+          color: 'text-gray-600',
         },
       ],
     },
@@ -243,16 +310,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                           'bg-sidebar-accent font-medium text-sidebar-primary',
                       )}
                     >
-                      <Link className="flex items-center gap-3" href={item.url}>
-                        <ItemIcon
-                          className={cn(
-                            'size-4 shrink-0',
-                            isActive
-                              ? 'text-sidebar-primary'
-                              : 'text-sidebar-muted',
-                          )}
-                        />
-                        <span className="flex-1 truncate">{item.title}</span>
+                      <Link href={item.url}>
+                        <div className="flex items-center justify-start gap-3">
+                          <ItemIcon
+                            className={cn(
+                              'size-4 shrink-0',
+                              isActive
+                                ? 'text-sidebar-primary'
+                                : item.color || 'text-sidebar-muted',
+                            )}
+                          />
+                          <span className="flex-1 truncate">{item.title}</span>
+                        </div>
                         {item.badge && !isCollapsed && (
                           <Badge
                             className="h-5 min-w-5 shrink-0 px-1.5 text-xs"
