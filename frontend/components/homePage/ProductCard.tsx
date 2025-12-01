@@ -149,7 +149,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       </a>
 
       {/* Content Section */}
-      <div className="flex h-[35%] flex-col justify-between p-5">
+      <div className="flex h-[35%] flex-col justify-between p-2">
         <div className="space-y-1">
           <span className="text-[11px] font-semibold tracking-wider text-gray-400 uppercase transition-colors group-hover:text-primary">
             {brand}

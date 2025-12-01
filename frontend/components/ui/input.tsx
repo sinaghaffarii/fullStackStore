@@ -20,7 +20,7 @@ const inputVariants = cva(
         default: 'rounded-md',
         lg: 'rounded-lg',
         xl: 'rounded-xl',
-        '2xl': 'rounded-2xl',
+        '2xl': 'rounded-lg',
         full: 'rounded-full',
       },
 

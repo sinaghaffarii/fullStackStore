@@ -67,8 +67,7 @@ const Header = () => {
 
             <div className="flex items-center gap-3">
               <Button
-                size="lg"
-                className="flex items-center gap-2 transition-colors hover:bg-gray-50"
+                className="flex items-center gap-2 bg-white transition-colors hover:bg-gray-50"
                 variant="outline"
               >
                 <UserIcon className="size-5" />
@@ -80,8 +79,7 @@ const Header = () => {
               <Separator className="h-6 bg-gray-300" orientation="vertical" />
 
               <Button
-                size="lg"
-                className="relative px-2 text-gray-500 transition-colors hover:bg-gray-50"
+                className="relative bg-white px-2 text-gray-500 transition-colors hover:bg-gray-50"
                 variant="outline"
               >
                 <ShoppingBasket className="size-6" />
@@ -185,7 +183,7 @@ const Header = () => {
 
             <div className="w-full md:w-80 lg:w-[500px]">
               <Input
-                className="h-12 border bg-muted transition-all focus:ring-2 focus:ring-primary"
+                className="h-10 border bg-white transition-all focus:ring-2 focus:ring-primary"
                 iconPosition="right"
                 placeholder="جستجوی نام محصول، دسته‌بندی و ..."
                 rightIcon={<SearchIcon className="size-5 text-gray-400" />}
@@ -196,7 +194,7 @@ const Header = () => {
           // ردیف دوم - موبایل: فقط جستجو
           <div className="pb-3">
             <Input
-              className="h-12 border bg-muted text-sm transition-all focus:ring-2 focus:ring-primary"
+              className="h-10 border bg-white text-sm transition-all focus:ring-2 focus:ring-primary"
               iconPosition="right"
               placeholder="جستجوی محصولات..."
               rightIcon={<SearchIcon className="size-5 text-gray-400" />}

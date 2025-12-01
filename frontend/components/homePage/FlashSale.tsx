@@ -44,9 +44,9 @@ const FlashSale: React.FC<Props> = ({ products }) => {
 
         <div className="min-w-0 flex-1">
           <CarouselProducts
-            className="py-0!"
+            className="w-full py-0!"
             breakpoints={{
-              '(min-width: 640px)': { slides: { perView: 2, spacing: 14 } },
+              '(min-width: 640px)': { slides: { perView: 2, spacing: 10 } },
               '(min-width: 768px)': { slides: { perView: 2.5, spacing: 14 } },
               '(min-width: 1024px)': { slides: { perView: 3, spacing: 14 } },
               '(min-width: 1280px)': { slides: { perView: 3.5, spacing: 14 } },
