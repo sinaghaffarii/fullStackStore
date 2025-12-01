@@ -1,109 +1,129 @@
 'use client';
 
-import { Star, ThumbsDown, ThumbsUp, User } from 'lucide-react';
+import { Star, ThumbsUp, User } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 
-interface Props {
+interface ProductReviewsProps {
   rating: number;
   count: number;
 }
 
-export function ProductReviews({ rating, count }: Props) {
+export function ProductReviews({ rating, count }: ProductReviewsProps) {
   return (
-    <div className="grid gap-8 lg:grid-cols-12">
-      <aside className="space-y-6 rounded-lg border border-gray-100 bg-gray-50/80 p-6 lg:sticky lg:top-24 lg:col-span-4">
-        <div className="text-center">
-          <p className="text-5xl font-black text-gray-900">{rating}</p>
-          <div className="mt-2 flex justify-center gap-1">
-            {[1, 2, 3, 4, 5].map((s) => (
-              <Star
-                key={s}
-                className={
-                  s <= Math.round(rating)
-                    ? 'size-4 fill-amber-400 text-amber-400'
-                    : 'size-4 text-gray-300'
-                }
-              />
-            ))}
-          </div>
-          <p className="mt-3 text-sm text-gray-500">بر اساس {count} دیدگاه</p>
-        </div>
+    <div dir="rtl" className="grid gap-8 lg:grid-cols-3">
+      <ReviewSummary rating={rating} count={count} />
+      <ReviewsList />
+    </div>
+  );
+}
 
-        <div className="space-y-3 text-xs text-gray-600">
-          {[
-            { label: 'کیفیت ساخت', val: 88 },
-            { label: 'ارزش خرید', val: 74 },
-            { label: 'دیزاین بسته‌بندی', val: 92 },
-            { label: 'میزان چربی‌زایی', val: 67 },
-          ].map((item) => (
-            <div key={item.label}>
-              <div className="mb-1 flex justify-between">
-                <span>{item.label}</span>
-                <span>{(item.val / 20).toFixed(1)}</span>
-              </div>
-              <Progress className="h-2 bg-white" value={item.val} />
-            </div>
-          ))}
-        </div>
-
-        <Button variant="outline">ثبت دیدگاه جدید</Button>
-      </aside>
-
-      <div className="space-y-6 lg:col-span-8">
-        {[1, 2, 3].map((item) => (
-          <article
-            className="rounded-lg border border-gray-100 p-4 shadow-sm"
-            key={item}
-          >
-            <header className="mb-4 flex flex-wrap items-center gap-3">
-              <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-full bg-gray-100 text-gray-500">
-                  <User className="size-5" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-gray-900">
-                    کاربر خریدار
-                  </p>
-                  <p className="text-xs text-gray-400">۱۴ آذر ۱۴۰۳</p>
-                </div>
-              </div>
-              <span className="rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-semibold text-emerald-600">
-                خرید تایید شده
-              </span>
-              <div className="ml-auto flex gap-0.5">
-                {[1, 2, 3, 4, 5].map((s) => (
-                  <Star
-                    className="size-3 fill-amber-400 text-amber-400"
-                    key={s}
-                  />
-                ))}
-              </div>
-            </header>
-
-            <p className="text-sm leading-7 text-gray-600">
-              تجربه‌ی شخصی کاربر درباره‌ی کیفیت، بافت و اثرگذاری محصول...
-            </p>
-
-            <footer className="mt-4 flex items-center gap-4 text-xs text-gray-500">
-              <span>آیا این دیدگاه مفید بود؟</span>
-              <button
-                className="flex items-center gap-1 hover:text-emerald-600"
-                type="button"
-              >
-                <ThumbsUp className="size-4" /> (۱۲)
-              </button>
-              <button
-                className="flex items-center gap-1 hover:text-rose-500"
-                type="button"
-              >
-                <ThumbsDown className="size-4" /> (۰)
-              </button>
-            </footer>
-          </article>
+function ReviewSummary({ rating, count }: { rating: number; count: number }) {
+  return (
+    <div className="rounded-xl bg-gray-50 p-6 text-center">
+      <p className="text-5xl font-bold text-gray-900">{rating}</p>
+      <div className="mt-2 flex justify-center gap-0.5">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <Star
+            key={i}
+            className={
+              i <= Math.round(rating)
+                ? 'size-4 fill-amber-400 text-amber-400'
+                : 'size-4 text-gray-300'
+            }
+          />
         ))}
       </div>
+      <p className="mt-2 text-sm text-gray-500">از {count} دیدگاه</p>
+      <Button className="mt-4 w-full" variant="outline">
+        ثبت دیدگاه
+      </Button>
     </div>
+  );
+}
+
+function ReviewsList() {
+  const reviews = [
+    {
+      id: 1,
+      user: 'کاربر خریدار',
+      date: '۱۴ آذر ۱۴۰۳',
+      text: 'محصول عالی بود، کیفیت بسته‌بندی و اصالت کالا تایید شده.',
+      likes: 12,
+      rating: 5,
+    },
+    {
+      id: 2,
+      user: 'خریدار تایید شده',
+      date: '۱۰ آذر ۱۴۰۳',
+      text: 'کیفیت خوبی داشت، ارسال هم سریع بود.',
+      likes: 8,
+      rating: 4,
+    },
+  ];
+
+  return (
+    <div className="space-y-4 lg:col-span-2">
+      {reviews.map((review) => (
+        <ReviewCard key={review.id} review={review} />
+      ))}
+    </div>
+  );
+}
+
+function ReviewCard({
+  review,
+}: {
+  review: {
+    id: number;
+    user: string;
+    date: string;
+    text: string;
+    likes: number;
+    rating: number;
+  };
+}) {
+  return (
+    <article className="rounded-xl border border-gray-100 p-4">
+      <header className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex size-10 items-center justify-center rounded-full bg-gray-100">
+            <User className="size-5 text-gray-400" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-gray-900">{review.user}</p>
+            <p className="text-xs text-gray-400">{review.date}</p>
+          </div>
+        </div>
+
+        {/* Stars aligned to left in RTL */}
+        <div className="flex gap-0.5">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <Star
+              key={i}
+              className={
+                i <= review.rating
+                  ? 'size-3 fill-amber-400 text-amber-400'
+                  : 'size-3 text-gray-300'
+              }
+            />
+          ))}
+        </div>
+      </header>
+
+      <p className="mt-3 text-sm leading-relaxed text-gray-600">
+        {review.text}
+      </p>
+
+      <footer className="mt-3">
+        <button
+          className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600"
+          type="button"
+        >
+          <ThumbsUp className="size-3" />
+          مفید ({review.likes})
+        </button>
+      </footer>
+    </article>
   );
 }

@@ -1,79 +1,64 @@
 'use client';
 
-import { FileText, ListFilter, MessageSquare } from 'lucide-react';
-
-import type { Product } from '@/src/types/product';
+import type { ProductDetail } from '@/src/types/product';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/src/lib/utils';
 
 import { ProductReviews } from './ProductReviews';
 import { ProductSpecs } from './ProductSpecs';
 
-type ProductDetail = Product & {
-  highlights?: string[];
-  reviewsCount?: number;
-};
-
 interface ProductTabsProps {
   product: ProductDetail;
+  className?: string;
 }
 
-export function ProductTabs({ product }: ProductTabsProps) {
-  const highlights = product.highlights ?? [];
-
+export function ProductTabs({ product, className }: ProductTabsProps) {
   return (
-    <section className="mt-12 rounded-lg border border-gray-100 bg-white p-4 shadow-sm lg:p-8">
-      <Tabs className="w-full" defaultValue="description">
-        <TabsList className="flex w-full flex-wrap justify-start gap-6 overflow-x-auto border-b border-gray-200 bg-transparent px-0">
-          {[
-            { value: 'description', label: 'نقد و بررسی', icon: FileText },
-            { value: 'specs', label: 'مشخصات فنی', icon: ListFilter },
-            {
-              value: 'reviews',
-              label: 'دیدگاه کاربران',
-              icon: MessageSquare,
-              badge: product.reviewsCount ?? product.reviews,
-            },
-          ].map(({ value, label, icon: Icon, badge }) => (
-            <TabsTrigger key={value} value={value}>
-              <Icon className="size-4" />
-              {label}
-              {badge ? <span className="text-base">{badge}</span> : null}
-            </TabsTrigger>
-          ))}
+    <section dir="rtl" className={cn('', className)}>
+      <Tabs dir="rtl" defaultValue="description">
+        <TabsList className="w-full justify-start">
+          <TabsTrigger value="description">معرفی</TabsTrigger>
+          <TabsTrigger value="specs">مشخصات</TabsTrigger>
+          <TabsTrigger value="reviews">
+            دیدگاه‌ها ({product.reviews})
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent
-          className="mt-8 space-y-6 text-gray-600"
-          value="description"
-        >
-          <h3 className="text-2xl font-black text-gray-900">معرفی محصول</h3>
-          <p className="text-justify leading-8">{product.description}</p>
-          {highlights.length ? (
-            <ul className="grid gap-4 md:grid-cols-2">
-              {highlights.map((item) => (
-                <li
-                  className="rounded-lg bg-slate-50 p-4 text-sm font-medium"
-                  key={item}
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
-          ) : null}
+        <TabsContent className="mt-6" value="description">
+          <DescriptionContent product={product} />
         </TabsContent>
 
-        <TabsContent className="mt-8" value="specs">
-          <ProductSpecs />
+        <TabsContent className="mt-6" value="specs">
+          <ProductSpecs specifications={product.specifications} />
         </TabsContent>
 
-        <TabsContent className="mt-8" value="reviews">
+        <TabsContent className="mt-6" value="reviews">
           <ProductReviews
             rating={Number(product.rating)}
-            count={product.reviewsCount ?? product.reviews}
+            count={product.reviews}
           />
         </TabsContent>
       </Tabs>
     </section>
+  );
+}
+
+function DescriptionContent({ product }: { product: ProductDetail }) {
+  return (
+    <div className="space-y-6 text-right">
+      <p className="leading-relaxed text-gray-600">{product.description}</p>
+
+      {product.highlights && product.highlights.length > 0 && (
+        <ul className="space-y-2">
+          {product.highlights.map((item) => (
+            <li className="flex items-start gap-2 text-gray-600" key={item}>
+              <span className="mt-2 size-1.5 shrink-0 rounded-full bg-gray-400" />
+              {item}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }

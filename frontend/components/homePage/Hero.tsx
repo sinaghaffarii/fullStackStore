@@ -75,7 +75,7 @@ const Hero: React.FC = () => {
 
   return (
     <section className="bg-surface-solid-50 mx-auto w-11/12 py-6 md:w-full">
-      <div className="relative mx-auto min-h-[100px] max-w-7xl lg:min-h-[250px]">
+      <div className="relative mx-auto min-h-fit max-w-7xl lg:min-h-[250px]">
         <div className="keen-slider [&>*:last-child]:pl-3" ref={sliderRef}>
           {heroSlides.map((slide) => (
             <a

@@ -1,29 +1,26 @@
-'use client';
+interface ProductSpecsProps {
+  specifications?: { label: string; value: string }[];
+}
 
-const specs = [
-  { label: 'برند', value: 'نوتریگا (Nutriga)' },
-  { label: 'کشور مبدا برند', value: 'ایتالیا' },
-  { label: 'حجم', value: '۱۰۰ میلی‌لیتر' },
-  { label: 'مناسب برای', value: 'انواع مو، موهای خشک و آسیب دیده' },
-  { label: 'ویتامین', value: 'دارای ویتامین E و B5' },
-  { label: 'مجوز غذا و دارو', value: 'دارد' },
-  { label: 'ترکیبات شاخص', value: 'روغن آرگان خالص، بدون پارابن' },
-];
+export function ProductSpecs({ specifications }: ProductSpecsProps) {
+  if (!specifications || specifications.length === 0) {
+    return <p className="text-center text-gray-500">مشخصاتی ثبت نشده است.</p>;
+  }
 
-export function ProductSpecs() {
   return (
-    <div className="space-y-4">
-      {specs.map((spec) => (
+    <div
+      dir="rtl"
+      className="divide-y divide-gray-100 rounded-xl border border-gray-100"
+    >
+      {specifications.map((spec) => (
         <div
-          className="flex flex-col rounded-lg border border-gray-100 bg-gray-50/60 px-4 py-3 transition hover:border-gray-200 sm:flex-row"
+          className="flex flex-col gap-1 px-4 py-3 text-sm sm:flex-row sm:items-center sm:gap-0"
           key={spec.label}
         >
-          <div className="text-sm font-semibold text-gray-500 sm:w-1/3">
-            {spec.label}
-          </div>
-          <div className="text-sm font-semibold text-gray-900 sm:w-2/3">
+          <span className="text-gray-500 sm:w-1/3">{spec.label}</span>
+          <span className="font-medium text-gray-900 sm:w-2/3">
             {spec.value}
-          </div>
+          </span>
         </div>
       ))}
     </div>

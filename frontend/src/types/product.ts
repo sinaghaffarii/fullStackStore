@@ -19,9 +19,23 @@ export interface Product {
   brand: string;
   category: string;
   tags?: string[];
-  specifications?: Record<string, string>;
+  specifications?: { label: string; value: string }[];
   created_at: string;
   updated_at: string;
+}
+
+export interface ProductDetail extends Product {
+  brandFa?: string;
+  colors?: ProductColor[];
+  features?: string[];
+  highlights?: string[];
+}
+
+export interface ProductColor {
+  id: number;
+  name: string;
+  code: string;
+  value: string;
 }
 
 export interface CategoryData {
@@ -40,3 +54,5 @@ export interface BreadcrumbSegment {
   title: string;
   href?: string;
 }
+
+export type StockStatus = 'in-stock' | 'low-stock' | 'out-of-stock';

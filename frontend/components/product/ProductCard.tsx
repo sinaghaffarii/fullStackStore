@@ -27,7 +27,6 @@ export const ProductCard = memo(function ProductCard({
     originalPrice,
     discount,
     description,
-    images,
     brand,
     rating,
     reviews,
@@ -57,7 +56,7 @@ export const ProductCard = memo(function ProductCard({
 
   return (
     <div
-      className="group transform overflow-hidden rounded-lg border border-slate-100 bg-white shadow-lg transition-all duration-500 hover:border-indigo-100 hover:shadow-2xl"
+      className="group transform overflow-hidden rounded-lg border border-slate-100 bg-white shadow-sm transition-all duration-500 hover:border-indigo-100 hover:shadow-xl"
       itemType="https://schema.org/Product"
       ref={lazyRef}
       itemScope
@@ -91,7 +90,7 @@ export const ProductCard = memo(function ProductCard({
           </div>
         </div>
 
-        <div className="px-5 pt-2">
+        <div className="p-2">
           {/* Brand */}
           <div className="mb-2 flex items-center justify-between">
             <p className="text-xs font-medium text-slate-500">{brand}</p>
@@ -149,7 +148,7 @@ export const ProductCard = memo(function ProductCard({
 
           {description && (
             <p
-              className="mt-3 line-clamp-2 h-10 text-sm leading-5 text-slate-600"
+              className="mt-3 line-clamp-2 h-10 text-sm text-slate-600"
               itemProp="description"
             >
               {description}

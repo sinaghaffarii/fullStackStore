@@ -1,3 +1,4 @@
+// components/product/single/RelatedProducts.tsx
 'use client';
 
 import 'keen-slider/keen-slider.min.css';
@@ -6,32 +7,67 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
-import ProductCard from '@/components/homePage/ProductCard';
+import type { Product } from '@/src/types/product';
+
+import { ProductCard } from '@/components/product/ProductCard';
 import { cn } from '@/src/lib/utils';
 
-import { relatedProducts, sliderConfig } from './relatedProductsConfig';
+interface RelatedProductsProps {
+  products?: Product[];
+  className?: string;
+}
 
-export function RelatedProducts() {
-  const [currentSlide, setCurrentSlide] = useState(0);
+const defaultProducts: Product[] = Array.from({ length: 8 }, (_, i) => ({
+  id: i + 1,
+  slug: `product-${i + 1}`,
+  name: `سرم موی روغن آرگان شماره ${i + 1}`,
+  description: 'سرم تقویتی و ترمیمی مو با روغن آرگان خالص',
+  price: 350_000 + i * 25_000,
+  originalPrice: 400_000 + i * 25_000,
+  discount: i % 2 === 0 ? 15 : 0,
+  base_price: 400_000 + i * 25_000,
+  image: '/images/products/product_8.webp',
+  images: [
+    '/images/products/product_8.webp',
+    '/images/products/product_8_alt1.webp',
+  ],
+  rating: '4.3',
+  reviews: 45,
+  isNew: i === 0,
+  isBestseller: i === 1,
+  brand: 'Nutriga',
+  category: 'hair-care',
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+}));
+
+export function RelatedProducts({
+  products = defaultProducts,
+  className,
+}: RelatedProductsProps) {
   const [loaded, setLoaded] = useState(false);
 
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
-    ...sliderConfig,
-    created(slider) {
-      setLoaded(true);
-      setCurrentSlide(slider.track.details.rel);
+    rtl: true,
+    loop: true,
+    slides: { perView: 2, spacing: 8 },
+    breakpoints: {
+      '(min-width: 640px)': { slides: { perView: 2, spacing: 10 } },
+      '(min-width: 768px)': { slides: { perView: 3, spacing: 10 } },
+      '(min-width: 1024px)': { slides: { perView: 4, spacing: 10 } },
+      '(min-width: 1280px)': { slides: { perView: 5, spacing: 10 } },
     },
-    slideChanged(slider) {
-      setCurrentSlide(slider.track.details.rel);
+    created() {
+      setLoaded(true);
     },
   });
 
   return (
-    <section className="relative">
-      <div className="mb-8 flex items-center justify-between">
-        <h3 className="text-2xl font-black text-gray-900">محصولات مشابه</h3>
+    <section className={cn('', className)}>
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className="text-xl font-bold text-gray-900">محصولات مشابه</h2>
         <Link
-          className="text-sm text-blue-500 hover:underline"
+          className="text-sm text-gray-500 hover:text-gray-900"
           href="/products"
         >
           مشاهده همه
@@ -39,49 +75,51 @@ export function RelatedProducts() {
       </div>
 
       <div className="relative">
-        <div className="group/carousel relative">
-          <div className="keen-slider" ref={sliderRef}>
-            {relatedProducts.map((product) => (
-              <div
-                className="keen-slider__slide flex h-auto items-stretch"
-                key={product.id}
-              >
-                <ProductCard {...product} />
-              </div>
-            ))}
-          </div>
+        <div className="keen-slider" ref={sliderRef}>
+          {products.map((product) => (
+            <div className="keen-slider__slide" key={product.id}>
+              <ProductCard product={product} />
+            </div>
+          ))}
         </div>
 
         {loaded && (
           <>
-            <button
-              aria-label="اسلاید قبلی"
-              type="button"
+            <SliderButton
+              direction="prev"
               onClick={() => instanceRef.current?.prev()}
-              className={cn(
-                'absolute top-1/2 -left-4 hidden size-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-100 bg-white text-gray-800 shadow-md hover:bg-gray-50 lg:flex',
-              )}
-            >
-              <ChevronLeft className="size-4" />
-            </button>
-            <button
-              aria-label="اسلاید بعدی"
-              type="button"
+            />
+            <SliderButton
+              direction="next"
               onClick={() => instanceRef.current?.next()}
-              className={cn(
-                'absolute top-1/2 -right-4 hidden size-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-100 bg-white text-gray-800 shadow-md hover:bg-gray-50 lg:flex',
-              )}
-            >
-              <ChevronRight className="size-4" />
-            </button>
+            />
           </>
-        )}
-        {loaded && (
-          <div className="mt-4 text-center text-xs text-gray-500">
-            {currentSlide + 1} / {relatedProducts.length}
-          </div>
         )}
       </div>
     </section>
+  );
+}
+
+function SliderButton({
+  direction,
+  onClick,
+}: {
+  direction: 'next' | 'prev';
+  onClick: () => void;
+}) {
+  const Icon = direction === 'prev' ? ChevronRight : ChevronLeft;
+
+  return (
+    <button
+      aria-label={direction === 'prev' ? 'اسلاید قبلی' : 'اسلاید بعدی'}
+      type="button"
+      onClick={onClick}
+      className={cn(
+        'absolute top-1/2 z-10 hidden size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-md transition-shadow hover:shadow-lg lg:flex',
+        direction === 'prev' ? '-right-4' : '-left-4',
+      )}
+    >
+      <Icon className="size-5 text-gray-600" />
+    </button>
   );
 }
