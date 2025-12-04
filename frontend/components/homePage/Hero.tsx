@@ -23,6 +23,18 @@ const heroSlides = [
     link: '',
     alt: 'ساین اسکین',
   },
+  {
+    id: 4,
+    image: '/images/homePage/headerSlider4.jpeg',
+    link: '',
+    alt: 'ساین اسکین',
+  },
+  {
+    id: 5,
+    image: '/images/homePage/headerSlider5.jpeg',
+    link: '',
+    alt: 'ساین ',
+  },
 ];
 
 function AutoplayPlugin(interval = 3000) {
@@ -87,7 +99,8 @@ const Hero: React.FC = () => {
                 height={400}
                 width={1200}
                 alt={slide.alt}
-                className="size-full object-fill"
+                className="size-full object-contain"
+                quality={100}
                 src={slide.image}
               />
             </a>
