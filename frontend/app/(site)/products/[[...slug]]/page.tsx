@@ -5,17 +5,13 @@ import { useSearchParams } from 'next/navigation';
 import React, { useRef, useState } from 'react';
 
 import type { ProductFiltersWrapperRef } from '@/components/product/ProductFiltersWrapper';
-import type {
-  BreadcrumbSegment,
-  CategoryData,
-  Product,
-} from '@/src/types/product';
+import type { BreadcrumbSegment, CategoryData, Product } from '@/types/product';
 
 import { CategoryHeader } from '@/components/product/CategoryHeader';
 import { ProductFiltersWrapper } from '@/components/product/ProductFiltersWrapper';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { ProductPagination } from '@/components/product/ProductPagination';
-import DynamicBreadcrumb from '@/components/ui/dynamicBreadcrumb';
+import DynamicBreadcrumb from '@/components/ui/DynamicBreadcrumb';
 import { slugToPersianMap } from '@/utils/SlugToPersianMap';
 
 function generateBreadcrumbItems(slugs: string[]): BreadcrumbSegment[] {

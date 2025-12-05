@@ -1,4 +1,3 @@
-// components/product/single/RelatedProducts.tsx
 'use client';
 
 import 'keen-slider/keen-slider.min.css';
@@ -7,10 +6,10 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
-import type { Product } from '@/src/types/product';
+import type { Product } from '@/types/product';
 
 import { ProductCard } from '@/components/product/ProductCard';
-import { cn } from '@/src/lib/utils';
+import { cn } from '@/lib/utils';
 
 interface RelatedProductsProps {
   products?: Product[];

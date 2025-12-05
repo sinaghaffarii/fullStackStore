@@ -13,8 +13,8 @@ import {
   Users,
 } from 'lucide-react';
 
-import { Card, CardContent } from '@/components/ui/card';
-import { cn } from '@/src/lib/utils';
+import { Card, CardContent } from '@/components/ui/Card';
+import { cn } from '@/lib/utils';
 
 // Map آیکون‌ها
 const iconMap = {

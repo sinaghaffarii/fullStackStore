@@ -4,19 +4,10 @@
 import { Check, Flame, Minus, Plus, Sparkles, Star } from 'lucide-react';
 import { useState } from 'react';
 
-import type {
-  ProductColor,
-  ProductDetail,
-  StockStatus,
-} from '@/src/types/product';
+import type { ProductColor, ProductDetail, StockStatus } from '@/types/product';
 
-import { Button } from '@/components/ui/button';
-import {
-  cn,
-  formatPrice,
-  getStockLabel,
-  getStockStatus,
-} from '@/src/lib/utils';
+import { Button } from '@/components/ui/Button';
+import { cn, formatPrice, getStockLabel, getStockStatus } from '@/lib/utils';
 
 interface ProductInfoProps {
   product: ProductDetail;

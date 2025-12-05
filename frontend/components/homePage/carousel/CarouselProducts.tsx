@@ -8,7 +8,7 @@ import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import React, { useState } from 'react';
 
-import { cn } from '@/src/lib/utils';
+import { cn } from '@/lib/utils';
 
 import ProductCard from '../ProductCard';
 import CarouselNavigation from './CarouselNavigation';

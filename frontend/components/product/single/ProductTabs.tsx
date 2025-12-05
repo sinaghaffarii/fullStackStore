@@ -1,9 +1,9 @@
 'use client';
 
-import type { ProductDetail } from '@/src/types/product';
+import type { ProductDetail } from '@/types/product';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { cn } from '@/src/lib/utils';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
+import { cn } from '@/lib/utils';
 
 import { ProductReviews } from './ProductReviews';
 import { ProductSpecs } from './ProductSpecs';

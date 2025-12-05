@@ -4,8 +4,8 @@ import { ChevronLeft, Heart, ShoppingBag, User, X } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
-import { Button } from '../ui/button';
-import { menuData } from '../ui/megaMenu';
+import { Button } from '../ui/Button';
+import { menuData } from '../ui/MegaMenu';
 
 interface MenuItemType {
   title: string;

@@ -9,7 +9,7 @@ import {
   Search,
 } from 'lucide-react';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -18,9 +18,9 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { SidebarTrigger } from '@/components/ui/sidebar';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { SidebarTrigger } from '@/components/ui/Sidebar';
 
 export function Header() {
   return (

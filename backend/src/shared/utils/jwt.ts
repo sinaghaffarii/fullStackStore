@@ -9,7 +9,8 @@ const JWT_REFRESH_SECRET =
 
 export const generateAccessToken = (payload: {
   userId: string;
-  email: string;
+  email?: string | null;
+  phoneNumber?: string | null;
   role: string;
 }) => {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: '15m' });

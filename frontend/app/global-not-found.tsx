@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Link from 'next/link';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 
 export const metadata: Metadata = {
   title: '۴۰۴ - صفحه پیدا نشد',

@@ -3,7 +3,7 @@
 import { ArrowRight, Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import {
   Form,
   FormControl,
@@ -11,8 +11,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@/components/ui/Form';
+import { Input } from '@/components/ui/Input';
 
 interface OTPFormProps {
   onSubmit: (data: { code: string }) => void;

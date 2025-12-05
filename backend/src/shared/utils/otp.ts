@@ -1,9 +1,15 @@
+import { randomBytes } from 'crypto';
+
 export const generateOtp = (length: number = 6): string => {
-  const digits = '0123456789';
+  if (length < 1 || length > 20) {
+    throw new Error('طول OTP باید بین 1 تا 20 باشد');
+  }
+
+  const randomValues = randomBytes(length);
   let otp = '';
 
   for (let i = 0; i < length; i++) {
-    otp += digits[Math.floor(Math.random() * 10)];
+    otp += String(randomValues[i] % 10);
   }
 
   return otp;

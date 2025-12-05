@@ -2,8 +2,8 @@
 
 import { Filter, Grid3X3, Sparkles } from 'lucide-react';
 
-import { Button } from '../ui/button';
-import { Select, SelectItem } from '../ui/select';
+import { Button } from '../ui/Button';
+import { Select, SelectItem } from '../ui/Select';
 
 interface CategoryHeaderProps {
   title: string;

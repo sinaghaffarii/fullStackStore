@@ -20,8 +20,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
+import { Badge } from '@/components/ui/Badge';
 import {
   Sidebar,
   SidebarContent,
@@ -35,8 +35,8 @@ import {
   SidebarRail,
   SidebarSeparator,
   useSidebar,
-} from '@/components/ui/sidebar';
-import { cn } from '@/src/lib/utils';
+} from '@/components/ui/Sidebar';
+import { cn } from '@/lib/utils';
 
 // تعریف تایپ برای آیتم‌های منو
 interface NavItem {

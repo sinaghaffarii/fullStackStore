@@ -4,10 +4,10 @@
 import { Upload, X } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Select, SelectItem } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/Button';
+import { Label } from '@/components/ui/Label';
+import { Select, SelectItem } from '@/components/ui/Select';
+import { Textarea } from '@/components/ui/Textarea';
 
 interface NewTicketFormProps {
   onSubmit: (data: {

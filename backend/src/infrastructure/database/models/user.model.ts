@@ -9,7 +9,8 @@ import { sequelize } from '../../../configs/database';
 
 interface UserAttributes {
   id: string;
-  email: string;
+  email?: string;
+  phone_number?: string; // اضافه شده
   password?: string | null;
   role: 'admin' | 'customer';
   is_verified: boolean;
@@ -21,7 +22,14 @@ interface UserAttributes {
 export interface UserCreationAttributes
   extends Optional<
     UserAttributes,
-    'created_at' | 'id' | 'is_verified' | 'password' | 'role' | 'updated_at'
+    | 'created_at'
+    | 'email'
+    | 'id'
+    | 'is_verified'
+    | 'password'
+    | 'phone_number'
+    | 'role'
+    | 'updated_at'
   > {}
 
 export class User
@@ -30,14 +38,13 @@ export class User
 {
   public readonly carts?: Cart[];
   declare readonly created_at?: Date;
-  declare email: string;
+  declare email?: string;
   declare id: string;
   declare is_verified: boolean;
-  // Associations
   public readonly otps?: OTP[];
   declare password?: string;
+  declare phone_number?: string; // اضافه شده
   declare refresh_token?: string;
-
   declare role: 'admin' | 'customer';
   declare readonly updated_at?: Date;
 
@@ -64,11 +71,16 @@ User.init(
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true, // تغییر به true
       unique: true,
       validate: {
         isEmail: true,
       },
+    },
+    phone_number: {
+      type: DataTypes.STRING(15),
+      allowNull: true,
+      unique: true,
     },
     password: {
       type: DataTypes.STRING,

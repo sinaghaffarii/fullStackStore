@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 
 import './globals.css';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
-import { Providers } from '@/src/lib/providers';
+import { Providers } from '@/lib/providers';
 
 export const viewport: Viewport = {
   width: 'device-width',

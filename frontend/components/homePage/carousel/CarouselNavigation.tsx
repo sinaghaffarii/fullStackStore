@@ -3,8 +3,8 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React from 'react';
 
-import { Button } from '@/components/ui/button';
-import { cn } from '@/src/lib/utils';
+import { Button } from '@/components/ui/Button';
+import { cn } from '@/lib/utils';
 
 interface Props {
   onPrev: () => void;

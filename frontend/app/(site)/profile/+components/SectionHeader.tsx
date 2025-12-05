@@ -2,7 +2,7 @@
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 
-import { cn } from '@/src/lib/utils';
+import { cn } from '@/lib/utils';
 
 interface SectionHeaderProps {
   title: string;

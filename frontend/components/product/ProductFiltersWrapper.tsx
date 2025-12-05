@@ -7,16 +7,16 @@ import { BrushCleaning, Filter } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useImperativeHandle, useState } from 'react';
 
-import type { CategoryData } from '@/src/types/product';
+import type { CategoryData } from '@/types/product';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Tooltip } from '@/components/ui/tooltip';
+} from '@/components/ui/Dialog';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 import { ProductFilters } from './ProductFilters';
 
