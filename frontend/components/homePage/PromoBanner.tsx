@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import React from 'react';
 
-import { cn } from '@/src/lib/utils';
+import { cn } from '@/lib/utils';
 
 interface Props {
   count: 2 | 4;

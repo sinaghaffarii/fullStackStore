@@ -7,8 +7,6 @@ const Newsletter: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // اینجا تابع ارسال ایمیل یا API call قرار بگیرد
-    console.log('Subscribed:', email);
     setEmail('');
   };
 

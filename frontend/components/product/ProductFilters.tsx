@@ -1,9 +1,9 @@
 /* eslint-disable max-lines */
 'use client';
 
-import type { CategoryData } from '@/src/types/product';
+import type { CategoryData } from '@/types/product';
 
-import { ScrollArea } from '@/components/ui/scrollArea';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 
 interface ProductFiltersProps {
   filters: CategoryData['filters'];

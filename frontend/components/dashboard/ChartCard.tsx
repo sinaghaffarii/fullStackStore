@@ -3,15 +3,15 @@
 import { MoreVertical } from 'lucide-react';
 import * as React from 'react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { cn } from '@/src/lib/utils';
+} from '@/components/ui/DropdownMenu';
+import { cn } from '@/lib/utils';
 
 interface ChartCardProps {
   title: string;

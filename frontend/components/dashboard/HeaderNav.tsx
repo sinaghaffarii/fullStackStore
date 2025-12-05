@@ -19,9 +19,9 @@ import {
 import Link from 'next/link';
 import * as React from 'react';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,10 +29,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
-import { SidebarTrigger } from '@/components/ui/sidebar';
-import { cn } from '@/src/lib/utils';
+} from '@/components/ui/DropdownMenu';
+import { Input } from '@/components/ui/Input';
+import { SidebarTrigger } from '@/components/ui/Sidebar';
+import { cn } from '@/lib/utils';
 
 interface HeaderNavProps {
   className?: string;

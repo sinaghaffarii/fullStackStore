@@ -5,7 +5,7 @@ import { Eye, Heart, ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
 
-import { cn } from '@/src/lib/utils';
+import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
   id: number;

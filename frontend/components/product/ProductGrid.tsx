@@ -1,6 +1,6 @@
 'use client';
 
-import type { Product } from '@/src/types/product';
+import type { Product } from '@/types/product';
 
 import { ProductCard } from './ProductCard';
 

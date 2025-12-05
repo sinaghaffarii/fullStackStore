@@ -20,7 +20,7 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from '@/components/ui/command';
+} from '@/components/ui/Command';
 
 interface SearchCommandProps {
   open: boolean;

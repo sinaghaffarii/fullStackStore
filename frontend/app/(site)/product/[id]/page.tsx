@@ -6,8 +6,8 @@ import { ProductGallery } from '@/components/product/single/ProductGallery';
 import { ProductInfo } from '@/components/product/single/ProductInfo';
 import { ProductTabs } from '@/components/product/single/ProductTabs';
 import { RelatedProducts } from '@/components/product/single/RelatedProducts';
-import DynamicBreadcrumb from '@/components/ui/dynamicBreadcrumb';
-import { getProductById } from '@/src/services/Products';
+import DynamicBreadcrumb from '@/components/ui/DynamicBreadcrumb';
+import { getProductById } from '@/services/Products';
 
 interface PageProps {
   params: Promise<{ id: string }>;

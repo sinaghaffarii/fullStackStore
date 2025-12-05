@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useMemo } from 'react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { getColorClasses } from '@/utils/colorClasses';
 
 import type { ErrorData } from '../utils/errorDetector';

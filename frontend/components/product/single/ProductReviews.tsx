@@ -2,7 +2,7 @@
 
 import { Star, ThumbsUp, User } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 
 interface ProductReviewsProps {
   rating: number;

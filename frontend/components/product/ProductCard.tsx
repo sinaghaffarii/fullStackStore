@@ -5,12 +5,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { memo, useRef } from 'react';
 
-import type { Product } from '@/src/types/product';
+import type { Product } from '@/types/product';
 
-import { useLazyLoad } from '@/src/hooks/useIntersectionObserver';
-import { cn } from '@/src/lib/utils';
+import { useLazyLoad } from '@/hooks/useIntersectionObserver';
+import { cn } from '@/lib/utils';
 
-import { Button } from '../ui/button';
+import { Button } from '../ui/Button';
 
 interface ProductCardProps {
   product: Product;

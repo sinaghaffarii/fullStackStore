@@ -13,12 +13,12 @@ import {
 import { useRef, useState } from 'react';
 import { useClickAway } from 'react-use';
 
-import { useMobile } from '@/src/hooks/useMobile';
+import { useMobile } from '@/hooks/useMobile';
 
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import MegaMenu from '../ui/megaMenu';
-import { Separator } from '../ui/separator';
+import { Button } from '../ui/Button';
+import { Input } from '../ui/Input';
+import MegaMenu from '../ui/MegaMenu';
+import { Separator } from '../ui/Separator';
 import MobileSidebar from './MobileSidebar';
 
 const useHoverMenu = () => {

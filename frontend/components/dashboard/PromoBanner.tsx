@@ -2,9 +2,9 @@
 
 import { ArrowLeft, Zap } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { cn } from '@/src/lib/utils';
+import { Button } from '@/components/ui/Button';
+import { Card, CardContent } from '@/components/ui/Card';
+import { cn } from '@/lib/utils';
 
 interface PromoBannerProps {
   title: string;
