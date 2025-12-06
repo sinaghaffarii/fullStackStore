@@ -107,7 +107,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             alt={name}
-            src={image || '/placeholder.png'}
+            src={image || '/file.svg'}
           />
           <span className="absolute inset-0 flex items-center justify-center text-xs text-gray-400">
             تصویر محصول

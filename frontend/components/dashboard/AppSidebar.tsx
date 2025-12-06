@@ -4,12 +4,8 @@
 import {
   Bitcoin,
   Building2,
-  CreditCard,
   FileText,
-  Inbox,
   Lightbulb,
-  MessageSquare,
-  Network,
   Settings,
   ShoppingCart,
   Sparkles,
@@ -38,7 +34,6 @@ import {
 } from '@/components/ui/Sidebar';
 import { cn } from '@/lib/utils';
 
-// تعریف تایپ برای آیتم‌های منو
 interface NavItem {
   title: string;
   url: string;
@@ -53,7 +48,6 @@ interface NavSection {
   items: NavItem[];
 }
 
-// داده‌های سایدبار
 const sidebarData: {
   brand: { name: string; logo: string };
   navigation: NavSection[];
@@ -69,14 +63,14 @@ const sidebarData: {
       items: [
         {
           title: 'داشبورد اصلی',
-          url: '/admin',
+          url: '/dashboard',
           icon: ShoppingCart,
           isActive: true,
           color: 'text-blue-600',
         },
         {
           title: 'گزارش فروش',
-          url: '/admin/analytics',
+          url: '/dashboard/analytics',
           icon: Sparkles,
           color: 'text-amber-600',
         },
@@ -87,25 +81,25 @@ const sidebarData: {
       items: [
         {
           title: 'لیست محصولات',
-          url: '/admin/products',
+          url: '/dashboard/products',
           icon: Store,
           color: 'text-purple-600',
         },
         {
           title: 'دسته‌بندی‌ها',
-          url: '/admin/categories',
+          url: '/dashboard/categories',
           icon: Building2,
           color: 'text-pink-600',
         },
         {
           title: 'برندها',
-          url: '/admin/brands',
+          url: '/dashboard/brands',
           icon: Lightbulb,
           color: 'text-yellow-600',
         },
         {
           title: 'موجودی انبار',
-          url: '/admin/inventory',
+          url: '/dashboard/inventory',
           icon: FileText,
           color: 'text-orange-600',
         },
@@ -116,26 +110,20 @@ const sidebarData: {
       items: [
         {
           title: 'لیست سفارشات',
-          url: '/admin/orders',
+          url: '/dashboard/orders',
           icon: ShoppingCart,
           badge: '۱۲',
           color: 'text-green-600',
         },
         {
           title: 'فاکتورها',
-          url: '/admin/invoices',
+          url: '/dashboard/invoices',
           icon: FileText,
           color: 'text-blue-500',
         },
         {
-          title: 'بازگشت کالا',
-          url: '/admin/returns',
-          icon: Inbox,
-          color: 'text-red-600',
-        },
-        {
           title: 'کوپن‌ها و تخفیف‌ها',
-          url: '/admin/coupons',
+          url: '/dashboard/coupons',
           icon: Bitcoin,
           color: 'text-emerald-600',
         },
@@ -146,112 +134,106 @@ const sidebarData: {
       items: [
         {
           title: 'لیست مشتریان',
-          url: '/admin/customers',
+          url: '/dashboard/customers',
           icon: Users,
           color: 'text-cyan-600',
         },
         {
-          title: 'نیروی فروش',
-          url: '/admin/staff',
-          icon: Users,
-          color: 'text-indigo-600',
-        },
-        {
           title: 'سطح دسترسی',
-          url: '/admin/roles',
+          url: '/dashboard/roles',
           icon: Settings,
           color: 'text-slate-600',
         },
       ],
     },
-    {
-      label: 'پشتیبانی و ارتباطات',
-      items: [
-        {
-          title: 'تیکت‌های پشتیبانی',
-          url: '/admin/tickets',
-          icon: MessageSquare,
-          badge: '۵',
-          color: 'text-rose-600',
-        },
-        {
-          title: 'نظرات و بررسی‌ها',
-          url: '/admin/reviews',
-          icon: Sparkles,
-          color: 'text-violet-600',
-        },
-        {
-          title: 'پیام‌ها',
-          url: '/admin/messages',
-          icon: Inbox,
-          color: 'text-fuchsia-600',
-        },
-        {
-          title: 'خبرنامه',
-          url: '/admin/newsletter',
-          icon: FileText,
-          color: 'text-teal-600',
-        },
-      ],
-    },
-    {
-      label: 'مالی و گزارشات',
-      items: [
-        {
-          title: 'گزارش درآمد',
-          url: '/admin/revenue',
-          icon: CreditCard,
-          color: 'text-lime-600',
-        },
-        {
-          title: 'سود و زیان',
-          url: '/admin/profit',
-          icon: CreditCard,
-          color: 'text-green-700',
-        },
-        {
-          title: 'تراکنش‌ها',
-          url: '/admin/transactions',
-          icon: CreditCard,
-          color: 'text-blue-700',
-        },
-        {
-          title: 'گزارش‌ها',
-          url: '/admin/reports',
-          icon: FileText,
-          color: 'text-indigo-700',
-        },
-      ],
-    },
-    {
-      label: 'تنظیمات',
-      items: [
-        {
-          title: 'اطلاعات فروشگاه',
-          url: '/admin/settings/store',
-          icon: Store,
-          color: 'text-orange-500',
-        },
-        {
-          title: 'روش‌های پرداخت',
-          url: '/admin/settings/payment',
-          icon: CreditCard,
-          color: 'text-green-600',
-        },
-        {
-          title: 'روش‌های ارسال',
-          url: '/admin/settings/shipping',
-          icon: Network,
-          color: 'text-purple-500',
-        },
-        {
-          title: 'تنظیمات عمومی',
-          url: '/admin/settings',
-          icon: Settings,
-          color: 'text-gray-600',
-        },
-      ],
-    },
+    // {
+    //   label: 'پشتیبانی و ارتباطات',
+    //   items: [
+    //     {
+    //       title: 'تیکت‌های پشتیبانی',
+    //       url: '/admin/tickets',
+    //       icon: MessageSquare,
+    //       badge: '۵',
+    //       color: 'text-rose-600',
+    //     },
+    //     {
+    //       title: 'نظرات و بررسی‌ها',
+    //       url: '/admin/reviews',
+    //       icon: Sparkles,
+    //       color: 'text-violet-600',
+    //     },
+    //     {
+    //       title: 'پیام‌ها',
+    //       url: '/admin/messages',
+    //       icon: Inbox,
+    //       color: 'text-fuchsia-600',
+    //     },
+    //     {
+    //       title: 'خبرنامه',
+    //       url: '/admin/newsletter',
+    //       icon: FileText,
+    //       color: 'text-teal-600',
+    //     },
+    //   ],
+    // },
+    // {
+    //   label: 'مالی و گزارشات',
+    //   items: [
+    //     {
+    //       title: 'گزارش درآمد',
+    //       url: '/admin/revenue',
+    //       icon: CreditCard,
+    //       color: 'text-lime-600',
+    //     },
+    //     {
+    //       title: 'سود و زیان',
+    //       url: '/admin/profit',
+    //       icon: CreditCard,
+    //       color: 'text-green-700',
+    //     },
+    //     {
+    //       title: 'تراکنش‌ها',
+    //       url: '/admin/transactions',
+    //       icon: CreditCard,
+    //       color: 'text-blue-700',
+    //     },
+    //     {
+    //       title: 'گزارش‌ها',
+    //       url: '/admin/reports',
+    //       icon: FileText,
+    //       color: 'text-indigo-700',
+    //     },
+    //   ],
+    // },
+    // {
+    //   label: 'تنظیمات',
+    //   items: [
+    //     {
+    //       title: 'اطلاعات فروشگاه',
+    //       url: '/admin/settings/store',
+    //       icon: Store,
+    //       color: 'text-orange-500',
+    //     },
+    //     {
+    //       title: 'روش‌های پرداخت',
+    //       url: '/admin/settings/payment',
+    //       icon: CreditCard,
+    //       color: 'text-green-600',
+    //     },
+    //     {
+    //       title: 'روش‌های ارسال',
+    //       url: '/admin/settings/shipping',
+    //       icon: Network,
+    //       color: 'text-purple-500',
+    //     },
+    //     {
+    //       title: 'تنظیمات عمومی',
+    //       url: '/admin/settings',
+    //       icon: Settings,
+    //       color: 'text-gray-600',
+    //     },
+    //   ],
+    // },
   ],
   user: {
     name: 'مدیر فروشگاه',
