@@ -1,6 +1,6 @@
 import { PerformanceInsights } from '@/components/dashboard/PerformanceInsights';
 import { PromoBanner } from '@/components/dashboard/PromoBanner';
-import { RecentOrders } from '@/components/dashboard/RecentOrders';
+import RecentOrders from '@/components/dashboard/RecentOrders';
 import { StatsCards } from '@/components/dashboard/StatsCards';
 
 export default function DashboardPage() {

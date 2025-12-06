@@ -27,7 +27,11 @@ const insightsData = [
     icon: Megaphone,
     iconBg: 'bg-orange-100',
     iconColor: 'text-orange-600',
-    avatars: ['/avatars/1.jpg', '/avatars/2.jpg', '/avatars/3.jpg'],
+    avatars: [
+      '/testimonials/avatar1.jpg',
+      '/testimonials/avatar2.jpg',
+      '/testimonials/avatar3.jpg',
+    ],
   },
   {
     id: 2,
@@ -37,7 +41,7 @@ const insightsData = [
     icon: Package,
     iconBg: 'bg-red-100',
     iconColor: 'text-red-600',
-    avatars: ['/avatars/4.jpg', '/avatars/5.jpg'],
+    avatars: ['/testimonials/avatar1.jpg', '/testimonials/avatar2.jpg'],
   },
   {
     id: 3,
@@ -47,7 +51,11 @@ const insightsData = [
     icon: TrendingUp,
     iconBg: 'bg-green-100',
     iconColor: 'text-green-600',
-    avatars: ['/avatars/6.jpg', '/avatars/7.jpg', '/avatars/8.jpg'],
+    avatars: [
+      '/testimonials/avatar3.jpg',
+      '/testimonials/avatar1.jpg',
+      '/testimonials/avatar2.jpg',
+    ],
   },
   {
     id: 4,
@@ -57,7 +65,7 @@ const insightsData = [
     icon: Users,
     iconBg: 'bg-blue-100',
     iconColor: 'text-blue-600',
-    avatars: ['/avatars/9.jpg', '/avatars/10.jpg'],
+    avatars: ['/testimonials/avatar3.jpg', '/testimonials/avatar1.jpg'],
   },
   {
     id: 5,
@@ -67,7 +75,11 @@ const insightsData = [
     icon: ShoppingBag,
     iconBg: 'bg-purple-100',
     iconColor: 'text-purple-600',
-    avatars: ['/avatars/11.jpg', '/avatars/12.jpg', '/avatars/13.jpg'],
+    avatars: [
+      '/avatars/avatar1.jpg',
+      '/avatars/avatar2.jpg',
+      '/avatars/avatar3.jpg',
+    ],
   },
 ];
 
