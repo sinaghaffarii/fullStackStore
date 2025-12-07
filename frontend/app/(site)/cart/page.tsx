@@ -1,7 +1,8 @@
 'use client';
 
+import { useCart } from '@/hooks/useCart';
+
 import { Button } from '../../../components/ui/Button';
-import { useCart } from '../../../src/hooks/useCart';
 
 export default function CartPage() {
   const { items, totalPrice, clearCart } = useCart();

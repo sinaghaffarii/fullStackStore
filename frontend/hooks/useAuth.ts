@@ -8,6 +8,7 @@ import { apiClient } from '../lib/apiClient';
 
 export const useAuth = () => {
   const queryClient = useQueryClient();
+
   const loginMutation = useMutation({
     mutationFn: (data: LoginInput) => apiClient.post('/auth/login', data),
   });
@@ -37,7 +38,8 @@ export const useAuth = () => {
       try {
         const response = await apiClient.get('/auth/me');
         return response.data;
-      } catch (error) {
+      } catch (_error) {
+        // ✅ تغییر error به _error
         return null;
       }
     },
