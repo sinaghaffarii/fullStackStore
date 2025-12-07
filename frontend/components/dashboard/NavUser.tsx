@@ -55,24 +55,25 @@ export function NavUser({ user }: NavUserProps) {
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              icon={
+                <Avatar className="size-8 rounded-lg ring-2 ring-primary/20">
+                  <AvatarImage alt={user.name} src={user.avatar} />
+                  <AvatarFallback className="rounded-lg bg-primary/10 font-semibold text-primary">
+                    {getInitials(user.name)}
+                  </AvatarFallback>
+                </Avatar>
+              }
+              tooltip={user.name}
+              suffix={
+                <ChevronsUpDown className="size-4 text-muted-foreground" />
+              }
             >
-              <Avatar className="size-9 rounded-lg ring-2 ring-primary/20">
-                <AvatarImage alt={user.name} src={user.avatar} />
-                <AvatarFallback className="rounded-lg bg-primary/10 font-semibold text-primary">
-                  {getInitials(user.name)}
-                </AvatarFallback>
-              </Avatar>
-              {!isCollapsed && (
-                <>
-                  <div className="grid flex-1 text-right text-sm leading-tight">
-                    <span className="truncate font-semibold">{user.name}</span>
-                    <span className="truncate text-xs text-muted-foreground">
-                      {user.email}
-                    </span>
-                  </div>
-                  <ChevronsUpDown className="mr-auto size-4 text-muted-foreground" />
-                </>
-              )}
+              <div className="grid flex-1 text-right text-sm leading-tight">
+                <span className="truncate font-semibold">{user.name}</span>
+                <span className="truncate text-xs text-muted-foreground">
+                  {user.email}
+                </span>
+              </div>
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
