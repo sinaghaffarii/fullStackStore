@@ -1,7 +1,5 @@
-import React from 'react';
-
-const page = () => {
-  return <div>page</div>;
+const CouponsPage = () => {
+  return <div>CouponsPage</div>;
 };
 
-export default page;
+export default CouponsPage;

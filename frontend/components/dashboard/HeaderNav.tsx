@@ -5,13 +5,10 @@
 import {
   Bell,
   ChevronLeft,
-  Command,
-  Grid3X3,
   LogOut,
   Maximize2,
   Minimize2,
   Moon,
-  Search,
   Settings,
   Sun,
   User,
@@ -30,7 +27,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu';
-import { Input } from '@/components/ui/Input';
 import { SidebarTrigger } from '@/components/ui/Sidebar';
 import { cn } from '@/lib/utils';
 
@@ -87,23 +83,6 @@ export function HeaderNav({ className }: HeaderNavProps) {
         </nav>
       </div>
 
-      {/* Center - Search */}
-      <div className="mx-4 max-w-md flex-1">
-        <div className="relative">
-          <Search className="absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            className="h-10 w-full border-0 bg-muted/50 pr-10 pl-16 focus-visible:ring-1 focus-visible:ring-primary/30"
-            type="search"
-            placeholder="جستجوی سریع..."
-          />
-          <div className="absolute top-1/2 left-2 flex -translate-y-1/2 items-center gap-1">
-            <kbd className="pointer-events-none flex h-6 items-center gap-1 rounded-sm border bg-background px-1.5 font-mono text-xs font-medium opacity-100 select-none">
-              <Command className="size-3" />K
-            </kbd>
-          </div>
-        </div>
-      </div>
-
       {/* Left Side - User & Quick Actions */}
       <div className="flex items-center gap-2">
         {/* Fullscreen */}
@@ -118,11 +97,6 @@ export function HeaderNav({ className }: HeaderNavProps) {
           ) : (
             <Maximize2 className="size-5 text-muted-foreground" />
           )}
-        </Button>
-
-        {/* Apps Grid */}
-        <Button size="icon" className="size-9" variant="ghost">
-          <Grid3X3 className="size-5 text-muted-foreground" />
         </Button>
 
         {/* Notifications */}
@@ -165,6 +139,7 @@ export function HeaderNav({ className }: HeaderNavProps) {
                 },
               ].map((notif, i) => (
                 <DropdownMenuItem
+                  // eslint-disable-next-line @eslint-react/no-array-index-key
                   key={i}
                   className={cn(
                     'flex cursor-pointer flex-col items-start gap-1 p-3',
