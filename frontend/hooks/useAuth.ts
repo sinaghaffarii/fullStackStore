@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { redirect } from 'next/navigation';
 
-import type { User } from '../types';
+import type { User } from '../types/public';
 import type { LoginInput, OTPInput, RegisterInput } from '../validations';
 
 import { apiClient } from '../lib/apiClient';

@@ -17,156 +17,140 @@ export class ProfileController {
   }
 
   changePassword = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const userId = req.user?.userId;
-      const { currentPassword, newPassword } = req.body;
+    const userId = req.user?.userId;
+    const { currentPassword, newPassword } = req.body;
 
-      if (!userId) {
-        throw new AppError('User not authenticated', StatusCodes.UNAUTHORIZED);
-      }
-
-      await this.passwordService.changePassword(
-        userId,
-        currentPassword,
-        newPassword,
-      );
-
-      sendResponse(res, StatusCodes.OK, {
-        message: 'Password changed successfully',
+    if (!userId) {
+      throw new AppError('User not authenticated', {
+        statusCode: StatusCodes.UNAUTHORIZED,
       });
-    } catch (error) {
-      throw error;
     }
+
+    await this.passwordService.changePassword(
+      userId,
+      currentPassword,
+      newPassword,
+    );
+
+    sendResponse(res, StatusCodes.OK, {
+      message: 'Password changed successfully',
+    });
   };
 
   getProfile = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const userId = req.user?.userId;
+    const userId = req.user?.userId;
 
-      if (!userId) {
-        throw new AppError('User not authenticated', StatusCodes.UNAUTHORIZED);
-      }
-
-      const user = await User.findByPk(userId, {
-        attributes: { exclude: ['refresh_token', 'password'] },
+    if (!userId) {
+      throw new AppError('User not authenticated', {
+        statusCode: StatusCodes.UNAUTHORIZED,
       });
-
-      if (!user) {
-        throw new AppError('User not found', StatusCodes.NOT_FOUND);
-      }
-
-      sendResponse(res, StatusCodes.OK, {
-        message: 'Profile retrieved successfully',
-        data: user,
-      });
-    } catch (error) {
-      throw error;
     }
+
+    const user = await User.findByPk(userId, {
+      attributes: { exclude: ['refresh_token', 'password'] },
+    });
+
+    if (!user) {
+      throw new AppError('User not found', {
+        statusCode: StatusCodes.NOT_FOUND,
+      });
+    }
+
+    sendResponse(res, StatusCodes.OK, {
+      message: 'Profile retrieved successfully',
+      data: user,
+    });
   };
 
   requestPasswordReset = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { email } = req.body;
+    const { email } = req.body;
 
-      if (!email) {
-        throw new AppError('Email is required', StatusCodes.BAD_REQUEST);
-      }
-
-      await this.passwordService.requestPasswordReset(email);
-
-      // For security, don't reveal if email exists or not
-      sendResponse(res, StatusCodes.OK, {
-        message: 'If the email exists, a password reset code has been sent',
+    if (!email) {
+      throw new AppError('Email is required', {
+        statusCode: StatusCodes.BAD_REQUEST,
       });
-    } catch (error) {
-      throw error;
     }
+
+    await this.passwordService.requestPasswordReset(email);
+
+    sendResponse(res, StatusCodes.OK, {
+      message: 'If the email exists, a password reset code has been sent',
+    });
   };
 
   resetPassword = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { resetToken, newPassword } = req.body;
+    const { resetToken, newPassword } = req.body;
 
-      if (!resetToken || !newPassword) {
-        throw new AppError(
-          'Reset token and new password are required',
-          StatusCodes.BAD_REQUEST,
-        );
-      }
-
-      await this.passwordService.resetPassword(resetToken, newPassword);
-
-      sendResponse(res, StatusCodes.OK, {
-        message: 'Password reset successfully',
+    if (!resetToken || !newPassword) {
+      throw new AppError('Reset token and new password are required', {
+        statusCode: StatusCodes.BAD_REQUEST,
       });
-    } catch (error) {
-      throw error;
     }
+
+    await this.passwordService.resetPassword(resetToken, newPassword);
+
+    sendResponse(res, StatusCodes.OK, {
+      message: 'Password reset successfully',
+    });
   };
 
   updateProfile = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const userId = req.user?.userId;
-      const { email } = req.body;
+    const userId = req.user?.userId;
+    const { email } = req.body;
 
-      if (!userId) {
-        throw new AppError('User not authenticated', StatusCodes.UNAUTHORIZED);
-      }
-
-      const user = await User.findByPk(userId);
-      if (!user) {
-        throw new AppError('User not found', StatusCodes.NOT_FOUND);
-      }
-
-      // Check if email is being changed and if it's already taken
-      if (email && email !== user.email) {
-        const existingUser = await User.findOne({ where: { email } });
-        if (existingUser) {
-          throw new AppError('Email already exists', StatusCodes.CONFLICT);
-        }
-      }
-
-      // Update fields
-      await user.update({
-        email: email || user.email,
+    if (!userId) {
+      throw new AppError('User not authenticated', {
+        statusCode: StatusCodes.UNAUTHORIZED,
       });
-
-      sendResponse(res, StatusCodes.OK, {
-        message: 'Profile updated successfully',
-        data: {
-          id: user.id,
-          email: user.email,
-          role: user.role,
-          is_verified: user.is_verified,
-        },
-      });
-    } catch (error) {
-      throw error;
     }
+
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      throw new AppError('User not found', {
+        statusCode: StatusCodes.NOT_FOUND,
+      });
+    }
+
+    if (email && email !== user.email) {
+      const existingUser = await User.findOne({ where: { email } });
+      if (existingUser) {
+        throw new AppError('Email already exists', {
+          statusCode: StatusCodes.CONFLICT,
+        });
+      }
+    }
+
+    await user.update({ email: email || user.email });
+
+    sendResponse(res, StatusCodes.OK, {
+      message: 'Profile updated successfully',
+      data: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        is_verified: user.is_verified,
+      },
+    });
   };
 
   verifyPasswordReset = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { email, code } = req.body;
+    const { email, code } = req.body;
 
-      if (!email || !code) {
-        throw new AppError(
-          'Email and code are required',
-          StatusCodes.BAD_REQUEST,
-        );
-      }
-
-      const result = await this.passwordService.verifyPasswordResetOTP(
-        email,
-        code,
-      );
-
-      sendResponse(res, StatusCodes.OK, {
-        message: 'Password reset code verified successfully',
-        data: result,
+    if (!email || !code) {
+      throw new AppError('Email and code are required', {
+        statusCode: StatusCodes.BAD_REQUEST,
       });
-    } catch (error) {
-      throw error;
     }
+
+    const result = await this.passwordService.verifyPasswordResetOTP(
+      email,
+      code,
+    );
+
+    sendResponse(res, StatusCodes.OK, {
+      message: 'Password reset code verified successfully',
+      data: result,
+    });
   };
 }

@@ -15,143 +15,107 @@ export class CategoryController {
   constructor(private categoryService: CategoryService) {}
 
   createCategory = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const categoryData: CreateCategoryDTO = req.body;
+    const categoryData: CreateCategoryDTO = req.body;
+    const category = await this.categoryService.createCategory(categoryData);
 
-      const category = await this.categoryService.createCategory(categoryData);
-
-      sendResponse(res, StatusCodes.CREATED, {
-        message: 'Category created successfully',
-        data: category,
-      });
-    } catch (error) {
-      throw error;
-    }
+    sendResponse(res, StatusCodes.CREATED, {
+      message: 'Category created successfully',
+      data: category,
+    });
   };
 
   deleteCategory = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { id } = req.params;
+    const { id } = req.params;
+    await this.categoryService.deleteCategory(id);
 
-      await this.categoryService.deleteCategory(id);
-
-      sendResponse(res, StatusCodes.OK, {
-        message: 'Category deleted successfully',
-      });
-    } catch (error) {
-      throw error;
-    }
+    sendResponse(res, StatusCodes.OK, {
+      message: 'Category deleted successfully',
+    });
   };
 
   getCategory = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { id } = req.params;
+    const { id } = req.params;
+    const category = await this.categoryService.getCategoryById(id);
 
-      const category = await this.categoryService.getCategoryById(id);
-
-      sendResponse(res, StatusCodes.OK, {
-        message: 'Category retrieved successfully',
-        data: category,
-      });
-    } catch (error) {
-      throw error;
-    }
+    sendResponse(res, StatusCodes.OK, {
+      message: 'Category retrieved successfully',
+      data: category,
+    });
   };
 
-  getCategoryHierarchy = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const hierarchy = await this.categoryService.getCategoryHierarchy();
+  getCategoryHierarchy = async (
+    _req: Request,
+    res: Response,
+  ): Promise<void> => {
+    const hierarchy = await this.categoryService.getCategoryHierarchy();
 
-      sendResponse(res, StatusCodes.OK, {
-        message: 'Category hierarchy retrieved successfully',
-        data: hierarchy,
-      });
-    } catch (error) {
-      throw error;
-    }
+    sendResponse(res, StatusCodes.OK, {
+      message: 'Category hierarchy retrieved successfully',
+      data: hierarchy,
+    });
   };
 
   getSubcategories = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { parentId } = req.params;
+    const { parentId } = req.params;
+    const subcategories = await this.categoryService.getSubcategories(parentId);
 
-      const subcategories =
-        await this.categoryService.getSubcategories(parentId);
-
-      sendResponse(res, StatusCodes.OK, {
-        message: 'Subcategories retrieved successfully',
-        data: subcategories,
-      });
-    } catch (error) {
-      throw error;
-    }
+    sendResponse(res, StatusCodes.OK, {
+      message: 'Subcategories retrieved successfully',
+      data: subcategories,
+    });
   };
 
   listCategories = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const {
-        page = '1',
-        limit = '10',
-        include_children = 'false',
-      } = req.query;
+    const {
+      page = '1',
+      limit = '10',
+      include_children: includeChildrenParam = 'false',
+    } = req.query;
 
-      const pageNum = Math.max(1, parseInt(page as string) || 1);
-      const limitNum = Math.min(
-        100,
-        Math.max(1, parseInt(limit as string) || 10),
-      );
-      const includeChildren = include_children === 'true';
+    const pageNum = Math.max(1, parseInt(page as string, 10) || 1);
+    const limitNum = Math.min(
+      100,
+      Math.max(1, parseInt(limit as string, 10) || 10),
+    );
+    const includeChildren = includeChildrenParam === 'true';
 
-      const result = await this.categoryService.listCategories(
-        pageNum,
-        limitNum,
-        includeChildren,
-      );
+    const result = await this.categoryService.listCategories(
+      pageNum,
+      limitNum,
+      includeChildren,
+    );
 
-      sendResponse(res, StatusCodes.OK, {
-        message: 'Categories retrieved successfully',
-        data: result,
-      });
-    } catch (error) {
-      throw error;
-    }
+    sendResponse(res, StatusCodes.OK, {
+      message: 'Categories retrieved successfully',
+      data: result,
+    });
   };
 
   searchCategories = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { q } = req.query;
+    const { q } = req.query;
 
-      if (!q || typeof q !== 'string') {
-        throw new AppError('Search query is required', StatusCodes.BAD_REQUEST);
-      }
-
-      const categories = await this.categoryService.searchCategories(q);
-
-      sendResponse(res, StatusCodes.OK, {
-        message: 'Categories search completed successfully',
-        data: categories,
+    if (!q || typeof q !== 'string') {
+      throw new AppError('Search query is required', {
+        statusCode: StatusCodes.BAD_REQUEST,
       });
-    } catch (error) {
-      throw error;
     }
+
+    const categories = await this.categoryService.searchCategories(q);
+
+    sendResponse(res, StatusCodes.OK, {
+      message: 'Categories search completed successfully',
+      data: categories,
+    });
   };
 
   updateCategory = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { id } = req.params;
-      const updateData: UpdateCategoryDTO = req.body;
+    const { id } = req.params;
+    const updateData: UpdateCategoryDTO = req.body;
+    const category = await this.categoryService.updateCategory(id, updateData);
 
-      const category = await this.categoryService.updateCategory(
-        id,
-        updateData,
-      );
-
-      sendResponse(res, StatusCodes.OK, {
-        message: 'Category updated successfully',
-        data: category,
-      });
-    } catch (error) {
-      throw error;
-    }
+    sendResponse(res, StatusCodes.OK, {
+      message: 'Category updated successfully',
+      data: category,
+    });
   };
 }

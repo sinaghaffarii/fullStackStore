@@ -7,10 +7,15 @@ import type { OTP } from './otp.model';
 
 import { sequelize } from '../../../configs/database';
 
+// ============================================================================
+// Attributes Interface
+// ============================================================================
+
 interface UserAttributes {
   id: string;
+  username?: string;
   email?: string;
-  phone_number?: string; // اضافه شده
+  phone_number?: string;
   password?: string | null;
   role: 'admin' | 'customer';
   is_verified: boolean;
@@ -18,6 +23,10 @@ interface UserAttributes {
   created_at?: Date;
   updated_at?: Date;
 }
+
+// ============================================================================
+// Creation Attributes
+// ============================================================================
 
 export interface UserCreationAttributes
   extends Optional<
@@ -30,12 +39,18 @@ export interface UserCreationAttributes
     | 'phone_number'
     | 'role'
     | 'updated_at'
+    | 'username'
   > {}
+
+// ============================================================================
+// Model Class
+// ============================================================================
 
 export class User
   extends Model<UserAttributes, UserCreationAttributes>
   implements UserAttributes
 {
+  // Associations
   public readonly carts?: Cart[];
   declare readonly created_at?: Date;
   declare email?: string;
@@ -43,12 +58,14 @@ export class User
   declare is_verified: boolean;
   public readonly otps?: OTP[];
   declare password?: string;
-  declare phone_number?: string; // اضافه شده
+  declare phone_number?: string;
   declare refresh_token?: string;
   declare role: 'admin' | 'customer';
-  declare readonly updated_at?: Date;
 
-  static associate(models: any): void {
+  declare readonly updated_at?: Date;
+  declare username?: string;
+
+  static associate(models: { OTP: typeof OTP; Cart: typeof Cart }): void {
     User.hasMany(models.OTP, {
       foreignKey: 'email',
       sourceKey: 'email',
@@ -62,6 +79,10 @@ export class User
   }
 }
 
+// ============================================================================
+// Model Initialization
+// ============================================================================
+
 User.init(
   {
     id: {
@@ -69,9 +90,15 @@ User.init(
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
+    username: {
+      // ✅ اضافه شده
+      type: DataTypes.STRING(50),
+      allowNull: true,
+      unique: true,
+    },
     email: {
-      type: DataTypes.STRING,
-      allowNull: true, // تغییر به true
+      type: DataTypes.STRING(255),
+      allowNull: true,
       unique: true,
       validate: {
         isEmail: true,
@@ -83,7 +110,7 @@ User.init(
       unique: true,
     },
     password: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(255),
       allowNull: true,
     },
     role: {

@@ -1,7 +1,6 @@
-
 tags:
   - name: Auth
-    description: احراز هویت با پیامک
+    description: احراز هویت
 
 paths:
   /auth/send-otp:
@@ -22,17 +21,6 @@ paths:
       responses:
         200:
           description: کد ارسال شد
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: کد تایید ارسال شد
         400:
           description: شماره نامعتبر
         429:
@@ -59,6 +47,36 @@ paths:
       responses:
         200:
           description: ورود موفق
+        400:
+          description: کد اشتباه یا منقضی
+
+  /auth/admin/login:
+    post:
+      tags: [Auth]
+      summary: ورود ادمین
+      description: ورود به پنل مدیریت با نام کاربری، رمز عبور و کپچا
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password, captchaToken]
+              properties:
+                username:
+                  type: string
+                  example: 'admin'
+                  description: نام کاربری ادمین
+                password:
+                  type: string
+                  example: 'password123'
+                  description: رمز عبور
+                captchaToken:
+                  type: string
+                  description: توکن کپچا از Cloudflare Turnstile
+      responses:
+        200:
+          description: ورود موفق
           content:
             application/json:
               schema:
@@ -66,8 +84,10 @@ paths:
                 properties:
                   success:
                     type: boolean
+                    example: true
                   message:
                     type: string
+                    example: ورود موفق
                   data:
                     type: object
                     properties:
@@ -76,14 +96,46 @@ paths:
                         properties:
                           id:
                             type: string
-                          phoneNumber:
+                          username:
+                            type: string
+                          email:
                             type: string
                           role:
                             type: string
+                            example: admin
+                      accessToken:
+                        type: string
+                      refreshToken:
+                        type: string
         400:
-          description: کد اشتباه یا منقضی
-        429:
-          description: تلاش بیش از حد
+          description: اطلاعات نامعتبر یا کپچا نامعتبر
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: کپچا نامعتبر است
+        401:
+          description: نام کاربری یا رمز عبور اشتباه
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: نام کاربری یا رمز عبور اشتباه است
+                  field:
+                    type: string
+                    example: username
 
   /auth/refresh-token:
     post:
@@ -110,6 +162,41 @@ paths:
       responses:
         200:
           description: خروج موفق
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: دریافت اطلاعات کاربر فعلی
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: اطلاعات کاربر
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      username:
+                        type: string
+                      email:
+                        type: string
+                      phoneNumber:
+                        type: string
+                      role:
+                        type: string
+                      createdAt:
+                        type: string
+                        format: date-time
+        401:
+          description: توکن نامعتبر
 
 components:
   securitySchemes:
