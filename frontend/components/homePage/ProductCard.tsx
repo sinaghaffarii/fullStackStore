@@ -96,8 +96,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <div className="group relative block h-[390px] w-full overflow-hidden rounded-lg border border-gray-100 bg-white transition-all duration-500">
-      {/* Image Section */}
-      {/* Image Section inside ProductCard */}
       <a
         className="relative block h-[60%] w-full overflow-hidden bg-white p-4"
         href={href}
@@ -107,21 +105,21 @@ const ProductCard: React.FC<ProductCardProps> = ({
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             alt={name}
-            src={image || '/file.svg'}
+            src={image}
           />
           <span className="absolute inset-0 flex items-center justify-center text-xs text-gray-400">
             تصویر محصول
           </span>
         </div>
 
-        {/* Badges */}
+        {/* Badges
         <div className="absolute top-3 left-3 flex flex-col gap-2">
           {hasDiscount && (
             <span className="inline-flex items-center justify-center rounded-sm bg-red-500 px-2.5 py-1 text-xs font-bold text-white shadow-sm backdrop-blur-md">
               {discountPercentage.toLocaleString('fa-IR')}%
             </span>
           )}
-        </div>
+        </div> */}
 
         {/* Floating Actions (Appears on Hover) */}
         <div className="absolute right-0 bottom-4 left-0 flex translate-y-10 justify-center gap-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">

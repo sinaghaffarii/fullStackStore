@@ -10,13 +10,13 @@ import {
   ShoppingCart,
   Sparkles,
   Store,
+  User2,
   Users,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
 import { Badge } from '@/components/ui/Badge';
 import {
   Sidebar,
@@ -255,9 +255,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {...props}
     >
       {/* Header - Brand */}
-      <SidebarHeader className="border-b border-sidebar-border p-4">
+      <SidebarHeader className="border-b border-sidebar-border p-3">
         <Link className="flex items-center gap-3" href="/admin">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-md">
+          <div className="flex size-8 shrink-0 items-center justify-center rounded-sm bg-primary text-primary-foreground shadow-md">
             <Sparkles className="size-5" />
           </div>
           {!isCollapsed && (
@@ -287,28 +287,30 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <SidebarMenuButton
                       asChild
                       isActive={isActive}
-                      tooltip={isCollapsed ? item.title : undefined}
-                      className={cn(
-                        'transition-all duration-200',
-                        isActive &&
-                          'bg-sidebar-accent font-medium text-sidebar-primary',
-                      )}
+                      tooltip={item.title}
                     >
-                      <Link href={item.url}>
-                        <div className="flex items-center justify-start gap-3">
-                          <ItemIcon
-                            className={cn(
-                              'size-4 shrink-0',
-                              isActive
-                                ? 'text-sidebar-primary'
-                                : item.color || 'text-sidebar-muted',
-                            )}
-                          />
-                          <span className="flex-1 truncate">{item.title}</span>
-                        </div>
-                        {item.badge && !isCollapsed && (
+                      <Link
+                        href={item.url}
+                        className={cn(
+                          'flex items-center gap-2 transition-all duration-200',
+                          isActive &&
+                            'bg-sidebar-accent font-medium text-sidebar-primary',
+                        )}
+                      >
+                        <ItemIcon
+                          className={cn(
+                            'size-4 shrink-0',
+                            isActive
+                              ? 'text-sidebar-primary'
+                              : item.color || 'text-sidebar-muted',
+                          )}
+                        />
+                        <span className="flex-1 truncate group-data-[collapsible=icon]:hidden">
+                          {item.title}
+                        </span>
+                        {item.badge && (
                           <Badge
-                            className="h-5 min-w-5 shrink-0 px-1.5 text-xs"
+                            className="h-5 min-w-5 shrink-0 px-1.5 text-xs group-data-[collapsible=icon]:hidden"
                             variant="secondary"
                           >
                             {item.badge}
@@ -332,19 +334,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton
               size="lg"
-              className="w-full justify-start gap-3 hover:bg-sidebar-accent"
+              className="w-full gap-3 hover:bg-sidebar-accent"
+              icon={
+                <User2 className="size-14 shrink-0 rounded-lg bg-primary/10 text-sm text-primary" />
+              }
+              tooltip={sidebarData.user.name}
             >
-              <Avatar className="size-9 shrink-0 rounded-lg">
-                <AvatarImage
-                  alt={sidebarData.user.name}
-                  src={sidebarData.user.avatar}
-                />
-                <AvatarFallback className="rounded-lg bg-primary/10 text-sm text-primary">
-                  مد
-                </AvatarFallback>
-              </Avatar>
-              {!isCollapsed && (
-                <div className="flex min-w-0 flex-col items-start text-sm">
+              <div className="flex gap-4">
+                <div className="flex min-w-0 flex-col items-start text-sm group-data-[collapsible=icon]:hidden">
                   <span className="truncate font-medium text-sidebar-foreground">
                     {sidebarData.user.name}
                   </span>
@@ -352,7 +349,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     {sidebarData.user.email}
                   </span>
                 </div>
-              )}
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

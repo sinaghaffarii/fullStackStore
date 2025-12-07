@@ -38,10 +38,12 @@ export function NavProjects({
       <SidebarMenu>
         {projects.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild>
-              <a href={item.url}>
-                <item.icon />
-                <span>{item.name}</span>
+            <SidebarMenuButton asChild tooltip={item.name}>
+              <a className="flex items-center gap-2" href={item.url}>
+                <item.icon className="size-4 shrink-0" />
+                <span className="group-data-[collapsible=icon]:hidden">
+                  {item.name}
+                </span>
               </a>
             </SidebarMenuButton>
             <DropdownMenu>
@@ -74,9 +76,12 @@ export function NavProjects({
           </SidebarMenuItem>
         ))}
         <SidebarMenuItem>
-          <SidebarMenuButton className="text-sidebar-foreground/70">
-            <MoreHorizontal className="text-sidebar-foreground/70" />
-            <span>More</span>
+          <SidebarMenuButton
+            className="text-sidebar-foreground/70"
+            icon={<MoreHorizontal />}
+            tooltip="بیشتر"
+          >
+            بیشتر
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>
