@@ -44,6 +44,7 @@ interface InputProps
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
+  error?: string;
 }
 
 function Input({
@@ -55,13 +56,14 @@ function Input({
   dimension,
   rounded,
   variant,
+  error,
   ...props
 }: InputProps) {
   const hasLeftIcon = leftIcon && iconPosition === 'left';
   const hasRightIcon = rightIcon && iconPosition === 'right';
 
   return (
-    <div className="group relative">
+    <div className="group relative w-full">
       {hasLeftIcon && (
         <div className="absolute top-1/2 left-3 -translate-y-1/2 transform text-muted-foreground transition-colors group-focus-within:text-primary">
           {leftIcon}
@@ -71,7 +73,11 @@ function Input({
         type={type}
         data-slot="input"
         className={cn(
-          inputVariants({ dimension, rounded, variant }),
+          inputVariants({
+            dimension,
+            rounded,
+            variant: error ? 'error' : variant,
+          }),
           hasLeftIcon && 'pl-10',
           hasRightIcon && 'pr-10',
           className,
@@ -82,6 +88,11 @@ function Input({
         <div className="absolute top-1/2 right-3 -translate-y-1/2 transform text-muted-foreground transition-colors group-focus-within:text-primary">
           {rightIcon}
         </div>
+      )}
+      {error && (
+        <span className="mt-1 block text-xs font-medium text-destructive">
+          {error}
+        </span>
       )}
     </div>
   );
