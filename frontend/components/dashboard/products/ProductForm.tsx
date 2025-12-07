@@ -123,8 +123,10 @@ export function ProductForm({ initialData }: Props) {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="category">دسته‌بندی *</Label>
-              <Select {...register('category', { required: true })}>
-                <SelectItem value="">انتخاب کنید</SelectItem>
+              <Select
+                {...register('category', { required: true })}
+                placeholder="انتخاب کنید"
+              >
                 {options?.categories?.map((cat: string) => (
                   <SelectItem key={cat} value={cat}>
                     {cat}
@@ -134,8 +136,10 @@ export function ProductForm({ initialData }: Props) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="brand">برند *</Label>
-              <Select {...register('brand', { required: true })}>
-                <SelectItem value="">انتخاب کنید</SelectItem>
+              <Select
+                {...register('brand', { required: true })}
+                placeholder="انتخاب کنید"
+              >
                 {options?.brands?.map((brand: string) => (
                   <SelectItem key={brand} value={brand}>
                     {brand}
@@ -146,9 +150,6 @@ export function ProductForm({ initialData }: Props) {
           </div>
         </CardContent>
       </Card>
-
-      {/* بقیه کارت‌ها مشابه قبل ... */}
-      {/* برای اختصار فقط تغییرات مهم را نمایش دادم، بقیه کد ProductForm مثل قبل است اما باید <Input error={...} /> حذف شود */}
 
       {/* ... بخش‌های دیگر فرم ... */}
 

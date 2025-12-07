@@ -17,6 +17,11 @@ interface Props {
   initialData?: CategoryData;
 }
 
+interface FormData {
+  title: string;
+  description: string;
+}
+
 export function CategoryForm({ initialData }: Props) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -26,15 +31,15 @@ export function CategoryForm({ initialData }: Props) {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    defaultValues: initialData || {
-      title: '',
-      description: '',
+  } = useForm<FormData>({
+    defaultValues: {
+      title: initialData?.title || '',
+      description: initialData?.description || '',
     },
   });
 
   const mutation = useMutation({
-    mutationFn: (data: any) => {
+    mutationFn: (data: FormData) => {
       const url = isEdit
         ? `/api/categories/${initialData.title}`
         : '/api/categories';
@@ -43,7 +48,10 @@ export function CategoryForm({ initialData }: Props) {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-      }).then((res) => res.json());
+      }).then((res) => {
+        if (!res.ok) throw new Error('خطا در ذخیره دسته‌بندی');
+        return res.json();
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
@@ -54,12 +62,14 @@ export function CategoryForm({ initialData }: Props) {
       );
       router.push('/dashboard/categories');
     },
-    onError: () => {
-      toast.error('خطا در ذخیره دسته‌بندی');
+    onError: (error) => {
+      toast.error(
+        error instanceof Error ? error.message : 'خطا در ذخیره دسته‌بندی',
+      );
     },
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: FormData) => {
     mutation.mutate(data);
   };
 
@@ -70,29 +80,74 @@ export function CategoryForm({ initialData }: Props) {
           <CardTitle>اطلاعات دسته‌بندی</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Title */}
           <div className="space-y-2">
-            <Label htmlFor="title">عنوان دسته‌بندی *</Label>
+            <Label htmlFor="title">
+              عنوان دسته‌بندی <span className="text-destructive">*</span>
+            </Label>
             <Input
+              disabled={isEdit} // در حالت ویرایش، عنوان قابل تغییر نیست
               id="title"
-              {...register('title', { required: 'عنوان الزامی است' })}
-              disabled={isEdit}
               error={errors.title?.message}
+              placeholder="مثال: لپ‌تاپ"
+              {...register('title', {
+                required: 'عنوان دسته‌بندی الزامی است',
+                minLength: {
+                  value: 2,
+                  message: 'عنوان باید حداقل ۲ کاراکتر باشد',
+                },
+                maxLength: {
+                  value: 50,
+                  message: 'عنوان نباید بیشتر از ۵۰ کاراکتر باشد',
+                },
+              })}
             />
+            {isEdit && (
+              <p className="text-xs text-muted-foreground">
+                عنوان دسته‌بندی قابل تغییر نیست
+              </p>
+            )}
           </div>
 
+          {/* Description */}
           <div className="space-y-2">
             <Label htmlFor="description">توضیحات</Label>
-            <Textarea id="description" rows={4} {...register('description')} />
+            <Textarea
+              id="description"
+              placeholder="توضیحات کوتاهی درباره این دسته‌بندی..."
+              rows={5}
+              {...register('description', {
+                maxLength: {
+                  value: 500,
+                  message: 'توضیحات نباید بیشتر از ۵۰۰ کاراکتر باشد',
+                },
+              })}
+            />
+            {errors.description && (
+              <p className="text-xs text-destructive">
+                {errors.description.message}
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>
 
+      {/* Actions */}
       <div className="flex justify-end gap-4">
-        <Button type="button" variant="outline" onClick={() => router.back()}>
+        <Button
+          disabled={mutation.isPending}
+          type="button"
+          variant="outline"
+          onClick={() => router.back()}
+        >
           انصراف
         </Button>
         <Button disabled={mutation.isPending} type="submit">
-          {mutation.isPending ? 'در حال ذخیره...' : 'ذخیره دسته‌بندی'}
+          {mutation.isPending
+            ? 'در حال ذخیره...'
+            : isEdit
+              ? 'ویرایش دسته‌بندی'
+              : 'افزودن دسته‌بندی'}
         </Button>
       </div>
     </form>
