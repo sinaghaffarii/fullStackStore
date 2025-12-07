@@ -277,7 +277,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarGroupLabel>
             <SidebarMenu className="space-y-1">
               {section.items.map((item) => {
-                const isActive = pathname === item.url || item.isActive;
+                const isActive =
+                  pathname === item.url ||
+                  (item.isActive && pathname === item.url);
                 const ItemIcon = item.icon;
 
                 return (

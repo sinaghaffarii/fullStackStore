@@ -16,7 +16,6 @@ export default function DashboardPage() {
           actionText="هم‌اکنون ارتقا دهید"
         />
 
-        {/* Stats Cards - استفاده از نام آیکون به جای کامپوننت */}
         <StatsCards
           subtitle="در ۲۱ فروشگاه"
           title="فروش محصولات"

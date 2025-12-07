@@ -166,7 +166,7 @@ const columns: ColumnDef<Order>[] = [
             <MoreVertical className="size-4 text-muted-foreground" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align="start">
           <DropdownMenuItem>مشاهده جزئیات</DropdownMenuItem>
           <DropdownMenuItem>ویرایش</DropdownMenuItem>
           <DropdownMenuSeparator />

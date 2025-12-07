@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-// components/ui/data-table.tsx
 'use client';
 
 import type {
@@ -24,13 +23,6 @@ import {
 import * as React from 'react';
 
 import { Button } from '@/components/ui/Button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/Select';
 import {
   Table,
   TableBody,
@@ -113,35 +105,7 @@ function DataTablePagination<TData>({
   };
 
   return (
-    <div className="flex flex-col gap-3 px-2 py-3 sm:flex-row sm:items-center sm:justify-between">
-      {/* Info */}
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <span>نمایش</span>
-        <Select
-          value={`${pageSize}`}
-          onValueChange={(value) => table.setPageSize(Number(value))}
-        >
-          <SelectTrigger className="h-8 w-16">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {pageSizeOptions.map((size) => (
-              <SelectItem key={size} value={`${size}`}>
-                {size}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <div>از {totalCount.toLocaleString('fa-IR')}</div>
-        {totalCount > 0 && (
-          <div className="hidden text-xs sm:inline">
-            <span>({startItem.toLocaleString('fa-IR')}</span>
-            <span>-</span>
-            <span>{endItem.toLocaleString('fa-IR')})</span>
-          </div>
-        )}
-      </div>
-
+    <div className="flex flex-col gap-3 px-2 py-3 sm:flex-row sm:items-center sm:justify-center">
       {/* Controls */}
       <div className="flex items-center gap-1">
         <Button

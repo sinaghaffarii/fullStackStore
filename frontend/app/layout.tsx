@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 
 import { Suspense } from 'react';
+import { Bounce, ToastContainer } from 'react-toastify';
 
 import './globals.css';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
@@ -72,7 +73,22 @@ export default function RootLayout({
       </head>
       <body className="flex min-h-screen flex-col font-sans antialiased">
         <Suspense fallback={<div />}>
-          <Providers>{children}</Providers>
+          <Providers>
+            <ToastContainer
+              draggable
+              rtl
+              theme="light"
+              autoClose={5000}
+              closeOnClick={false}
+              hideProgressBar={false}
+              newestOnTop={false}
+              pauseOnFocusLoss
+              pauseOnHover
+              position="top-center"
+              transition={Bounce}
+            />
+            {children}
+          </Providers>
         </Suspense>
       </body>
     </html>
