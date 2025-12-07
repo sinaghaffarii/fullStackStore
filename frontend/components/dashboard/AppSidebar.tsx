@@ -292,7 +292,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       <Link
                         href={item.url}
                         className={cn(
-                          'flex items-center gap-2 transition-all duration-200',
+                          'flex items-center gap-3 transition-all duration-200',
                           isActive &&
                             'bg-sidebar-accent font-medium text-sidebar-primary',
                         )}
@@ -305,7 +305,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                               : item.color || 'text-sidebar-muted',
                           )}
                         />
-                        <span className="flex-1 truncate group-data-[collapsible=icon]:hidden">
+                        <span className="truncate group-data-[collapsible=icon]:hidden">
                           {item.title}
                         </span>
                         {item.badge && (
