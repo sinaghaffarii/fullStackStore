@@ -74,6 +74,7 @@ const PriceDisplay = ({
 };
 
 // --- Main Component ---
+const DEFAULT_IMAGE = '/images/products/defaultImage.jpg';
 
 const ProductCard: React.FC<ProductCardProps> = ({
   id,
@@ -87,6 +88,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onAddToCart,
 }) => {
   const hasDiscount = discountPercentage > 0;
+  const imageSrc = image?.trim() || DEFAULT_IMAGE;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -105,11 +107,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             alt={name}
-            src={image}
+            src={imageSrc}
           />
-          <span className="absolute inset-0 flex items-center justify-center text-xs text-gray-400">
-            تصویر محصول
-          </span>
         </div>
 
         {/* Badges
