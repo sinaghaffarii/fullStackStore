@@ -74,6 +74,7 @@ const PriceDisplay = ({
 };
 
 // --- Main Component ---
+const DEFAULT_IMAGE = '/images/products/defaultImage.jpg';
 
 const ProductCard: React.FC<ProductCardProps> = ({
   id,
@@ -87,8 +88,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onAddToCart,
 }) => {
   const hasDiscount = discountPercentage > 0;
-
-  const hasValidImage = image && typeof image === 'string' && image.length > 0;
+  const imageSrc = image?.trim() || DEFAULT_IMAGE;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -103,21 +103,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
         href={href}
       >
         <div className="relative size-full rounded-md bg-gray-200">
-          {hasValidImage ? (
-            <Image
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              alt={name}
-              src={image}
-            />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-xs text-gray-400">بدون تصویر</span>
-            </div>
-          )}
-          <span className="absolute inset-0 flex items-center justify-center text-xs text-gray-400">
-            تصویر محصول
-          </span>
+          <Image
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            alt={name}
+            src={imageSrc}
+          />
         </div>
 
         {/* Badges
@@ -129,6 +120,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           )}
         </div> */}
 
+        {/* Floating Actions (Appears on Hover) */}
         <div className="absolute right-0 bottom-4 left-0 flex translate-y-10 justify-center gap-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
           <ActionButton
             primary
@@ -140,7 +132,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             label="مشاهده سریع"
             icon={Eye}
             onClick={(e) => {
-              e.preventDefault();
+              e.preventDefault(); /* Open Modal Logic */
             }}
           />
           <ActionButton
@@ -153,6 +145,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </div>
       </a>
 
+      {/* Content Section */}
       <div className="flex h-[35%] flex-col justify-between p-2">
         <div className="space-y-1">
           <span className="text-[11px] font-semibold tracking-wider text-gray-400 uppercase transition-colors group-hover:text-primary">
@@ -169,6 +162,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </div>
 
         <div className="flex items-end justify-between border-t border-gray-50 pt-3">
+          {/* Rating or Extra info can go here */}
           <div className="text-xs text-gray-400">⭐ 4.5</div>
           <PriceDisplay
             discounted={discountedPrice}
