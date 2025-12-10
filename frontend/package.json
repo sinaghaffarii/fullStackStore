@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -39,7 +39,7 @@
     "keen-slider": "6.8.6",
     "lodash": "4.17.21",
     "lucide-react": "0.553.0",
-    "next": "16.0.1",
+    "next": "16.0.7",
     "prettier": "3.6.2",
     "react": "19.2.0",
     "react-dom": "19.2.0",

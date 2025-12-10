@@ -56,7 +56,7 @@ function buildSwaggerSpec() {
     },
     servers: [
       {
-        url: `http://localhost:${process.env.PORT || 3000}/api`,
+        url: `http://localhost:${process.env.PORT || 8000}/api`,
         description: 'Development Server',
       },
     ],
@@ -129,7 +129,7 @@ function setupBasicSwagger(app: Application): void {
       title: 'FullStack Store API',
       version: '1.0.0',
     },
-    servers: [{ url: 'http://localhost:3000/api' }],
+    servers: [{ url: 'http://localhost:8000/api' }],
     paths: {
       '/health': {
         get: {
