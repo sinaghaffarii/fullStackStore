@@ -1,12 +1,13 @@
+# src/docs/swagger/auth.yaml
 tags:
   - name: Auth
-    description: احراز هویت
+    description: احراز هویت و مدیریت نشست‌ها
 
 paths:
   /auth/send-otp:
     post:
       tags: [Auth]
-      summary: ارسال کد تایید
+      summary: ارسال کد تأیید
       requestBody:
         required: true
         content:
@@ -20,16 +21,12 @@ paths:
                   example: '09121234567'
       responses:
         200:
-          description: کد ارسال شد
-        400:
-          description: شماره نامعتبر
-        429:
-          description: درخواست زیاد
+          $ref: '#/components/responses/Success'
 
   /auth/verify-otp:
     post:
       tags: [Auth]
-      summary: تایید کد و ورود
+      summary: تأیید کد و ورود
       requestBody:
         required: true
         content:
@@ -47,14 +44,25 @@ paths:
       responses:
         200:
           description: ورود موفق
-        400:
-          description: کد اشتباه یا منقضی
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
 
   /auth/admin/login:
     post:
       tags: [Auth]
       summary: ورود ادمین
-      description: ورود به پنل مدیریت با نام کاربری، رمز عبور و کپچا
       requestBody:
         required: true
         content:
@@ -65,15 +73,10 @@ paths:
               properties:
                 username:
                   type: string
-                  example: 'admin'
-                  description: نام کاربری ادمین
                 password:
                   type: string
-                  example: 'password123'
-                  description: رمز عبور
                 captchaToken:
                   type: string
-                  description: توکن کپچا از Cloudflare Turnstile
       responses:
         200:
           description: ورود موفق
@@ -84,94 +87,72 @@ paths:
                 properties:
                   success:
                     type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: ورود موفق
                   data:
                     type: object
                     properties:
                       user:
-                        type: object
-                        properties:
-                          id:
-                            type: string
-                          username:
-                            type: string
-                          email:
-                            type: string
-                          role:
-                            type: string
-                            example: admin
-                      accessToken:
-                        type: string
-                      refreshToken:
-                        type: string
-        400:
-          description: اطلاعات نامعتبر یا کپچا نامعتبر
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: کپچا نامعتبر است
-        401:
-          description: نام کاربری یا رمز عبور اشتباه
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: نام کاربری یا رمز عبور اشتباه است
-                  field:
-                    type: string
-                    example: username
+                        $ref: '#/components/schemas/User'
+
+  /auth/admin/me:
+    get:
+      tags: [Auth]
+      summary: اطلاعات ادمین
+      security:
+        - cookieAuth: []
+      responses:
+        200:
+          $ref: '#/components/responses/UserData'
 
   /auth/refresh-token:
     post:
       tags: [Auth]
       summary: تازه‌سازی توکن
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                refreshToken:
-                  type: string
+      description: |
+        این endpoint برای حالت‌های خاص استفاده میشه.
+        در حالت عادی، middleware به صورت خودکار توکن رو refresh میکنه.
       responses:
         200:
-          description: توکن جدید
-        401:
-          description: توکن نامعتبر
+          $ref: '#/components/responses/Success'
 
   /auth/logout:
     post:
       tags: [Auth]
       summary: خروج
+      security:
+        - cookieAuth: []
       responses:
         200:
-          description: خروج موفق
+          $ref: '#/components/responses/Success'
+
+  /auth/logout-all:
+    post:
+      tags: [Auth]
+      summary: خروج از همه دستگاه‌ها
+      security:
+        - cookieAuth: []
+      responses:
+        200:
+          $ref: '#/components/responses/Success'
 
   /auth/me:
     get:
       tags: [Auth]
-      summary: دریافت اطلاعات کاربر فعلی
+      summary: اطلاعات کاربر فعلی
       security:
-        - bearerAuth: []
+        - cookieAuth: []
       responses:
         200:
-          description: اطلاعات کاربر
+          $ref: '#/components/responses/UserData'
+
+  /auth/sessions:
+    get:
+      tags: [Auth]
+      summary: لیست نشست‌های فعال
+      security:
+        - cookieAuth: []
+      responses:
+        200:
+          description: لیست نشست‌ها
           content:
             application/json:
               schema:
@@ -182,25 +163,93 @@ paths:
                   data:
                     type: object
                     properties:
-                      id:
-                        type: string
-                      username:
-                        type: string
-                      email:
-                        type: string
-                      phoneNumber:
-                        type: string
-                      role:
-                        type: string
-                      createdAt:
-                        type: string
-                        format: date-time
-        401:
-          description: توکن نامعتبر
+                      sessions:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Session'
+
+  /auth/sessions/{sessionId}:
+    delete:
+      tags: [Auth]
+      summary: بستن نشست
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          $ref: '#/components/responses/Success'
 
 components:
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: accessToken
+
+  responses:
+    Success:
+      description: عملیات موفق
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              message:
+                type: string
+
+    UserData:
+      description: اطلاعات کاربر
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              data:
+                $ref: '#/components/schemas/User'
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: string
+        role:
+          type: string
+          enum: [customer, admin]
+        isVerified:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    Session:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        deviceInfo:
+          type: string
+        ipAddress:
+          type: string
+        createdAt:
+          type: string
+          format: date-time

@@ -4,20 +4,26 @@ import { StatusCodes } from 'http-status-codes';
 
 import { AppError } from '../../../shared/errors/app-error';
 
-export const roleMiddleware = (allowedRoles: string[]) => {
-  return (req: Request, res: Response, next: NextFunction): void => {
+export const requireRole = (...allowedRoles: string[]) => {
+  return (req: Request, _res: Response, next: NextFunction): void => {
     if (!req.user) {
-      throw new AppError('Authentication required', StatusCodes.UNAUTHORIZED);
+      throw new AppError('احراز هویت نشده', {
+        statusCode: StatusCodes.UNAUTHORIZED,
+      });
     }
 
-    const userRole = req.user.role;
-
-    const hasRole = allowedRoles.includes(userRole);
-
-    if (!hasRole) {
-      throw new AppError('Insufficient permissions', StatusCodes.FORBIDDEN);
+    if (!allowedRoles.includes(req.user.role)) {
+      throw new AppError('شما دسترسی به این بخش را ندارید', {
+        statusCode: StatusCodes.FORBIDDEN,
+      });
     }
 
     next();
   };
 };
+
+export const requireAdmin = requireRole('admin');
+export const requireCustomer = requireRole('customer');
+export const requireAnyAuth = requireRole('admin', 'customer');
+
+export const roleMiddleware = (roles: string[]) => requireRole(...roles);

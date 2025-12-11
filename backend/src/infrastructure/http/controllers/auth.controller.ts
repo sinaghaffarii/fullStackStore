@@ -1,48 +1,76 @@
-// src/infrastructure/http/controllers/auth.controller.ts
 import type { Request, Response } from 'express';
 
-import bcrypt from 'bcrypt';
 import { StatusCodes } from 'http-status-codes';
-import { Op } from 'sequelize';
 
 import type { AuthService } from '../../../core/services/auth.service';
+import type { AuthUser } from '../middlewares/auth.middleware';
 
+import { tokenService } from '../../../core/services/token.service';
 import { AppError } from '../../../shared/errors/app-error';
 import { verifyCaptcha } from '../../../shared/utils/captcha';
 import {
   clearAuthCookies,
-  generateAccessToken,
-  generateRefreshToken,
   setAccessTokenCookie,
+  setAuthStateCookie,
   setRefreshTokenCookie,
-  verifyRefreshToken,
 } from '../../../shared/utils/jwt';
 import { sendResponse } from '../../../shared/utils/response-handler';
-import { User } from '../../database/models';
+import { createSignedAuthState } from '../../../shared/utils/signed-cookie';
+
+// ============================================================================
+// Types
+// ============================================================================
+
+interface AuthCookieOptions {
+  accessToken: string;
+  refreshToken: string;
+  userId: string;
+  role: 'admin' | 'customer';
+}
+
+// Helper برای گرفتن userId از req.user
+const getUserId = (user?: AuthUser): string | undefined => {
+  return user?.userId;
+};
+
+// ============================================================================
+// Controller
+// ============================================================================
 
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  // ============================================================================
-  // لاگین ادمین
-  // ============================================================================
+  // ==================== Admin Login ====================
 
   adminLogin = async (req: Request, res: Response): Promise<void> => {
     const { username, password, captchaToken } = req.body;
 
-    // اعتبارسنجی ورودی‌ها
-    this.validateAdminLoginInput(username, password, captchaToken);
+    // تایید کپچا
+    const captchaResult = await verifyCaptcha(captchaToken);
+    if (!captchaResult.success) {
+      throw new AppError('کپچا نامعتبر است', {
+        statusCode: StatusCodes.BAD_REQUEST,
+      });
+    }
 
-    // تأیید کپچا
-    await this.validateCaptcha(captchaToken);
+    // بررسی اطلاعات ورود
+    const user = await this.authService.adminLogin(username, password);
 
-    // پیدا کردن و اعتبارسنجی کاربر
-    const user = await this.findAndValidateAdmin(username, password);
+    // تولید توکن‌ها
+    const { accessToken, refreshToken } = await tokenService.generateTokenPair(
+      user,
+      req,
+    );
 
-    // تولید توکن‌ها و تنظیم کوکی‌ها
-    const { accessToken, refreshToken } =
-      await this.generateTokensAndSetCookies(res, user);
+    // ست کردن کوکی‌ها
+    this.setAuthCookies(res, {
+      accessToken,
+      refreshToken,
+      userId: user.id,
+      role: user.role as 'admin' | 'customer',
+    });
 
+    // ارسال پاسخ
     sendResponse(res, StatusCodes.OK, {
       message: 'ورود موفق',
       data: {
@@ -52,18 +80,14 @@ export class AuthController {
           email: user.email,
           role: user.role,
         },
-        accessToken,
-        refreshToken,
       },
     });
   };
 
-  // ============================================================================
-  // خروج
-  // ============================================================================
+  // ==================== Send OTP ====================
 
-  getCurrentUser = async (req: Request, res: Response): Promise<void> => {
-    const userId = req.user?.userId;
+  getActiveSessions = async (req: Request, res: Response): Promise<void> => {
+    const userId = getUserId(req.user);
 
     if (!userId) {
       throw new AppError('کاربر یافت نشد', {
@@ -71,16 +95,58 @@ export class AuthController {
       });
     }
 
-    const user = await User.findByPk(userId, {
-      attributes: [
-        'id',
-        'username',
-        'email',
-        'phone_number',
-        'role',
-        'created_at',
-      ],
+    const sessions = await tokenService.getActiveSessions(userId);
+
+    sendResponse(res, StatusCodes.OK, {
+      message: 'لیست نشست‌های فعال',
+      data: { sessions },
     });
+  };
+
+  // ==================== Verify OTP ====================
+
+  getAdminProfile = async (req: Request, res: Response): Promise<void> => {
+    const userId = getUserId(req.user);
+
+    if (!userId) {
+      throw new AppError('کاربر یافت نشد', {
+        statusCode: StatusCodes.UNAUTHORIZED,
+      });
+    }
+
+    const admin = await this.authService.getAdminById(userId);
+
+    if (!admin) {
+      throw new AppError('ادمین یافت نشد', {
+        statusCode: StatusCodes.NOT_FOUND,
+      });
+    }
+
+    sendResponse(res, StatusCodes.OK, {
+      message: 'اطلاعات ادمین',
+      data: {
+        id: admin.id,
+        username: admin.username,
+        email: admin.email,
+        role: admin.role,
+        createdAt: admin.created_at,
+        updatedAt: admin.updated_at,
+      },
+    });
+  };
+
+  // ==================== Refresh Token ====================
+
+  getCurrentUser = async (req: Request, res: Response): Promise<void> => {
+    const userId = getUserId(req.user);
+
+    if (!userId) {
+      throw new AppError('کاربر یافت نشد', {
+        statusCode: StatusCodes.UNAUTHORIZED,
+      });
+    }
+
+    const user = await this.authService.getUserById(userId);
 
     if (!user) {
       throw new AppError('کاربر یافت نشد', {
@@ -89,73 +155,118 @@ export class AuthController {
     }
 
     sendResponse(res, StatusCodes.OK, {
-      data: {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        phoneNumber: user.phone_number,
-        role: user.role,
-        createdAt: user.created_at,
-      },
-      message: 'کاربر با موفقیت یافت شد.',
+      message: 'اطلاعات کاربر',
+      data: user.toSafeObject(),
     });
   };
 
-  // ============================================================================
-  // تازه‌سازی توکن
-  // ============================================================================
+  // ==================== Logout ====================
 
   logout = async (req: Request, res: Response): Promise<void> => {
-    const token = req.cookies.refreshToken;
+    const refreshToken = req.cookies.refreshToken;
+    const accessToken = req.cookies.accessToken;
 
-    if (token) {
-      await this.invalidateRefreshToken(token);
+    // ابطال توکن‌ها
+    if (refreshToken) {
+      await tokenService.revokeRefreshToken(refreshToken);
     }
 
-    this.clearAllCookies(res);
+    if (accessToken) {
+      await tokenService.blacklistToken(accessToken, 'access');
+    }
+
+    // پاک کردن کوکی‌ها
+    clearAuthCookies(res);
 
     sendResponse(res, StatusCodes.OK, {
       message: 'خروج موفق',
     });
   };
 
-  // ============================================================================
-  // ارسال OTP
-  // ============================================================================
+  // ==================== Logout All ====================
 
-  refreshToken = async (req: Request, res: Response): Promise<void> => {
-    const token = req.cookies.refreshToken || req.body.refreshToken;
+  logoutAll = async (req: Request, res: Response): Promise<void> => {
+    const userId = getUserId(req.user);
 
-    if (!token) {
-      throw new AppError('توکن الزامی است', {
-        statusCode: StatusCodes.BAD_REQUEST,
-      });
-    }
-
-    const decoded = verifyRefreshToken(token) as { userId: string };
-
-    const user = await User.findOne({
-      where: { id: decoded.userId, refresh_token: token },
-    });
-
-    if (!user) {
-      throw new AppError('توکن نامعتبر', {
+    if (!userId) {
+      throw new AppError('کاربر یافت نشد', {
         statusCode: StatusCodes.UNAUTHORIZED,
       });
     }
 
-    const { accessToken, refreshToken: newRefreshToken } =
-      await this.generateTokensAndSetCookies(res, user);
+    // ابطال همه توکن‌های کاربر
+    await tokenService.revokeAllUserTokens(userId);
+
+    const accessToken = req.cookies.accessToken;
+    if (accessToken) {
+      await tokenService.blacklistToken(accessToken, 'access');
+    }
+
+    // پاک کردن کوکی‌ها
+    clearAuthCookies(res);
 
     sendResponse(res, StatusCodes.OK, {
-      message: 'توکن تازه‌سازی شد',
-      data: { accessToken, refreshToken: newRefreshToken },
+      message: 'از همه دستگاه‌ها خارج شدید',
     });
   };
 
-  // ============================================================================
-  // تأیید OTP
-  // ============================================================================
+  // ==================== Get Current User ====================
+
+  refreshToken = async (req: Request, res: Response): Promise<void> => {
+    const token = req.cookies.refreshToken;
+
+    if (!token) {
+      throw new AppError('توکن تازه‌سازی یافت نشد', {
+        statusCode: StatusCodes.BAD_REQUEST,
+      });
+    }
+
+    // تایید و تازه‌سازی توکن
+    const {
+      accessToken,
+      refreshToken: newRefreshToken,
+      user,
+    } = await tokenService.validateAndRefreshTokens(token, req);
+
+    // ست کردن کوکی‌های جدید
+    this.setAuthCookies(res, {
+      accessToken,
+      refreshToken: newRefreshToken,
+      userId: user.id,
+      role: user.role as 'admin' | 'customer',
+    });
+
+    sendResponse(res, StatusCodes.OK, {
+      message: 'توکن تازه‌سازی شد',
+    });
+  };
+
+  // ==================== Get Admin Profile ====================
+
+  revokeSession = async (req: Request, res: Response): Promise<void> => {
+    const userId = getUserId(req.user);
+    const { sessionId } = req.params;
+
+    if (!userId) {
+      throw new AppError('کاربر یافت نشد', {
+        statusCode: StatusCodes.UNAUTHORIZED,
+      });
+    }
+
+    const revoked = await tokenService.revokeSession(userId, sessionId);
+
+    if (!revoked) {
+      throw new AppError('نشست یافت نشد', {
+        statusCode: StatusCodes.NOT_FOUND,
+      });
+    }
+
+    sendResponse(res, StatusCodes.OK, {
+      message: 'نشست با موفقیت بسته شد',
+    });
+  };
+
+  // ==================== Get Active Sessions ====================
 
   sendOtp = async (req: Request, res: Response): Promise<void> => {
     const { phoneNumber } = req.body;
@@ -163,161 +274,58 @@ export class AuthController {
     await this.authService.sendOtp(phoneNumber);
 
     sendResponse(res, StatusCodes.OK, {
-      message: 'کد تایید ارسال شد',
+      message: 'کد تأیید ارسال شد',
     });
   };
 
-  // ============================================================================
-  // دریافت کاربر فعلی
-  // ============================================================================
+  // ==================== Revoke Session ====================
 
   verifyOtp = async (req: Request, res: Response): Promise<void> => {
     const { phoneNumber, code } = req.body;
 
+    // تایید OTP
     const { user, isNewUser } = await this.authService.verifyOtp(
       phoneNumber,
       code,
     );
 
-    const { accessToken, refreshToken } =
-      await this.generateTokensAndSetCookies(res, user);
+    // تولید توکن‌ها
+    const { accessToken, refreshToken } = await tokenService.generateTokenPair(
+      user,
+      req,
+    );
 
+    // ست کردن کوکی‌ها
+    this.setAuthCookies(res, {
+      accessToken,
+      refreshToken,
+      userId: user.id,
+      role: user.role as 'admin' | 'customer',
+    });
+
+    // ارسال پاسخ
     sendResponse(res, StatusCodes.OK, {
       message: isNewUser ? 'ثبت‌نام موفق' : 'ورود موفق',
       data: {
-        user: {
-          id: user.id,
-          phoneNumber: user.phone_number,
-          role: user.role,
-        },
-        accessToken,
-        refreshToken,
+        user: user.toSafeObject(),
       },
     });
   };
 
-  // ============================================================================
-  // Private Helper Methods
-  // ============================================================================
+  // ==================== Private Helpers ====================
 
-  private clearAllCookies(res: Response): void {
-    clearAuthCookies(res);
-    res.clearCookie('isAuth');
-    res.clearCookie('userRole');
-  }
+  /**
+   * ست کردن همه کوکی‌های احراز هویت
+   */
+  private setAuthCookies(res: Response, options: AuthCookieOptions): void {
+    const { accessToken, refreshToken, userId, role } = options;
 
-  private async findAndValidateAdmin(
-    username: string,
-    password: string,
-  ): Promise<User> {
-    // ✅ استفاده از Op.and برای جستجوی صحیح
-    const user = await User.findOne({
-      where: {
-        [Op.and]: [{ username }, { role: 'admin' }],
-      },
-    });
-
-    if (!user) {
-      throw new AppError('نام کاربری یا رمز عبور اشتباه است', {
-        statusCode: StatusCodes.UNAUTHORIZED,
-        field: 'username',
-      });
-    }
-
-    // بررسی رمز عبور
-    if (!user.password) {
-      throw new AppError('حساب کاربری معتبر نیست', {
-        statusCode: StatusCodes.UNAUTHORIZED,
-      });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
-      throw new AppError('نام کاربری یا رمز عبور اشتباه است', {
-        statusCode: StatusCodes.UNAUTHORIZED,
-        field: 'username',
-      });
-    }
-
-    return user;
-  }
-
-  private async generateTokensAndSetCookies(
-    res: Response,
-    user: User,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
-    const accessToken = generateAccessToken({
-      userId: user.id,
-      email: user.email || '',
-      role: user.role,
-    });
-
-    const refreshToken = generateRefreshToken({
-      userId: user.id,
-    });
-
-    // ذخیره refresh token
-    await User.update(
-      { refresh_token: refreshToken },
-      { where: { id: user.id } },
-    );
-
-    // تنظیم کوکی‌های JWT
+    // کوکی‌های httpOnly برای امنیت
     setAccessTokenCookie(res, accessToken);
     setRefreshTokenCookie(res, refreshToken);
 
-    // تنظیم کوکی‌های اضافی برای middleware فرانت‌اند
-    const cookieOptions = {
-      httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax' as const,
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 روز
-    };
-
-    res.cookie('isAuth', 'true', cookieOptions);
-    res.cookie('userRole', user.role, cookieOptions);
-
-    return { accessToken, refreshToken };
-  }
-
-  private async invalidateRefreshToken(token: string): Promise<void> {
-    try {
-      const decoded = verifyRefreshToken(token) as { userId: string };
-      await User.update(
-        { refresh_token: null },
-        { where: { id: decoded.userId } },
-      );
-    } catch {
-      // نادیده گرفتن خطا
-    }
-  }
-
-  private validateAdminLoginInput(
-    username: string,
-    password: string,
-    captchaToken: string,
-  ): void {
-    if (!username || !password) {
-      throw new AppError('نام کاربری و رمز عبور الزامی است', {
-        statusCode: StatusCodes.BAD_REQUEST,
-      });
-    }
-
-    if (!captchaToken) {
-      throw new AppError('لطفاً کپچا را تکمیل کنید', {
-        statusCode: StatusCodes.BAD_REQUEST,
-      });
-    }
-  }
-
-  private async validateCaptcha(captchaToken: string): Promise<void> {
-    const captchaResult = await verifyCaptcha(captchaToken);
-
-    if (!captchaResult.success) {
-      throw new AppError('کپچا نامعتبر است. لطفاً دوباره تلاش کنید', {
-        statusCode: StatusCodes.BAD_REQUEST,
-      });
-    }
+    // کوکی امضا شده برای middleware فرانت‌اند
+    const signedAuthState = createSignedAuthState(userId, role);
+    setAuthStateCookie(res, signedAuthState);
   }
 }

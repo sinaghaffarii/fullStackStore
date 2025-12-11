@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import type { NextRequest } from 'next/server';
 
 import { NextResponse } from 'next/server';
@@ -6,15 +7,126 @@ import { NextResponse } from 'next/server';
 // Constants
 // ============================================================================
 
+/** مسیرهای عمومی - همه دسترسی دارن */
 const PUBLIC_PATHS = ['/', '/products', '/categories', '/about', '/contact'];
-const CUSTOMER_AUTH_PATHS = ['/login', '/register'];
-const ADMIN_AUTH_PATHS = ['/login'];
+
+/** مسیرهای فقط مهمان - کاربران لاگین شده ریدایرکت میشن */
+const GUEST_ONLY_PATHS = ['/login', '/auth'];
+
+/** مسیرهای فقط ادمین */
 const ADMIN_ONLY_PATHS = ['/dashboard'];
+
+/** مسیرهای نیازمند لاگین (هر نقشی) */
+const AUTH_REQUIRED_PATHS = ['/profile', '/orders', '/checkout'];
+
+/** کلید secret برای تایید امضا - باید با بک‌اند یکی باشه */
+const COOKIE_SECRET =
+  process.env.COOKIE_SECRET ||
+  process.env.NEXT_PUBLIC_COOKIE_SECRET ||
+  'your-secret-key';
+
+const COOKIE_NAME = 'authState';
+const SEPARATOR = '.';
+
+// ============================================================================
+// Types
+// ============================================================================
+
+type UserRole = 'admin' | 'customer';
+
+interface AuthStatePayload {
+  userId: string;
+  role: UserRole;
+  exp: number;
+}
+
+interface AuthState {
+  isAuthenticated: boolean;
+  userId: string | null;
+  role: UserRole | null;
+}
+
+// ============================================================================
+// Crypto Helper (Web Crypto API)
+// ============================================================================
+
+/**
+ * ساخت امضای HMAC-SHA256 با Web Crypto API
+ */
+async function createSignature(data: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(COOKIE_SECRET);
+  const messageData = encoder.encode(data);
+
+  const key = await crypto.subtle.importKey(
+    'raw',
+    keyData,
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign'],
+  );
+
+  const signature = await crypto.subtle.sign('HMAC', key, messageData);
+
+  // تبدیل به base64url
+  return btoa(String.fromCharCode(...new Uint8Array(signature)))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/[=]/g, '');
+}
+
+/**
+ * تبدیل base64url به payload
+ */
+function decodePayload(encoded: string): AuthStatePayload | null {
+  try {
+    // تبدیل base64url به base64 استاندارد
+    const base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
+    const json = atob(base64);
+    return JSON.parse(json);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * تایید و خواندن کوکی امضا شده
+ */
+async function verifySignedAuthState(
+  cookieValue: string,
+): Promise<AuthStatePayload | null> {
+  if (!cookieValue) return null;
+
+  const parts = cookieValue.split(SEPARATOR);
+  if (parts.length !== 2) return null;
+
+  const [encodedPayload, signature] = parts;
+
+  // تایید امضا
+  const expectedSignature = await createSignature(encodedPayload);
+  if (signature !== expectedSignature) {
+    return null; // امضا نامعتبر - دستکاری شده
+  }
+
+  // decode کردن payload
+  const payload = decodePayload(encodedPayload);
+  if (!payload) return null;
+
+  // بررسی انقضا
+  if (payload.exp < Math.floor(Date.now() / 1000)) {
+    return null; // منقضی شده
+  }
+
+  return payload;
+}
 
 // ============================================================================
 // Helper Functions
 // ============================================================================
 
+/**
+ * بررسی مسیرهای استاتیک
+ */
 function isStaticPath(pathname: string): boolean {
   return (
     pathname.startsWith('/_next') ||
@@ -25,25 +137,56 @@ function isStaticPath(pathname: string): boolean {
   );
 }
 
+/**
+ * بررسی تطابق مسیر
+ */
 function matchesPath(pathname: string, paths: string[]): boolean {
   return paths.some(
     (path) => pathname === path || pathname.startsWith(`${path}/`),
   );
 }
 
-function createRedirect(request: NextRequest, path: string): NextResponse {
+/**
+ * خواندن و تایید وضعیت احراز هویت از کوکی امضا شده
+ */
+async function getAuthState(request: NextRequest): Promise<AuthState> {
+  const authStateCookie = request.cookies.get(COOKIE_NAME)?.value;
+
+  if (!authStateCookie) {
+    return { isAuthenticated: false, userId: null, role: null };
+  }
+
+  const payload = await verifySignedAuthState(authStateCookie);
+
+  if (!payload) {
+    return { isAuthenticated: false, userId: null, role: null };
+  }
+
+  return {
+    isAuthenticated: true,
+    userId: payload.userId,
+    role: payload.role,
+  };
+}
+
+/**
+ * ریدایرکت ساده
+ */
+function redirect(request: NextRequest, path: string): NextResponse {
   const response = NextResponse.redirect(new URL(path, request.url));
   response.headers.set('x-middleware-cache', 'no-cache');
   return response;
 }
 
-function createRedirectWithCallback(
+/**
+ * ریدایرکت با callback
+ */
+function redirectWithCallback(
   request: NextRequest,
   loginPath: string,
-  callbackUrl: string,
 ): NextResponse {
   const url = new URL(loginPath, request.url);
-  url.searchParams.set('callbackUrl', callbackUrl);
+  url.searchParams.set('callbackUrl', request.nextUrl.pathname);
   const response = NextResponse.redirect(url);
   response.headers.set('x-middleware-cache', 'no-cache');
   return response;
@@ -53,59 +196,50 @@ function createRedirectWithCallback(
 // Route Handlers
 // ============================================================================
 
-function handleAdminAuthPaths(
+/**
+ * مسیرهای فقط مهمان
+ */
+function handleGuestOnlyPaths(
   request: NextRequest,
-  isAuth: boolean,
-  userRole: string | undefined,
+  auth: AuthState,
 ): NextResponse | null {
-  if (isAuth && userRole === 'admin') {
-    return createRedirect(request, '/dashboard');
+  if (!auth.isAuthenticated) return null;
+
+  if (auth.role === 'admin') {
+    return redirect(request, '/dashboard');
   }
-  if (isAuth && userRole === 'customer') {
-    return createRedirect(request, '/');
-  }
-  return null;
+  return redirect(request, '/');
 }
 
-function handleCustomerAuthPaths(
-  request: NextRequest,
-  isAuth: boolean,
-  userRole: string | undefined,
-): NextResponse | null {
-  if (!isAuth) return null;
-
-  if (userRole === 'admin') {
-    return createRedirect(request, '/dashboard');
-  }
-  return createRedirect(request, '/');
-}
-
-// تغییرات اینجا انجام شد: pathname از ورودی حذف شد (تعداد پارامترها شد ۳)
+/**
+ * مسیرهای فقط ادمین
+ */
 function handleAdminOnlyPaths(
   request: NextRequest,
-  isAuth: boolean,
-  userRole: string | undefined,
+  auth: AuthState,
 ): NextResponse | null {
-  // pathname را از داخل request استخراج می‌کنیم
-  const { pathname } = request.nextUrl;
+  if (!auth.isAuthenticated) {
+    return redirectWithCallback(request, '/login');
+  }
 
-  if (!isAuth) {
-    return createRedirectWithCallback(request, '/login', pathname);
+  if (auth.role !== 'admin') {
+    return redirect(request, '/');
   }
-  if (userRole !== 'admin') {
-    return createRedirect(request, '/');
-  }
+
   return null;
 }
 
-function handleProfilePaths(
+/**
+ * مسیرهای نیازمند لاگین
+ */
+function handleAuthRequiredPaths(
   request: NextRequest,
-  pathname: string,
-  isAuth: boolean,
+  auth: AuthState,
 ): NextResponse | null {
-  if (!isAuth) {
-    return createRedirectWithCallback(request, '/login', pathname);
+  if (!auth.isAuthenticated) {
+    return redirectWithCallback(request, '/auth');
   }
+
   return null;
 }
 
@@ -113,49 +247,38 @@ function handleProfilePaths(
 // Main Middleware
 // ============================================================================
 
-export function proxy(request: NextRequest): NextResponse {
+export async function proxy(request: NextRequest): Promise<NextResponse> {
   const { pathname } = request.nextUrl;
 
-  // نادیده گرفتن مسیرهای استاتیک
+  // 1. نادیده گرفتن مسیرهای استاتیک
   if (isStaticPath(pathname)) {
     return NextResponse.next();
   }
 
-  const isAuth = request.cookies.get('isAuth')?.value === 'true';
-  const userRole = request.cookies.get('userRole')?.value;
+  // 2. خواندن و تایید وضعیت احراز هویت
+  const auth = await getAuthState(request);
 
-  // مسیرهای عمومی
+  // 3. مسیرهای عمومی
   if (matchesPath(pathname, PUBLIC_PATHS)) {
     return NextResponse.next();
   }
 
-  // صفحه لاگین ادمین
-  if (matchesPath(pathname, ADMIN_AUTH_PATHS)) {
-    return (
-      handleAdminAuthPaths(request, isAuth, userRole) ?? NextResponse.next()
-    );
+  // 4. مسیرهای فقط مهمان
+  if (matchesPath(pathname, GUEST_ONLY_PATHS)) {
+    return handleGuestOnlyPaths(request, auth) ?? NextResponse.next();
   }
 
-  // صفحات لاگین/ثبت‌نام مشتری
-  if (matchesPath(pathname, CUSTOMER_AUTH_PATHS)) {
-    return (
-      handleCustomerAuthPaths(request, isAuth, userRole) ?? NextResponse.next()
-    );
-  }
-
-  // مسیرهای داشبورد
+  // 5. مسیرهای فقط ادمین
   if (matchesPath(pathname, ADMIN_ONLY_PATHS)) {
-    // تغییر در فراخوانی: دیگر pathname را پاس نمی‌دهیم
-    return (
-      handleAdminOnlyPaths(request, isAuth, userRole) ?? NextResponse.next()
-    );
+    return handleAdminOnlyPaths(request, auth) ?? NextResponse.next();
   }
 
-  // صفحه پروفایل
-  if (pathname.startsWith('/profile')) {
-    return handleProfilePaths(request, pathname, isAuth) ?? NextResponse.next();
+  // 6. مسیرهای نیازمند لاگین
+  if (matchesPath(pathname, AUTH_REQUIRED_PATHS)) {
+    return handleAuthRequiredPaths(request, auth) ?? NextResponse.next();
   }
 
+  // 7. سایر مسیرها
   return NextResponse.next();
 }
 
