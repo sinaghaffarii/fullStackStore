@@ -2,16 +2,13 @@ import type { Optional } from 'sequelize';
 
 import { DataTypes, Model } from 'sequelize';
 
-import type { Cart } from './cart.model';
-import type { OTP } from './otp.model';
-
 import { sequelize } from '../../../configs/database';
 
 // ============================================================================
 // Attributes Interface
 // ============================================================================
 
-interface UserAttributes {
+export interface UserAttributes {
   id: string;
   username?: string;
   email?: string;
@@ -37,6 +34,7 @@ export interface UserCreationAttributes
     | 'is_verified'
     | 'password'
     | 'phone_number'
+    | 'refresh_token'
     | 'role'
     | 'updated_at'
     | 'username'
@@ -50,32 +48,37 @@ export class User
   extends Model<UserAttributes, UserCreationAttributes>
   implements UserAttributes
 {
-  // Associations
-  public readonly carts?: Cart[];
-  declare readonly created_at?: Date;
+  declare readonly created_at: Date;
   declare email?: string;
   declare id: string;
   declare is_verified: boolean;
-  public readonly otps?: OTP[];
-  declare password?: string;
+  declare password?: string | null;
   declare phone_number?: string;
-  declare refresh_token?: string;
+  declare refresh_token?: string | null;
   declare role: 'admin' | 'customer';
-
-  declare readonly updated_at?: Date;
+  declare readonly updated_at: Date;
   declare username?: string;
 
-  static associate(models: { OTP: typeof OTP; Cart: typeof Cart }): void {
-    User.hasMany(models.OTP, {
-      foreignKey: 'email',
-      sourceKey: 'email',
-      as: 'otps',
-    });
+  // ==================== Helper Methods ====================
 
-    User.hasMany(models.Cart, {
-      foreignKey: 'user_id',
-      as: 'carts',
-    });
+  isAdmin(): boolean {
+    return this.role === 'admin';
+  }
+
+  isCustomer(): boolean {
+    return this.role === 'customer';
+  }
+
+  toSafeObject() {
+    return {
+      id: this.id,
+      username: this.username,
+      email: this.email,
+      phoneNumber: this.phone_number,
+      role: this.role,
+      isVerified: this.is_verified,
+      createdAt: this.created_at,
+    };
   }
 }
 
@@ -91,7 +94,6 @@ User.init(
       primaryKey: true,
     },
     username: {
-      // ✅ اضافه شده
       type: DataTypes.STRING(50),
       allowNull: true,
       unique: true,
@@ -100,9 +102,7 @@ User.init(
       type: DataTypes.STRING(255),
       allowNull: true,
       unique: true,
-      validate: {
-        isEmail: true,
-      },
+      validate: { isEmail: true },
     },
     phone_number: {
       type: DataTypes.STRING(15),
@@ -134,6 +134,12 @@ User.init(
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
+    indexes: [
+      { fields: ['phone_number'] },
+      { fields: ['email'] },
+      { fields: ['username'] },
+      { fields: ['role'] },
+    ],
   },
 );
 

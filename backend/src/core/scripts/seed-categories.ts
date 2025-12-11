@@ -1,5 +1,5 @@
-import { sequelize } from '../src/configs/database';
-import { Category } from '../src/infrastructure/database/models/category.model';
+import { sequelize } from '../../configs/database';
+import { Category } from '../../infrastructure/database/models/category.model';
 
 async function seedCategories() {
   try {

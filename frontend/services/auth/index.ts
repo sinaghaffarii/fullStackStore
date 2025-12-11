@@ -12,7 +12,7 @@ class AuthService {
   private baseUrl: string;
 
   constructor() {
-    this.baseUrl = `${API_BASE_URL}/api/auth`;
+    this.baseUrl = `${API_BASE_URL}/auth`;
   }
 
   async adminLogin(data: AdminLoginRequest): Promise<AdminLoginResponse> {

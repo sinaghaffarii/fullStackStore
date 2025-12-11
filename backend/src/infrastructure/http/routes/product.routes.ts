@@ -4,30 +4,44 @@ import { ProductRepository } from '../../../core/repositories/product.repository
 import { ProductService } from '../../../core/services/product.service';
 import { ProductController } from '../controllers/product.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
+import {
+  apiRateLimit,
+  strictRateLimit,
+} from '../middlewares/rate-limit.middleware';
 import { roleMiddleware } from '../middlewares/role.middleware';
 import { validateRequest } from '../middlewares/validation.middleware';
 import { productValidation } from '../validators/product.validator';
 
 const router = Router();
 
-// Dependency Injection
 const productRepository = new ProductRepository();
 const productService = new ProductService(productRepository);
 const productController = new ProductController(productService);
 
-// Public routes
+// ==================== Public routes ====================
+// Rate limit: 60 درخواست در دقیقه
+
 router.get(
   '/',
+  apiRateLimit,
   validateRequest(productValidation.listProducts, 'query'),
   productController.listProducts,
 );
 
-router.get('/:id', productController.getProduct);
+router.get('/:id', apiRateLimit, productController.getProduct);
 
-router.get('/category/:categoryId', productController.getProductsByCategory);
+router.get(
+  '/category/:categoryId',
+  apiRateLimit,
+  productController.getProductsByCategory,
+);
+
+// ==================== Protected routes (Admin only) ====================
+// Rate limit: 30 عملیات در 15 دقیقه
 
 router.post(
   '/',
+  strictRateLimit,
   authMiddleware,
   roleMiddleware(['admin']),
   validateRequest(productValidation.createProduct),
@@ -36,6 +50,7 @@ router.post(
 
 router.put(
   '/:id',
+  strictRateLimit,
   authMiddleware,
   roleMiddleware(['admin']),
   validateRequest(productValidation.updateProduct),
@@ -44,6 +59,7 @@ router.put(
 
 router.delete(
   '/:id',
+  strictRateLimit,
   authMiddleware,
   roleMiddleware(['admin']),
   productController.deleteProduct,
@@ -51,6 +67,7 @@ router.delete(
 
 router.patch(
   '/:id/stock',
+  strictRateLimit,
   authMiddleware,
   roleMiddleware(['admin']),
   validateRequest(productValidation.updateStock),
