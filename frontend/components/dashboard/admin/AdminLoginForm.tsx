@@ -208,7 +208,7 @@ export function AdminLoginForm() {
       {/* دکمه ورود */}
       <Button
         size="default"
-        className="w-full mt-2"
+        className="mt-2 w-full"
         disabled={loginMutation.isPending}
         type="submit"
         variant="default"
