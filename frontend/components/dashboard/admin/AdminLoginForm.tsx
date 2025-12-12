@@ -2,7 +2,7 @@
 /* eslint-disable max-lines-per-function */
 'use client';
 
-import { Turnstile } from '@marsidev/react-turnstile';
+// import { Turnstile } from '@marsidev/react-turnstile';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -11,7 +11,7 @@ import { useForm } from 'react-hook-form';
 
 import type { AuthError } from '@/types/auth';
 
-import { Label } from '@/components/ui/Label';
+import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
 import { useAdminLogin } from '@/services/auth/hooks';
 
@@ -20,7 +20,11 @@ interface LoginFormData {
   password: string;
 }
 
-const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '';
+// interface TranstileInstance {
+//   reset: () => void;
+// }
+
+// const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '';
 
 export function AdminLoginForm() {
   const router = useRouter();
@@ -28,8 +32,8 @@ export function AdminLoginForm() {
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
 
   const [showPassword, setShowPassword] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const [captchaError, setCaptchaError] = useState(false);
+  // const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  // const [captchaError, setCaptchaError] = useState(false);
 
   const loginMutation = useAdminLogin();
 
@@ -45,19 +49,20 @@ export function AdminLoginForm() {
     },
   });
 
-  const onSubmit = (data: LoginFormData) => {
-    if (!captchaToken) {
-      setCaptchaError(true);
-      return;
-    }
+  // const transtileRef = useRef<TranstileInstance>(null);
 
-    setCaptchaError(false);
+  const onSubmit = (data: LoginFormData) => {
+    // if (!captchaToken) {
+    //   setCaptchaError(true);
+    //   return;
+    // }
+
+    // setCaptchaError(false);
 
     loginMutation.mutate(
       {
         username: data.username,
         password: data.password,
-        captchaToken,
       },
       {
         onSuccess: () => {
@@ -68,7 +73,8 @@ export function AdminLoginForm() {
           if (error.field) {
             setError(error.field, { message: error.message });
           }
-          setCaptchaToken(null);
+          // setCaptchaToken(null);
+          // transtileRef.current?.reset();
         },
       },
     );
@@ -76,11 +82,11 @@ export function AdminLoginForm() {
 
   return (
     <form
-      className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm"
+      className="space-y-6 rounded-lg border border-slate-200 bg-white p-6 shadow-sm"
       onSubmit={handleSubmit(onSubmit)}
     >
       {/* نام کاربری */}
-      <div className="mb-4">
+      <div>
         <label
           className="mb-1.5 block text-sm font-medium text-slate-700"
           htmlFor="username"
@@ -115,7 +121,7 @@ export function AdminLoginForm() {
       </div>
 
       {/* رمز عبور */}
-      <div className="mb-4">
+      <div>
         <label
           className="mb-1.5 block text-sm font-medium text-slate-700"
           htmlFor="password"
@@ -163,7 +169,7 @@ export function AdminLoginForm() {
         )}
       </div>
 
-      {/* کپچا */}
+      {/* کپچا
       <div className="mb-6">
         <Label className="mb-1.5 block text-sm font-medium text-slate-700">
           تأیید امنیتی
@@ -197,18 +203,15 @@ export function AdminLoginForm() {
             لطفاً کپچا را تکمیل کنید
           </p>
         )}
-      </div>
+      </div> */}
 
       {/* دکمه ورود */}
-      <button
+      <Button
+        size="default"
+        className="w-full mt-2"
         disabled={loginMutation.isPending}
         type="submit"
-        className={cn(
-          'flex w-full items-center justify-center rounded-md bg-slate-900 px-4 py-2.5 text-sm font-medium text-white',
-          'hover:bg-slate-800',
-          'focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 focus:outline-none',
-          'disabled:cursor-not-allowed disabled:opacity-50',
-        )}
+        variant="default"
       >
         {loginMutation.isPending ? (
           <>
@@ -218,7 +221,7 @@ export function AdminLoginForm() {
         ) : (
           'ورود'
         )}
-      </button>
+      </Button>
 
       {/* لینک بازگشت */}
       <div className="mt-4 text-center">

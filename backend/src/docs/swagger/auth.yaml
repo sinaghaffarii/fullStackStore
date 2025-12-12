@@ -69,13 +69,11 @@ paths:
           application/json:
             schema:
               type: object
-              required: [username, password, captchaToken]
+              required: [username, password]
               properties:
                 username:
                   type: string
                 password:
-                  type: string
-                captchaToken:
                   type: string
       responses:
         200:

@@ -7,7 +7,7 @@ import type { AuthUser } from '../middlewares/auth.middleware';
 
 import { tokenService } from '../../../core/services/token.service';
 import { AppError } from '../../../shared/errors/app-error';
-import { verifyCaptcha } from '../../../shared/utils/captcha';
+// import { verifyCaptcha } from '../../../shared/utils/captcha';
 import {
   clearAuthCookies,
   setAccessTokenCookie,
@@ -43,15 +43,16 @@ export class AuthController {
   // ==================== Admin Login ====================
 
   adminLogin = async (req: Request, res: Response): Promise<void> => {
-    const { username, password, captchaToken } = req.body;
+    // const { username, password, captchaToken } = req.body;
+    const { username, password } = req.body;
 
-    // تایید کپچا
-    const captchaResult = await verifyCaptcha(captchaToken);
-    if (!captchaResult.success) {
-      throw new AppError('کپچا نامعتبر است', {
-        statusCode: StatusCodes.BAD_REQUEST,
-      });
-    }
+    // // تایید کپچا
+    // const captchaResult = await verifyCaptcha(captchaToken);
+    // if (!captchaResult.success) {
+    //   throw new AppError('کپچا نامعتبر است', {
+    //     statusCode: StatusCodes.BAD_REQUEST,
+    //   });
+    // }
 
     // بررسی اطلاعات ورود
     const user = await this.authService.adminLogin(username, password);
