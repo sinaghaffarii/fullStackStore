@@ -1,0 +1,41 @@
+tags:
+  - name: Cart
+    description: مدیریت سبد خرید
+
+paths:
+  /cart:
+    get:
+      tags: [Cart]
+      summary: دریافت سبد خرید
+      responses:
+        200:
+          description: Success
+
+    post:
+      tags: [Cart]
+      summary: افزودن به سبد خرید
+      responses:
+        200:
+          description: Added
+
+    delete:
+      tags: [Cart]
+      summary: پاک کردن سبد خرید
+      responses:
+        200:
+          description: Cleared
+
+  /cart/{itemId}:
+    patch:
+      tags: [Cart]
+      summary: تغییر تعداد آیتم
+      responses:
+        200:
+          description: Updated
+
+    delete:
+      tags: [Cart]
+      summary: حذف آیتم
+      responses:
+        200:
+          description: Removed

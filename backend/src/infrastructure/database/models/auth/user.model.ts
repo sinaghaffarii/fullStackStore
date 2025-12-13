@@ -2,7 +2,7 @@ import type { Optional } from 'sequelize';
 
 import { DataTypes, Model } from 'sequelize';
 
-import { sequelize } from '../../../configs/database';
+import { sequelize } from '../../../../configs/database';
 
 // ============================================================================
 // Attributes Interface

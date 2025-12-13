@@ -1,12 +1,18 @@
 import { sequelize } from '../../configs/database';
-import { Category } from '../../infrastructure/database/models/category.model';
+import { Category } from '../../infrastructure/database/models';
+
+function toSlug(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]+/g, '');
+}
 
 async function seedCategories() {
   try {
     await sequelize.authenticate();
     console.log('Connected to database');
 
-    // Create sample categories
     const categories = [
       {
         name: 'آرایشی و بهداشتی',
@@ -26,12 +32,17 @@ async function seedCategories() {
       },
     ];
 
-    for (const categoryData of categories) {
-      await Category.findOrCreate({
-        where: { name: categoryData.name },
-        defaults: categoryData,
-      });
-    }
+    await Promise.all(
+      categories.map((category) =>
+        Category.findOrCreate({
+          where: { name: category.name },
+          defaults: {
+            ...category,
+            slug: toSlug(category.name),
+          } as any,
+        }),
+      ),
+    );
 
     console.log('✅ Categories seeded successfully');
     process.exit(0);

@@ -1,104 +1,22 @@
+tags:
+  - name: Categories
+    description: مدیریت دسته‌بندی‌ها
+
 components:
   schemas:
     Category:
       type: object
-      required:
-        - name
       properties:
         id:
           type: string
           format: uuid
-          example: '123e4567-e89b-12d3-a456-426614174000'
         name:
           type: string
-          example: 'پوشاک'
-        description:
+        slug:
           type: string
-          example: 'لباس و پوشاک'
-        parent_id:
-          type: string
-          format: uuid
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        parent:
-          $ref: '#/components/schemas/Category'
+        is_active:
+          type: boolean
         children:
-          type: array
-          items:
-            $ref: '#/components/schemas/Category'
-
-    CreateCategoryRequest:
-      type: object
-      required:
-        - name
-      properties:
-        name:
-          type: string
-          example: 'پوشاک'
-        description:
-          type: string
-          example: 'لباس و پوشاک'
-        parent_id:
-          type: string
-          format: uuid
-          nullable: true
-          example: null
-
-    UpdateCategoryRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          example: 'پوشاک و مد'
-        description:
-          type: string
-          example: 'لباس، پوشاک و مد روز'
-        parent_id:
-          type: string
-          format: uuid
-          nullable: true
-
-    CategoryListResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: 'Categories retrieved successfully'
-        data:
-          type: object
-          properties:
-            categories:
-              type: array
-              items:
-                $ref: '#/components/schemas/Category'
-            total:
-              type: integer
-              example: 50
-            page:
-              type: integer
-              example: 1
-            totalPages:
-              type: integer
-              example: 5
-
-    CategoryHierarchyResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: 'Category hierarchy retrieved successfully'
-        data:
           type: array
           items:
             $ref: '#/components/schemas/Category'
@@ -106,181 +24,44 @@ components:
 paths:
   /categories:
     get:
-      tags:
-        - Categories
-      summary: Get list of categories with pagination
-      parameters:
-        - name: page
-          in: query
-          schema:
-            type: integer
-            minimum: 1
-            default: 1
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 10
-        - name: include_children
-          in: query
-          schema:
-            type: boolean
-            default: false
+      tags: [Categories]
+      summary: لیست دسته‌بندی‌ها
       responses:
-        '200':
-          description: Categories retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CategoryListResponse'
+        200:
+          description: Success
 
     post:
-      tags:
-        - Categories
-      summary: Create a new category (Admin only)
+      tags: [Categories]
+      summary: ایجاد دسته‌بندی
       security:
         - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateCategoryRequest'
       responses:
-        '201':
-          description: Category created successfully
-        '400':
-          description: Validation error
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden (Admin only)
-        '409':
-          description: Category name already exists
+        201:
+          description: Created
 
   /categories/hierarchy:
     get:
-      tags:
-        - Categories
-      summary: Get complete category hierarchy
+      tags: [Categories]
+      summary: ساختار درختی دسته‌بندی‌ها
       responses:
-        '200':
-          description: Category hierarchy retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CategoryHierarchyResponse'
-
-  /categories/search:
-    get:
-      tags:
-        - Categories
-      summary: Search categories by name or description
-      parameters:
-        - name: q
-          in: query
-          required: true
-          schema:
-            type: string
-            example: 'پوشاک'
-      responses:
-        '200':
-          description: Categories search completed
-        '400':
-          description: Search query is required
+        200:
+          description: Success
 
   /categories/{id}:
-    get:
-      tags:
-        - Categories
-      summary: Get category by ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Category retrieved successfully
-        '404':
-          description: Category not found
-
     put:
-      tags:
-        - Categories
-      summary: Update category (Admin only)
+      tags: [Categories]
+      summary: ویرایش دسته‌بندی
       security:
         - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateCategoryRequest'
       responses:
-        '200':
-          description: Category updated successfully
-        '400':
-          description: Validation error or circular reference
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Category not found
-        '409':
-          description: Category name already exists
+        200:
+          description: Updated
 
     delete:
-      tags:
-        - Categories
-      summary: Delete category (Admin only)
+      tags: [Categories]
+      summary: حذف دسته‌بندی
       security:
         - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
       responses:
-        '200':
-          description: Category deleted successfully
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Category not found
-        '409':
-          description: Category has subcategories or products
-
-  /categories/{parentId}/subcategories:
-    get:
-      tags:
-        - Categories
-      summary: Get subcategories of a parent category
-      parameters:
-        - name: parentId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Subcategories retrieved successfully
-        '404':
-          description: Parent category not found
+        200:
+          description: Deleted

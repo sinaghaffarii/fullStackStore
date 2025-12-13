@@ -1,4 +1,3 @@
-# src/docs/swagger/auth.yaml
 tags:
   - name: Auth
     description: احراز هویت و مدیریت نشست‌ها
@@ -37,27 +36,15 @@ paths:
               properties:
                 phoneNumber:
                   type: string
-                  example: '09121234567'
                 code:
                   type: string
-                  example: '12345'
       responses:
         200:
           description: ورود موفق
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      user:
-                        $ref: '#/components/schemas/User'
+                $ref: '#/components/responses/UserData'
 
   /auth/admin/login:
     post:
@@ -77,19 +64,17 @@ paths:
                   type: string
       responses:
         200:
-          description: ورود موفق
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  data:
-                    type: object
-                    properties:
-                      user:
-                        $ref: '#/components/schemas/User'
+          $ref: '#/components/responses/UserData'
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: اطلاعات کاربر فعلی
+      security:
+        - cookieAuth: []
+      responses:
+        200:
+          $ref: '#/components/responses/UserData'
 
   /auth/admin/me:
     get:
@@ -100,17 +85,6 @@ paths:
       responses:
         200:
           $ref: '#/components/responses/UserData'
-
-  /auth/refresh-token:
-    post:
-      tags: [Auth]
-      summary: تازه‌سازی توکن
-      description: |
-        این endpoint برای حالت‌های خاص استفاده میشه.
-        در حالت عادی، middleware به صورت خودکار توکن رو refresh میکنه.
-      responses:
-        200:
-          $ref: '#/components/responses/Success'
 
   /auth/logout:
     post:
@@ -132,15 +106,13 @@ paths:
         200:
           $ref: '#/components/responses/Success'
 
-  /auth/me:
-    get:
+  /auth/refresh-token:
+    post:
       tags: [Auth]
-      summary: اطلاعات کاربر فعلی
-      security:
-        - cookieAuth: []
+      summary: تازه‌سازی توکن
       responses:
         200:
-          $ref: '#/components/responses/UserData'
+          $ref: '#/components/responses/Success'
 
   /auth/sessions:
     get:

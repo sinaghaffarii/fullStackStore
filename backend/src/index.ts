@@ -15,7 +15,10 @@ import { errorHandler } from './infrastructure/http/middlewares/error-handler.mi
 import { notFoundHandler } from './infrastructure/http/middlewares/not-fount.middleware';
 import { globalRateLimit } from './infrastructure/http/middlewares/rate-limit.middleware';
 import { authRoutes } from './infrastructure/http/routes/auth.routes';
+import { brandRoutes } from './infrastructure/http/routes/brand.routes';
+import { cartRoutes } from './infrastructure/http/routes/cart.routes';
 import { categoryRoutes } from './infrastructure/http/routes/category.routes';
+import { discountRoutes } from './infrastructure/http/routes/discount.routes';
 import { productRoutes } from './infrastructure/http/routes/product.routes';
 import { profileRoutes } from './infrastructure/http/routes/profile.routes';
 import { CleanupService } from './shared/utils/cleanup';
@@ -143,11 +146,14 @@ class App {
       }
     });
 
-    // API routes - هر کدوم rate limit خودشون رو دارن
     this.app.use('/api/auth', authRoutes);
+    this.app.use('/api/profile', profileRoutes);
+
     this.app.use('/api/products', productRoutes);
     this.app.use('/api/categories', categoryRoutes);
-    this.app.use('/api/profile', profileRoutes);
+    this.app.use('/api/brands', brandRoutes);
+    this.app.use('/api/cart', cartRoutes);
+    this.app.use('/api/discounts', discountRoutes);
 
     console.log('✅ Routes setup completed');
   }

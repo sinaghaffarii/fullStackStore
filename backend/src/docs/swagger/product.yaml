@@ -1,362 +1,77 @@
+tags:
+  - name: Products
+    description: مدیریت محصولات
+
 components:
   schemas:
     Product:
       type: object
-      required:
-        - name
-        - base_price
-        - category_id
-        - attributes
-        - stock_quantity
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: '123e4567-e89b-12d3-a456-426614174000'
-        name:
-          type: string
-          example: 'شلوار جین مردانه'
-        description:
-          type: string
-          example: 'شلوار جین با کیفیت عالی'
-        base_price:
-          type: number
-          format: float
-          example: 150000.00
-        category_id:
-          type: string
-          format: uuid
-        attributes:
-          type: object
-          example:
-            size: 'L'
-            color: 'آبی'
-            material: 'جین'
-            style: 'اسلیم'
-        stock_quantity:
-          type: integer
-          example: 50
-        is_active:
-          type: boolean
-          example: true
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        category:
-          $ref: '#/components/schemas/Category'
-
-    Category:
-      type: object
       properties:
         id:
           type: string
           format: uuid
         name:
           type: string
-          example: 'پوشاک'
-        description:
+        slug:
           type: string
-          example: 'لباس و پوشاک'
-
-    CreateProductRequest:
-      type: object
-      required:
-        - name
-        - base_price
-        - category_id
-        - attributes
-        - stock_quantity
-      properties:
-        name:
-          type: string
-          example: 'رنگ مو مشکی'
-        description:
-          type: string
-          example: 'رنگ مو با کیفیت عالی'
-        base_price:
-          type: number
-          example: 50000
-        category_id:
-          type: string
-          format: uuid
-        attributes:
-          type: object
-          example:
-            brand: 'گارنیر'
-            color: 'مشکی'
-            volume: '200ml'
-            hair_type: 'طبیعی'
-        stock_quantity:
+        final_price:
           type: integer
-          example: 100
-
-    UpdateProductRequest:
-      type: object
-      properties:
-        name:
+        stock_status:
           type: string
-        description:
-          type: string
-        base_price:
-          type: number
-        category_id:
-          type: string
-          format: uuid
-        attributes:
-          type: object
-        stock_quantity:
-          type: integer
-
-    ProductListResponse:
-      type: object
-      properties:
-        success:
+        is_featured:
           type: boolean
-          example: true
-        message:
-          type: string
-          example: 'Products retrieved successfully'
-        data:
-          type: object
-          properties:
-            products:
-              type: array
-              items:
-                $ref: '#/components/schemas/Product'
-            total:
-              type: integer
-              example: 150
-            page:
-              type: integer
-              example: 1
-            totalPages:
-              type: integer
-              example: 15
-
-    UpdateStockRequest:
-      type: object
-      required:
-        - quantity
-      properties:
-        quantity:
-          type: integer
-          example: 25
 
 paths:
   /products:
     get:
-      tags:
-        - Products
-      summary: Get list of products with filtering and pagination
-      parameters:
-        - name: category_id
-          in: query
-          schema:
-            type: string
-            format: uuid
-        - name: min_price
-          in: query
-          schema:
-            type: number
-        - name: max_price
-          in: query
-          schema:
-            type: number
-        - name: in_stock
-          in: query
-          schema:
-            type: boolean
-        - name: search
-          in: query
-          schema:
-            type: string
-        - name: page
-          in: query
-          schema:
-            type: integer
-            minimum: 1
-            default: 1
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 10
-        - name: attributes
-          in: query
-          description: JSON string of attributes to filter by
-          schema:
-            type: string
-            example: '{"color": "آبی", "size": "L"}'
+      tags: [Products]
+      summary: لیست محصولات
       responses:
-        '200':
-          description: Products retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductListResponse'
+        200:
+          description: Success
 
     post:
-      tags:
-        - Products
-      summary: Create a new product (Admin only)
+      tags: [Products]
+      summary: ایجاد محصول
       security:
         - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateProductRequest'
       responses:
-        '201':
-          description: Product created successfully
-        '400':
-          description: Validation error
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden (Admin only)
+        201:
+          description: Created
+
+  /products/{slug}:
+    get:
+      tags: [Products]
+      summary: دریافت محصول
+      responses:
+        200:
+          description: Success
 
   /products/{id}:
-    get:
-      tags:
-        - Products
-      summary: Get product by ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Product retrieved successfully
-        '404':
-          description: Product not found
-
     put:
-      tags:
-        - Products
-      summary: Update product (Admin only)
+      tags: [Products]
+      summary: ویرایش محصول
       security:
         - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateProductRequest'
       responses:
-        '200':
-          description: Product updated successfully
-        '400':
-          description: Validation error
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Product not found
+        200:
+          description: Updated
 
     delete:
-      tags:
-        - Products
-      summary: Delete product (soft delete - Admin only)
+      tags: [Products]
+      summary: حذف محصول
       security:
         - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
       responses:
-        '200':
-          description: Product deleted successfully
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Product not found
+        200:
+          description: Deleted
 
-  /products/{id}/stock:
+  /products/stock:
     patch:
-      tags:
-        - Products
-      summary: Update product stock (Admin only)
+      tags: [Products]
+      summary: بروزرسانی موجودی
       security:
         - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateStockRequest'
       responses:
-        '200':
-          description: Stock updated successfully
-        '400':
-          description: Validation error
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Product not found
-
-  /products/category/{categoryId}:
-    get:
-      tags:
-        - Products
-      summary: Get products by category
-      parameters:
-        - name: categoryId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - name: page
-          in: query
-          schema:
-            type: integer
-            minimum: 1
-            default: 1
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 10
-      responses:
-        '200':
-          description: Products retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductListResponse'
-        '404':
-          description: Category not found
+        200:
+          description: Updated

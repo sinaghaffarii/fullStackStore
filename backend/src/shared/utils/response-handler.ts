@@ -1,7 +1,5 @@
 import type { Response } from 'express';
 
-import { StatusCodes } from 'http-status-codes';
-
 export interface ApiResponse<T = any> {
   success: boolean;
   message: string;
@@ -31,19 +29,21 @@ export function sendResponse<T>(
 
 export function sendError(
   res: Response,
-  statusCode: number,
-  message: string,
-  errorCode?: string,
-  details?: any,
+  options: {
+    statusCode: number;
+    message: string;
+    errorCode?: string;
+    details?: any;
+  },
 ): void {
   const response: ApiResponse = {
     success: false,
-    message,
+    message: options.message,
     error: {
-      code: errorCode || `ERR_${statusCode}`,
-      details,
+      code: options.errorCode || `ERR_${options.statusCode}`,
+      details: options.details,
     },
   };
 
-  res.status(statusCode).json(response);
+  res.status(options.statusCode).json(response);
 }

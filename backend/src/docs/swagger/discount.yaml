@@ -1,0 +1,180 @@
+tags:
+  - name: Discounts
+    description: مدیریت تخفیف‌ها
+
+paths:
+  /discounts:
+    get:
+      tags: [Discounts]
+      summary: لیست تخفیف‌ها
+      parameters:
+        - name: scope
+          in: query
+          schema:
+            type: string
+            enum: [PRODUCT, CATEGORY, BRAND, GLOBAL]
+        - name: isActive
+          in: query
+          schema:
+            type: boolean
+        - name: validOnly
+          in: query
+          schema:
+            type: boolean
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Success
+
+    post:
+      tags: [Discounts]
+      summary: ایجاد تخفیف
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, type, value, scope, startsAt, endsAt]
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                  enum: [PERCENTAGE, FIXED]
+                value:
+                  type: number
+                maxAmount:
+                  type: number
+                scope:
+                  type: string
+                  enum: [PRODUCT, CATEGORY, BRAND, GLOBAL]
+                targetId:
+                  type: string
+                  format: uuid
+                startsAt:
+                  type: string
+                  format: date-time
+                endsAt:
+                  type: string
+                  format: date-time
+                badgeText:
+                  type: string
+                isActive:
+                  type: boolean
+      responses:
+        200:
+          description: Success
+
+  /discounts/banners:
+    get:
+      tags: [Discounts]
+      summary: تخفیف‌های فعال (بنر)
+      responses:
+        200:
+          description: Success
+
+  /discounts/{id}:
+    get:
+      tags: [Discounts]
+      summary: دریافت تخفیف
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+
+    put:
+      tags: [Discounts]
+      summary: ویرایش تخفیف
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                  enum: [PERCENTAGE, FIXED]
+                value:
+                  type: number
+                maxAmount:
+                  type: number
+                scope:
+                  type: string
+                  enum: [PRODUCT, CATEGORY, BRAND, GLOBAL]
+                targetId:
+                  type: string
+                  format: uuid
+                startsAt:
+                  type: string
+                  format: date-time
+                endsAt:
+                  type: string
+                  format: date-time
+                badgeText:
+                  type: string
+                isActive:
+                  type: boolean
+      responses:
+        200:
+          description: Success
+
+    delete:
+      tags: [Discounts]
+      summary: حذف تخفیف
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+
+  /discounts/{id}/toggle:
+    patch:
+      tags: [Discounts]
+      summary: تغییر وضعیت فعال/غیرفعال
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success

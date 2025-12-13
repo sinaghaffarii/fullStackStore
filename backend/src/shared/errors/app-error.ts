@@ -10,8 +10,20 @@ export class AppError extends Error {
   public isOperational: boolean;
   public statusCode: number;
 
-  constructor(message: string, options: AppErrorOptions = {}) {
+  /**
+   * انعطاف‌پذیر: می‌توانید عدد (statusCode) یا آبجکت AppErrorOptions بدهید.
+   * مثال‌ها:
+   *   throw new AppError('Not found', 404);
+   *   throw new AppError('Bad request', { statusCode: 400, field: 'email' });
+   */
+  constructor(message: string, statusOrOptions: number | AppErrorOptions = {}) {
     super(message);
+    this.name = 'AppError';
+
+    const options: AppErrorOptions =
+      typeof statusOrOptions === 'number'
+        ? { statusCode: statusOrOptions }
+        : statusOrOptions;
 
     const { statusCode = 500, isOperational = true, ...details } = options;
 

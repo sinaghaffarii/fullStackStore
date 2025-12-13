@@ -4,7 +4,7 @@ import axios from 'axios';
 import {
   SmsResponseCode,
   SmsResponseMessages,
-} from '../../shared/types/SmsTypes';
+} from '../../shared/types-enums/SmsTypes';
 
 export interface SmsResult {
   success: boolean;

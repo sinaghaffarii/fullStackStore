@@ -2,149 +2,127 @@ import type { Request } from 'express';
 
 import rateLimit from 'express-rate-limit';
 
-// ==================== Global Rate Limit ====================
-// برای همه درخواست‌ها - در app.ts استفاده میشه
+/* ==================== Global ==================== */
 export const globalRateLimit = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 دقیقه
-  max: 100, // 100 درخواست در 15 دقیقه
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: {
     success: false,
     message: 'درخواست‌های زیادی ارسال شده. لطفاً کمی صبر کنید.',
   },
-  standardHeaders: true,
-  legacyHeaders: false,
-  keyGenerator: (req: Request) => {
-    return req.ip || req.socket.remoteAddress || 'unknown';
-  },
 });
 
-// ==================== Auth Rate Limit ====================
-// برای verify-otp و عملیات احراز هویت
+/* ==================== Auth ==================== */
 export const authRateLimit = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 دقیقه
-  max: 20, // 20 تلاش
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: {
     success: false,
     message: 'تلاش‌های زیادی انجام شده. لطفاً 15 دقیقه دیگر تلاش کنید.',
   },
-  standardHeaders: true,
-  legacyHeaders: false,
-  keyGenerator: (req: Request) => {
-    const identifier = req.body?.phoneNumber || req.body?.username || '';
-    return `auth:${req.ip}:${identifier}`;
-  },
+
+  // ✅ custom key (avoid req.ip directly)
+  keyGenerator: (req: Request) =>
+    `auth:${req.body?.phoneNumber || req.body?.username || 'unknown'}`,
 });
 
-// ==================== OTP Rate Limit ====================
-// برای send-otp - محدودتر
+/* ==================== OTP ==================== */
 export const otpRateLimit = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 ساعت
-  max: 5, // فقط 5 OTP در ساعت
+  windowMs: 60 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: {
     success: false,
     message:
       'تعداد درخواست کد تأیید بیش از حد مجاز. لطفاً یک ساعت دیگر تلاش کنید.',
   },
-  standardHeaders: true,
-  legacyHeaders: false,
-  keyGenerator: (req: Request) => {
-    return `otp:${req.body?.phoneNumber || req.ip}`;
-  },
+  keyGenerator: (req: Request) => `otp:${req.body?.phoneNumber || 'unknown'}`,
 });
 
-// ==================== Admin Login Rate Limit ====================
-// برای ورود ادمین - خیلی محدود
+/* ==================== Admin Login ==================== */
 export const adminLoginRateLimit = rateLimit({
-  windowMs: 30 * 60 * 1000, // 30 دقیقه
-  max: 5, // فقط 5 تلاش
+  windowMs: 30 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: {
     success: false,
     message: 'تلاش‌های ناموفق زیاد. لطفاً 30 دقیقه دیگر تلاش کنید.',
   },
-  standardHeaders: true,
-  legacyHeaders: false,
-  keyGenerator: (req: Request) => {
-    return `admin:${req.ip}:${req.body?.username || ''}`;
-  },
+  keyGenerator: (req: Request) => `admin:${req.body?.username || 'unknown'}`,
 });
 
-// ==================== Refresh Token Rate Limit ====================
-// برای refresh-token
+/* ==================== Refresh Token ==================== */
 export const refreshTokenRateLimit = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 دقیقه
-  max: 30, // 30 بار
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: {
     success: false,
     message: 'درخواست‌های زیادی برای تازه‌سازی توکن. لطفاً صبر کنید.',
   },
-  standardHeaders: true,
-  legacyHeaders: false,
 });
 
-// ==================== Password Reset Rate Limit ====================
-// برای درخواست ریست پسورد
+/* ==================== Password Reset ==================== */
 export const passwordResetRateLimit = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 ساعت
-  max: 3, // فقط 3 بار در ساعت
+  windowMs: 60 * 60 * 1000,
+  max: 3,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: {
     success: false,
     message: 'تعداد درخواست بازیابی رمز عبور بیش از حد مجاز.',
   },
-  standardHeaders: true,
-  legacyHeaders: false,
-  keyGenerator: (req: Request) => {
-    return `reset:${req.body?.email || req.body?.phoneNumber || req.ip}`;
-  },
+  keyGenerator: (req: Request) =>
+    `reset:${req.body?.email || req.body?.phoneNumber || 'unknown'}`,
 });
 
-// ==================== API Rate Limit ====================
-// برای API های عمومی (محصولات، دسته‌بندی‌ها)
+/* ==================== API ==================== */
 export const apiRateLimit = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 دقیقه
-  max: 60, // 60 درخواست در دقیقه
-  message: {
-    success: false,
-    message: 'درخواست‌های زیادی ارسال شده. لطفاً کمی صبر کنید.',
-  },
+  windowMs: 60 * 1000,
+  max: 60,
   standardHeaders: true,
   legacyHeaders: false,
 });
 
-// ==================== Strict Rate Limit ====================
-// برای عملیات حساس (حذف، ویرایش)
+/* ==================== Strict ==================== */
 export const strictRateLimit = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 دقیقه
-  max: 30, // 30 عملیات
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: {
     success: false,
     message: 'تعداد عملیات بیش از حد مجاز. لطفاً صبر کنید.',
   },
-  standardHeaders: true,
-  legacyHeaders: false,
 });
 
-// اضافه کن به انتهای فایل rate-limit.middleware.ts
-
-// ==================== Search Rate Limit ====================
+/* ==================== Search ==================== */
 export const searchRateLimit = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 دقیقه
-  max: 30, // 30 جستجو در دقیقه
+  windowMs: 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: {
     success: false,
     message: 'تعداد جستجوها بیش از حد مجاز. لطفاً کمی صبر کنید.',
   },
-  standardHeaders: true,
-  legacyHeaders: false,
 });
 
-// ==================== Write Rate Limit ====================
+/* ==================== Write ==================== */
 export const writeRateLimit = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 دقیقه
-  max: 20, // 20 عملیات در دقیقه
+  windowMs: 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: {
     success: false,
     message: 'تعداد عملیات بیش از حد مجاز. لطفاً کمی صبر کنید.',
   },
-  standardHeaders: true,
-  legacyHeaders: false,
 });

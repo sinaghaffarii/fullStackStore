@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 
-import User from '../../infrastructure/database/models/user.model';
+import { User } from '../../infrastructure/database/models';
 
 interface AdminConfig {
   username: string;
