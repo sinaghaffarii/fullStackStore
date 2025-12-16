@@ -19,10 +19,16 @@ const createValidator = (source: ValidateSource) => {
 
       if (error) {
         const messages = error.details.map((d) => d.message).join('، ');
-        throw new AppError(messages, { statusCode: StatusCodes.BAD_REQUEST });
+        next(new AppError(messages, { statusCode: StatusCodes.BAD_REQUEST }));
+        return;
       }
 
-      req[source] = value;
+      if (source === 'body') {
+        req.body = value;
+      } else {
+        Object.assign(req[source], value);
+      }
+
       next();
     };
   };

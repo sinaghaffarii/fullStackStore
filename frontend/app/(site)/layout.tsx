@@ -9,7 +9,7 @@ export default function SiteLayout({
   return (
     <>
       <Header />
-      <main className="flex-1 bg-[#e3e3e33f]">{children}</main>
+      <main className="flex-1 bg-[#f8f8f872]">{children}</main>
       <Footer />
     </>
   );

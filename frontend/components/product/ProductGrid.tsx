@@ -2,17 +2,31 @@
 
 import type { Product } from '@/types/product';
 
-import { ProductCard } from './ProductCard';
+import { UnifiedProductCard } from '../ui/UnifiedProductCard';
 
 interface ProductGridProps {
   products: Product[];
 }
 
 export function ProductGrid({ products }: ProductGridProps) {
+  const handleAddToCart = async (id: number) => {
+    // منطق افزودن به سبد خرید
+    console.log('Added to cart:', id);
+  };
   return (
-    <div className="mb-6 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 md:gap-4">
+    <div className="mb-6 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
       {products.map((product) => (
-        <ProductCard key={product.id} product={product} />
+        <UnifiedProductCard
+          key={product.id}
+          mode="catalog"
+          onAddToCart={handleAddToCart}
+          onLike={() => console.log('like')}
+          onQuickView={() => {
+            /* empty */
+          }}
+          priority
+          product={product}
+        />
       ))}
     </div>
   );

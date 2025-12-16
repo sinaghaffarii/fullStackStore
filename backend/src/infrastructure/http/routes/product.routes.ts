@@ -4,74 +4,57 @@ import { ProductRepository } from '../../../core/repositories/product.repository
 import { ProductService } from '../../../core/services/product.service';
 import { ProductController } from '../controllers/product.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
-import {
-  apiRateLimit,
-  strictRateLimit,
-} from '../middlewares/rate-limit.middleware';
 import { roleMiddleware } from '../middlewares/role.middleware';
 import { validateRequest } from '../middlewares/validation.middleware';
-import { productValidation } from '../validators/product.validator';
+import { productValidation } from '../validators';
 
 const router = Router();
 
+/* ✅ Dependency Injection */
 const productRepository = new ProductRepository();
 const productService = new ProductService(productRepository);
-const productController = new ProductController(productService);
+const controller = new ProductController(productService);
 
-// ==================== Public routes ====================
-// Rate limit: 60 درخواست در دقیقه
+/* ================= Routes ================= */
 
 router.get(
   '/',
-  apiRateLimit,
-  validateRequest(productValidation.listProducts, 'query'),
-  productController.listProducts,
+  validateRequest(productValidation.list, 'query'),
+  controller.list,
 );
 
-router.get('/:id', apiRateLimit, productController.getProduct);
-
-router.get(
-  '/category/:categoryId',
-  apiRateLimit,
-  productController.getProductsByCategory,
-);
-
-// ==================== Protected routes (Admin only) ====================
-// Rate limit: 30 عملیات در 15 دقیقه
+router.get('/slug/:slug', controller.getBySlug);
+router.get('/:id', controller.getById);
 
 router.post(
   '/',
-  strictRateLimit,
   authMiddleware,
   roleMiddleware(['admin']),
-  validateRequest(productValidation.createProduct),
-  productController.createProduct,
+  validateRequest(productValidation.create),
+  controller.create,
 );
 
 router.put(
   '/:id',
-  strictRateLimit,
   authMiddleware,
   roleMiddleware(['admin']),
-  validateRequest(productValidation.updateProduct),
-  productController.updateProduct,
+  validateRequest(productValidation.update),
+  controller.update,
 );
 
 router.delete(
   '/:id',
-  strictRateLimit,
   authMiddleware,
   roleMiddleware(['admin']),
-  productController.deleteProduct,
+  controller.delete,
 );
 
 router.patch(
-  '/:id/stock',
-  strictRateLimit,
+  '/stock',
   authMiddleware,
   roleMiddleware(['admin']),
   validateRequest(productValidation.updateStock),
-  productController.updateStock,
+  controller.updateStock,
 );
 
 export { router as productRoutes };

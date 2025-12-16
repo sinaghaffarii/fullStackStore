@@ -1,28 +1,39 @@
 import Joi from 'joi';
 
 export const categoryValidation = {
-  createCategory: Joi.object({
-    name: Joi.string().min(1).max(255).required().messages({
-      'string.empty': 'Category name is required',
-      'string.max': 'Category name cannot exceed 255 characters',
-    }),
-    description: Joi.string().max(1000).optional().allow('', null),
-    parent_id: Joi.string().uuid().optional().messages({
-      'string.guid': 'Parent ID must be a valid UUID',
-    }),
+  create: Joi.object({
+    name: Joi.string().min(2).max(100).required(),
+    slug: Joi.string()
+      .min(2)
+      .max(120)
+      .pattern(/^[-0-9a-z]+$/)
+      .required(),
+    description: Joi.string().max(500).optional().allow(''),
+    image: Joi.string().uri().max(500).optional(),
+    parent_id: Joi.string().uuid().optional().allow(null),
+    sort_order: Joi.number().integer().min(0).default(0),
+    is_active: Joi.boolean().default(true),
   }),
 
-  updateCategory: Joi.object({
-    name: Joi.string().min(1).max(255).optional(),
-    description: Joi.string().max(1000).optional().allow('', null),
-    parent_id: Joi.string().uuid().optional().messages({
-      'string.guid': 'Parent ID must be a valid UUID',
-    }),
+  update: Joi.object({
+    name: Joi.string().min(2).max(100).optional(),
+    slug: Joi.string()
+      .min(2)
+      .max(120)
+      .pattern(/^[-0-9a-z]+$/)
+      .optional(),
+    description: Joi.string().max(500).optional().allow(''),
+    image: Joi.string().uri().max(500).optional().allow(null),
+    parent_id: Joi.string().uuid().optional().allow(null),
+    sort_order: Joi.number().integer().min(0).optional(),
+    is_active: Joi.boolean().optional(),
   }),
 
-  listCategories: Joi.object({
-    page: Joi.number().integer().min(1).default(1),
-    limit: Joi.number().integer().min(1).max(100).default(10),
+  list: Joi.object({
+    parent_id: Joi.string().uuid().optional().allow(null),
+    is_active: Joi.boolean().optional(),
     include_children: Joi.boolean().default(false),
+    page: Joi.number().integer().min(1).default(1),
+    limit: Joi.number().integer().min(1).max(100).default(20),
   }),
 };

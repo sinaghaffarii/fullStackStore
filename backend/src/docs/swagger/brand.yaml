@@ -1,0 +1,81 @@
+tags:
+  - name: Brands
+    description: مدیریت برندها
+
+components:
+  schemas:
+    Brand:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        name_fa:
+          type: string
+        slug:
+          type: string
+        logo:
+          type: string
+        is_active:
+          type: boolean
+
+paths:
+  /brands:
+    get:
+      tags: [Brands]
+      summary: لیست برندها
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      brands:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Brand'
+                      total:
+                        type: integer
+
+    post:
+      tags: [Brands]
+      summary: ایجاد برند
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Brand'
+      responses:
+        201:
+          description: Created
+
+  /brands/{id}:
+    put:
+      tags: [Brands]
+      summary: ویرایش برند
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Updated
+
+    delete:
+      tags: [Brands]
+      summary: حذف برند
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Deleted

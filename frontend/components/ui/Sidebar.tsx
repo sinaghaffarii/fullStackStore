@@ -85,7 +85,7 @@ function SidebarProvider({
   children,
   ...props
 }: SidebarProviderProps) {
-  const isMobile = useMobile();
+  const { isMobile } = useMobile();
   const [openMobile, setOpenMobile] = React.useState(false);
   const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
 

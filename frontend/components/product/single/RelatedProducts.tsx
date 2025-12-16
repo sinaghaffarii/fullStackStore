@@ -8,7 +8,7 @@ import { useState } from 'react';
 
 import type { Product } from '@/types/product';
 
-import { ProductCard } from '@/components/product/ProductCard';
+import { UnifiedProductCard } from '@/components/ui/UnifiedProductCard';
 import { cn } from '@/lib/utils';
 
 interface RelatedProductsProps {
@@ -25,9 +25,9 @@ const defaultProducts: Product[] = Array.from({ length: 8 }, (_, i) => ({
   originalPrice: 400_000 + i * 25_000,
   discount: i % 2 === 0 ? 15 : 0,
   base_price: 400_000 + i * 25_000,
-  image: '/images/products/product_8.webp',
+  image: '/images/products/product_2.jpg',
   images: [
-    '/images/products/product_8.webp',
+    '/images/products/product_2.jpg',
     '/images/products/product_8_alt1.webp',
   ],
   rating: '4.3',
@@ -77,7 +77,7 @@ export function RelatedProducts({
         <div className="keen-slider" ref={sliderRef}>
           {products.map((product) => (
             <div className="keen-slider__slide" key={product.id}>
-              <ProductCard product={product} />
+              <UnifiedProductCard product={product} />
             </div>
           ))}
         </div>

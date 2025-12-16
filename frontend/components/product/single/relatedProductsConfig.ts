@@ -20,7 +20,7 @@ export const relatedProducts = Array(8)
     originalPrice: 400_000 + idx * 25_000,
     discountedPrice: 350_000 + idx * 25_000,
     discountPercentage: idx % 2 === 0 ? 12 : 0,
-    image: '/images/products/product_8.webp',
+    image: '/images/products/product_2.jpg',
     rating: '4.3',
     href: `/product/${idx + 1}`,
   }));

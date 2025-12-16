@@ -3,9 +3,9 @@ import type { CreateOptions, FindOptions, UpdateOptions } from 'sequelize';
 import type {
   ProductAttributes,
   ProductCreationAttributes,
-} from '../../infrastructure/database/models/product.model';
+} from '../../infrastructure/database/models';
 
-import { Product } from '../../infrastructure/database/models/product.model';
+import { Product } from '../../infrastructure/database/models';
 
 export class ProductRepository {
   async create(

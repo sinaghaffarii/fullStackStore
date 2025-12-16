@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 /* eslint-disable max-lines */
 'use client';
 
@@ -8,21 +9,12 @@ import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import React, { useState } from 'react';
 
+import type { Product } from '@/types/product';
+
+import { UnifiedProductCard } from '@/components/ui/UnifiedProductCard';
 import { cn } from '@/lib/utils';
 
-import ProductCard from '../ProductCard';
 import CarouselNavigation from './CarouselNavigation';
-
-interface Product {
-  id: number;
-  name: string;
-  brand: string;
-  image: string;
-  originalPrice: number;
-  discountedPrice: number;
-  discountPercentage: number;
-  href: string;
-}
 
 interface Props {
   products: Product[];
@@ -43,6 +35,36 @@ const defaultBreakpoints = {
   '(min-width: 1280px)': { slides: { perView: 5, spacing: 10 } },
 };
 
+// Skeleton برای یک کارت محصول
+const ProductCardSkeleton: React.FC<{ id: string }> = ({ id }) => (
+  <div
+    className="flex size-full animate-pulse flex-col rounded-lg border border-gray-100 bg-white p-3"
+    key={id}
+  >
+    <div className="aspect-square w-full rounded-md bg-gray-200" />
+    <div className="mt-3 h-4 w-3/4 rounded-sm bg-gray-200" />
+    <div className="mt-2 h-3 w-1/2 rounded-sm bg-gray-200" />
+    <div className="mt-auto flex items-center justify-between pt-3">
+      <div className="h-5 w-20 rounded-sm bg-gray-200" />
+      <div className="h-6 w-12 rounded-sm bg-gray-200" />
+    </div>
+  </div>
+);
+
+// Skeleton برای کل کاروسل
+const CarouselSkeleton: React.FC<{ count?: number }> = ({ count = 5 }) => (
+  <div className="flex gap-2.5 overflow-hidden">
+    {Array.from({ length: count }).map((_, idx) => (
+      <div
+        className="w-1/2 shrink-0 sm:w-1/3 md:w-1/4 lg:w-1/5"
+        key={`carousel-skeleton-${idx}`}
+      >
+        <ProductCardSkeleton id={`skeleton-card-${idx}`} />
+      </div>
+    ))}
+  </div>
+);
+
 const CarouselProducts: React.FC<Props> = ({
   products,
   title,
@@ -56,7 +78,14 @@ const CarouselProducts: React.FC<Props> = ({
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);
-  const [dotCount, setDotCount] = useState(0);
+
+  // از تعداد محصولات برای dot ها استفاده می‌کنیم (ثابت و بدون نیاز به ref)
+  const dotCount = products.length;
+
+  const handleAddToCart = async (id: number) => {
+    // منطق افزودن به سبد خرید
+    console.log('Added to cart:', id);
+  };
 
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>(
     {
@@ -67,11 +96,8 @@ const CarouselProducts: React.FC<Props> = ({
       slideChanged(slider) {
         setCurrentSlide(slider.track.details.rel);
       },
-      created(slider) {
+      created() {
         setLoaded(true);
-        if (slider.track.details) {
-          setDotCount(slider.track.details.slides.length);
-        }
       },
     },
     [
@@ -86,9 +112,7 @@ const CarouselProducts: React.FC<Props> = ({
         function nextTimeout() {
           clearTimeout(timeout);
           if (mouseOver) return;
-          timeout = setTimeout(() => {
-            slider.next();
-          }, 3000);
+          timeout = setTimeout(() => slider.next(), 3000);
         }
 
         slider.on('created', () => {
@@ -123,7 +147,7 @@ const CarouselProducts: React.FC<Props> = ({
               <h2 className="text-2xl font-bold tracking-tight text-gray-900 md:text-3xl lg:text-4xl">
                 {title}
               </h2>
-              {title && <div className="mt-1 h-0.5 w-12 bg-red-500"></div>}
+              {title && <div className="mt-1 h-0.5 w-12 bg-red-500" />}
               {description && (
                 <p className="mt-2 max-w-2xl text-gray-500">{description}</p>
               )}
@@ -143,45 +167,70 @@ const CarouselProducts: React.FC<Props> = ({
           </div>
         )}
 
-        <div className="group/carousel relative">
-          <div className="keen-slider" ref={sliderRef}>
-            {products.map((product) => (
-              <div
-                className="keen-slider__slide flex h-auto items-stretch"
-                key={product.id}
-              >
-                <ProductCard {...product} />
+        {/* نمایش Skeleton تا زمان آماده‌شدن */}
+        {!loaded && (
+          <>
+            <CarouselSkeleton count={5} />
+            {/* اسلایدر مخفی برای initialize شدن */}
+            <div aria-hidden="true" className="sr-only">
+              <div className="keen-slider" ref={sliderRef}>
+                {products.map((product) => (
+                  <div className="keen-slider__slide" key={product.id} />
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          </>
+        )}
 
-          <CarouselNavigation
-            visible={loaded && showArrows}
-            onNext={() => instanceRef.current?.next()}
-            onPrev={() => instanceRef.current?.prev()}
-          />
-        </div>
+        {/* محتوای اصلی بعد از load */}
+        {loaded && (
+          <div className="group/carousel relative">
+            <div className="keen-slider" ref={sliderRef}>
+              {products.map((product, index) => (
+                <div
+                  className="keen-slider__slide flex h-auto items-stretch"
+                  key={product.id}
+                >
+                  <UnifiedProductCard
+                    mode="carousel"
+                    onAddToCart={handleAddToCart}
+                    onLike={() => {
+                      /* empty */
+                    }}
+                    onQuickView={() => {
+                      /* empty */
+                    }}
+                    priority={index < 2}
+                    product={product}
+                  />
+                </div>
+              ))}
+            </div>
+
+            <CarouselNavigation
+              visible={showArrows}
+              onNext={() => instanceRef.current?.next()}
+              onPrev={() => instanceRef.current?.prev()}
+            />
+          </div>
+        )}
 
         {loaded && dotCount > 0 && (
           <div className="mt-6 flex justify-center gap-2">
-            {[...Array(dotCount).keys()].map((idx) => {
-              return (
-                <button
-                  aria-label={`Go to slide ${idx + 1}`}
-                  key={idx}
-                  type="button"
-                  onClick={() => {
-                    instanceRef.current?.moveToIdx(idx);
-                  }}
-                  className={cn(
-                    'h-1.5 rounded-full transition-all duration-300',
-                    currentSlide === idx
-                      ? 'w-6 bg-primary'
-                      : 'w-1.5 bg-gray-300 hover:bg-gray-400',
-                  )}
-                />
-              );
-            })}
+            {products.map((product, idx) => (
+              <button
+                aria-label={`Go to slide ${idx + 1}`}
+                key={`dot-${product.id}`}
+                type="button"
+                onClick={() => instanceRef.current?.moveToIdx(idx)}
+                className={cn(
+                  'h-1.5 rounded-full transition-all duration-300',
+                  currentSlide === idx
+                    ? 'w-6 bg-primary'
+                    : 'w-1.5 bg-gray-300 hover:bg-gray-400',
+                )}
+              />
+            ))}
           </div>
         )}
       </div>

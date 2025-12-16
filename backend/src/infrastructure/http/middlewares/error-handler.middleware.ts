@@ -10,47 +10,44 @@ export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
   console.error('Error caught by error handler:', error);
 
   if (error instanceof AppError) {
-    if (error.details) {
-      res.status(error.statusCode).json({
-        success: false,
-        message: error.message,
-        ...error.details,
-      });
-      return;
-    }
-    sendError(res, error.statusCode, error.message);
+    sendError(res, {
+      statusCode: error.statusCode,
+      message: error.message,
+      details: error.details,
+    });
     return;
   }
 
   if (error.name === 'SequelizeValidationError') {
-    sendError(
-      res,
-      StatusCodes.BAD_REQUEST,
-      'Validation error',
-      'VALIDATION_ERROR',
-    );
+    sendError(res, {
+      statusCode: StatusCodes.BAD_REQUEST,
+      message: 'Validation error',
+      errorCode: 'VALIDATION_ERROR',
+    });
     return;
   }
 
   if (error.name === 'SequelizeUniqueConstraintError') {
-    sendError(
-      res,
-      StatusCodes.CONFLICT,
-      'Resource already exists',
-      'DUPLICATE_ERROR',
-    );
+    sendError(res, {
+      statusCode: StatusCodes.CONFLICT,
+      message: 'Resource already exists',
+      errorCode: 'DUPLICATE_ERROR',
+    });
     return;
   }
 
   if (error.name === 'JsonWebTokenError') {
-    sendError(res, StatusCodes.UNAUTHORIZED, 'Invalid token', 'INVALID_TOKEN');
+    sendError(res, {
+      statusCode: StatusCodes.UNAUTHORIZED,
+      message: 'Invalid token',
+      errorCode: 'INVALID_TOKEN',
+    });
     return;
   }
 
-  sendError(
-    res,
-    StatusCodes.INTERNAL_SERVER_ERROR,
-    'Internal server error',
-    'INTERNAL_ERROR',
-  );
+  sendError(res, {
+    statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+    message: 'Internal server error',
+    errorCode: 'INTERNAL_ERROR',
+  });
 };

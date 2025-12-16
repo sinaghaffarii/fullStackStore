@@ -1,6 +1,6 @@
 import { DataTypes, Model, Op } from 'sequelize';
 
-import { sequelize } from '../../../configs/database';
+import { sequelize } from '../../../../configs/database';
 
 // ============================================================================
 // Attributes Interface

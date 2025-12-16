@@ -1,12 +1,13 @@
 import type { Request } from 'express';
 
-// src/core/services/token.service.ts
 import crypto from 'crypto';
 import { StatusCodes } from 'http-status-codes';
 
-import { User } from '../../infrastructure/database/models';
-import RefreshToken from '../../infrastructure/database/models/refresh-token.model';
-import TokenBlacklist from '../../infrastructure/database/models/token-blacklist.model';
+import {
+  RefreshToken,
+  TokenBlacklist,
+  User,
+} from '../../infrastructure/database/models';
 import { AppError } from '../../shared/errors/app-error';
 import {
   generateAccessToken,
@@ -30,8 +31,6 @@ interface DecodedToken {
 }
 
 export class TokenService {
-  // ==================== Config ====================
-
   private get maxSessionsPerUser(): number {
     return 5;
   }
@@ -39,8 +38,6 @@ export class TokenService {
   private get refreshTokenExpiryDays(): number {
     return 7;
   }
-
-  // ==================== Hash ====================
 
   async blacklistToken(
     token: string,
@@ -72,8 +69,6 @@ export class TokenService {
     }
   }
 
-  // ==================== Generate Tokens ====================
-
   async generateTokenPair(
     user: User,
     req: Request,
@@ -92,8 +87,6 @@ export class TokenService {
     return { accessToken, refreshToken };
   }
 
-  // ==================== Save Refresh Token ====================
-
   async getActiveSessions(userId: string) {
     const sessions = await RefreshToken.findAll({
       where: { user_id: userId },
@@ -109,19 +102,13 @@ export class TokenService {
     }));
   }
 
-  // ==================== Validate & Refresh ====================
-
   hashToken(token: string): string {
     return crypto.createHash('sha256').update(token).digest('hex');
   }
 
-  // ==================== Blacklist ====================
-
   async revokeAllUserTokens(userId: string): Promise<void> {
     await RefreshToken.destroy({ where: { user_id: userId } });
   }
-
-  // ==================== Revoke ====================
 
   async revokeRefreshToken(token: string): Promise<void> {
     const tokenHash = this.hashToken(token);
@@ -144,44 +131,31 @@ export class TokenService {
     try {
       decoded = verifyRefreshToken(refreshTokenValue) as DecodedToken;
     } catch {
-      throw new AppError('توکن نامعتبر یا منقضی شده', {
-        statusCode: StatusCodes.UNAUTHORIZED,
-      });
+      throw new AppError('توکن نامعتبر یا منقضی شده', StatusCodes.UNAUTHORIZED);
     }
 
     const tokenHash = this.hashToken(refreshTokenValue);
     const isBlacklisted = await TokenBlacklist.isBlacklisted(tokenHash);
     if (isBlacklisted) {
-      throw new AppError('توکن باطل شده است', {
-        statusCode: StatusCodes.UNAUTHORIZED,
-      });
+      throw new AppError('توکن باطل شده است', StatusCodes.UNAUTHORIZED);
     }
 
     const storedToken = await RefreshToken.findOne({
-      where: {
-        user_id: decoded.userId,
-        token_hash: tokenHash,
-      },
+      where: { user_id: decoded.userId, token_hash: tokenHash },
     });
 
     if (!storedToken) {
-      throw new AppError('توکن یافت نشد', {
-        statusCode: StatusCodes.UNAUTHORIZED,
-      });
+      throw new AppError('توکن یافت نشد', StatusCodes.UNAUTHORIZED);
     }
 
     if (storedToken.isExpired()) {
       await storedToken.destroy();
-      throw new AppError('توکن منقضی شده', {
-        statusCode: StatusCodes.UNAUTHORIZED,
-      });
+      throw new AppError('توکن منقضی شده', StatusCodes.UNAUTHORIZED);
     }
 
     const user = await User.findByPk(decoded.userId);
     if (!user) {
-      throw new AppError('کاربر یافت نشد', {
-        statusCode: StatusCodes.UNAUTHORIZED,
-      });
+      throw new AppError('کاربر یافت نشد', StatusCodes.UNAUTHORIZED);
     }
 
     await storedToken.destroy();
@@ -192,8 +166,6 @@ export class TokenService {
     return { ...tokens, user };
   }
 
-  // ==================== Sessions ====================
-
   async verifyAccessTokenWithBlacklist(token: string): Promise<DecodedToken> {
     const decoded = verifyAccessToken(token) as DecodedToken;
 
@@ -201,15 +173,11 @@ export class TokenService {
     const isBlacklisted = await TokenBlacklist.isBlacklisted(tokenHash);
 
     if (isBlacklisted) {
-      throw new AppError('توکن باطل شده است', {
-        statusCode: StatusCodes.UNAUTHORIZED,
-      });
+      throw new AppError('توکن باطل شده است', StatusCodes.UNAUTHORIZED);
     }
 
     return decoded;
   }
-
-  // ==================== Verify Access Token ====================
 
   private getClientIp(req: Request): string {
     const forwarded = req.headers['x-forwarded-for'];
@@ -218,8 +186,6 @@ export class TokenService {
     }
     return req.ip || req.socket.remoteAddress || 'Unknown';
   }
-
-  // ==================== Helpers ====================
 
   private getDeviceInfo(req: Request): string {
     const userAgent = req.headers['user-agent'] || 'Unknown';

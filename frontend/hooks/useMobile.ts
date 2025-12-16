@@ -2,35 +2,50 @@
 
 import { useCallback, useSyncExternalStore } from 'react';
 
-export function useMobile(breakpoint = 768) {
+interface UseMobileResult {
+  isMobile: boolean;
+  isReady: boolean; // وقتی هنوز SSR snapshot است، false می‌ماند
+}
+
+export function useMobile(breakpoint = 768): UseMobileResult {
+  const query = `(max-width: ${breakpoint - 1}px)`;
+
   const subscribe = useCallback(
     (callback: () => void) => {
-      const mq = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
+      const mq = window.matchMedia(query);
 
-      if (mq.addEventListener) {
-        mq.addEventListener('change', callback);
-      } else {
-        mq.addListener(callback);
-      }
+      const handler = () => callback();
+      mq.addEventListener?.('change', handler);
+      // فallback برای مرورگرهای قدیمی
+      mq.addListener?.(handler);
 
       return () => {
-        if (mq.removeEventListener) {
-          mq.removeEventListener('change', callback);
-        } else {
-          mq.removeListener(callback);
-        }
+        mq.removeEventListener?.('change', handler);
+        mq.removeListener?.(handler);
       };
     },
-    [breakpoint],
+    [query],
   );
 
-  const getSnapshot = () => {
-    return window.matchMedia(`(max-width: ${breakpoint - 1}px)`).matches;
-  };
+  const getSnapshot = useCallback(() => {
+    return window.matchMedia(query).matches as boolean | null;
+  }, [query]);
 
-  const getServerSnapshot = () => {
-    return false;
-  };
+  // eslint-disable-next-line @eslint-react/no-unnecessary-use-callback
+  const getServerSnapshot = useCallback(() => {
+    return null as boolean | null;
+  }, []);
 
-  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const match = useSyncExternalStore<boolean | null>(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
+  );
+
+  const isReady = match !== null;
+
+  return {
+    isMobile: !!match,
+    isReady,
+  };
 }

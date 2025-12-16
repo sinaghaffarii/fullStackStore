@@ -33,9 +33,9 @@ export const authValidation = {
       'string.min': 'رمز عبور باید حداقل 6 کاراکتر باشد',
       'any.required': 'رمز عبور الزامی است',
     }),
-    captchaToken: Joi.string().required().messages({
-      'any.required': 'لطفاً کپچا را تکمیل کنید',
-    }),
+    // captchaToken: Joi.string().required().messages({
+    //   'any.required': 'لطفاً کپچا را تکمیل کنید',
+    // }),
   }),
 
   refreshToken: Joi.object({

@@ -2,120 +2,47 @@ import type { Request, Response } from 'express';
 
 import { StatusCodes } from 'http-status-codes';
 
-import type {
-  CategoryService,
-  CreateCategoryDTO,
-  UpdateCategoryDTO,
-} from '../../../core/services/category.service';
-
-import { AppError } from '../../../shared/errors/app-error';
-import { sendResponse } from '../../../shared/utils/response-handler';
+import type { CategoryService } from '../../../core/services/category.service';
 
 export class CategoryController {
-  constructor(private categoryService: CategoryService) {}
+  constructor(private service: CategoryService) {}
 
-  createCategory = async (req: Request, res: Response): Promise<void> => {
-    const categoryData: CreateCategoryDTO = req.body;
-    const category = await this.categoryService.createCategory(categoryData);
-
-    sendResponse(res, StatusCodes.CREATED, {
-      message: 'Category created successfully',
-      data: category,
-    });
+  create = async (req: Request, res: Response) => {
+    const cat = await this.service.createCategory(req.body);
+    res.status(StatusCodes.CREATED).json({ success: true, data: cat });
   };
 
-  deleteCategory = async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params;
-    await this.categoryService.deleteCategory(id);
-
-    sendResponse(res, StatusCodes.OK, {
-      message: 'Category deleted successfully',
-    });
+  delete = async (req: Request, res: Response) => {
+    await this.service.deleteCategory(req.params.id);
+    res.status(StatusCodes.OK).json({ success: true });
   };
 
-  getCategory = async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params;
-    const category = await this.categoryService.getCategoryById(id);
-
-    sendResponse(res, StatusCodes.OK, {
-      message: 'Category retrieved successfully',
-      data: category,
-    });
+  get = async (req: Request, res: Response) => {
+    const data = await this.service.getCategoryById(req.params.id);
+    res.status(StatusCodes.OK).json({ success: true, data });
   };
 
-  getCategoryHierarchy = async (
-    _req: Request,
-    res: Response,
-  ): Promise<void> => {
-    const hierarchy = await this.categoryService.getCategoryHierarchy();
-
-    sendResponse(res, StatusCodes.OK, {
-      message: 'Category hierarchy retrieved successfully',
-      data: hierarchy,
-    });
+  hierarchy = async (_req: Request, res: Response) => {
+    const data = await this.service.getCategoryHierarchy();
+    res.status(StatusCodes.OK).json({ success: true, data });
   };
 
-  getSubcategories = async (req: Request, res: Response): Promise<void> => {
-    const { parentId } = req.params;
-    const subcategories = await this.categoryService.getSubcategories(parentId);
-
-    sendResponse(res, StatusCodes.OK, {
-      message: 'Subcategories retrieved successfully',
-      data: subcategories,
-    });
-  };
-
-  listCategories = async (req: Request, res: Response): Promise<void> => {
-    const {
-      page = '1',
-      limit = '10',
-      include_children: includeChildrenParam = 'false',
-    } = req.query;
-
-    const pageNum = Math.max(1, parseInt(page as string, 10) || 1);
-    const limitNum = Math.min(
-      100,
-      Math.max(1, parseInt(limit as string, 10) || 10),
+  list = async (req: Request, res: Response) => {
+    const data = await this.service.listCategories(
+      Number(req.query.page) || 1,
+      Number(req.query.limit) || 20,
+      req.query.include_children === 'true',
     );
-    const includeChildren = includeChildrenParam === 'true';
-
-    const result = await this.categoryService.listCategories(
-      pageNum,
-      limitNum,
-      includeChildren,
-    );
-
-    sendResponse(res, StatusCodes.OK, {
-      message: 'Categories retrieved successfully',
-      data: result,
-    });
+    res.status(StatusCodes.OK).json({ success: true, data });
   };
 
-  searchCategories = async (req: Request, res: Response): Promise<void> => {
-    const { q } = req.query;
-
-    if (!q || typeof q !== 'string') {
-      throw new AppError('Search query is required', {
-        statusCode: StatusCodes.BAD_REQUEST,
-      });
-    }
-
-    const categories = await this.categoryService.searchCategories(q);
-
-    sendResponse(res, StatusCodes.OK, {
-      message: 'Categories search completed successfully',
-      data: categories,
-    });
+  subcategories = async (req: Request, res: Response) => {
+    const data = await this.service.getSubcategories(req.params.id);
+    res.status(StatusCodes.OK).json({ success: true, data });
   };
 
-  updateCategory = async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params;
-    const updateData: UpdateCategoryDTO = req.body;
-    const category = await this.categoryService.updateCategory(id, updateData);
-
-    sendResponse(res, StatusCodes.OK, {
-      message: 'Category updated successfully',
-      data: category,
-    });
+  update = async (req: Request, res: Response) => {
+    const cat = await this.service.updateCategory(req.params.id, req.body);
+    res.status(StatusCodes.OK).json({ success: true, data: cat });
   };
 }

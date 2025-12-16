@@ -1,6 +1,10 @@
-export * from './associations';
-export * from './cart.model';
-export * from './category.model';
-export * from './otp.model';
-export * from './product.model';
-export * from './user.model';
+// Associations
+export { setupAssociations } from './associations';
+// Auth
+export * from './auth';
+// Catalog
+export * from './catalog';
+// Commerce
+export * from './commerce';
+// Shared (enums & helpers)
+export * from './shared';

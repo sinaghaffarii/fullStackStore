@@ -1,12 +1,13 @@
 import { StatusCodes } from 'http-status-codes';
+import { Op } from 'sequelize';
 
 import type {
   CategoryAttributes,
   CategoryCreationAttributes,
-} from '../../infrastructure/database/models/category.model';
+} from '../../infrastructure/database/models';
 import type { CategoryRepository } from '../repositories/category.repository';
 
-import { Category } from '../../infrastructure/database/models/category.model';
+import { Category, Product } from '../../infrastructure/database/models';
 import { AppError } from '../../shared/errors/app-error';
 
 export interface CreateCategoryDTO
@@ -24,7 +25,6 @@ export class CategoryService {
   constructor(private categoryRepository: CategoryRepository) {}
 
   async createCategory(data: CreateCategoryDTO): Promise<Category> {
-    // Validate parent category if provided
     if (data.parent_id) {
       const parentCategory = await this.categoryRepository.findById(
         data.parent_id,
@@ -34,12 +34,8 @@ export class CategoryService {
       }
     }
 
-    // Check for duplicate name in the same parent
     const existingCategory = await this.categoryRepository.findAll({
-      where: {
-        name: data.name,
-        parent_id: data.parent_id || null,
-      },
+      where: { name: data.name, parent_id: data.parent_id || null },
     });
 
     if (existingCategory.length > 0) {
@@ -49,17 +45,13 @@ export class CategoryService {
       );
     }
 
-    const categoryData: CategoryCreationAttributes = {
-      ...data,
-    };
-
-    return await this.categoryRepository.create(categoryData);
+    const categoryData: CategoryCreationAttributes = { ...data };
+    return this.categoryRepository.create(categoryData);
   }
 
   async deleteCategory(id: string): Promise<void> {
-    const category = await this.getCategoryById(id);
+    await this.getCategoryById(id);
 
-    // Check if category has children
     const children = await this.categoryRepository.findByParentId(id);
     if (children.length > 0) {
       throw new AppError(
@@ -68,12 +60,7 @@ export class CategoryService {
       );
     }
 
-    // Check if category has products
-    const { Product } = await import(
-      '../../infrastructure/database/models/product.model'
-    );
     const productCount = await Product.count({ where: { category_id: id } });
-
     if (productCount > 0) {
       throw new AppError(
         'Cannot delete category with associated products. Please reassign products first.',
@@ -87,11 +74,7 @@ export class CategoryService {
   async getCategoryById(id: string): Promise<Category> {
     const category = await this.categoryRepository.findById(id, {
       include: [
-        {
-          model: Category,
-          as: 'parent',
-          attributes: ['id', 'name'],
-        },
+        { model: Category, as: 'parent', attributes: ['id', 'name'] },
         {
           model: Category,
           as: 'children',
@@ -108,11 +91,11 @@ export class CategoryService {
   }
 
   async getCategoryHierarchy(): Promise<Category[]> {
-    return await this.categoryRepository.findHierarchy();
+    return this.categoryRepository.findHierarchy();
   }
 
   async getSubcategories(parentId: string): Promise<Category[]> {
-    return await this.categoryRepository.findByParentId(parentId);
+    return this.categoryRepository.findByParentId(parentId);
   }
 
   async listCategories(
@@ -153,13 +136,13 @@ export class CategoryService {
   }
 
   async searchCategories(query: string): Promise<Category[]> {
-    return await this.categoryRepository.findAll({
+    return this.categoryRepository.findAll({
       where: {
-        $or: [
-          { name: { $iLike: `%${query}%` } },
-          { description: { $iLike: `%${query}%` } },
+        [Op.or]: [
+          { name: { [Op.iLike]: `%${query}%` } },
+          { description: { [Op.iLike]: `%${query}%` } },
         ],
-      } as any,
+      },
       limit: 10,
     });
   }
@@ -167,7 +150,6 @@ export class CategoryService {
   async updateCategory(id: string, data: UpdateCategoryDTO): Promise<Category> {
     const category = await this.getCategoryById(id);
 
-    // Validate parent category if provided (prevent circular reference)
     if (data.parent_id) {
       if (data.parent_id === id) {
         throw new AppError(
@@ -183,31 +165,22 @@ export class CategoryService {
         throw new AppError('Parent category not found', StatusCodes.NOT_FOUND);
       }
 
-      // Check for circular reference
-      let currentParent = parentCategory;
-      while (currentParent.parent_id) {
-        if (currentParent.parent_id === id) {
-          throw new AppError(
-            'Circular reference detected in category hierarchy',
-            StatusCodes.BAD_REQUEST,
-          );
-        }
-        const nextParent = await this.categoryRepository.findById(
-          currentParent.parent_id,
+      const hasCycle = await this.hasCircularReference(data.parent_id, id);
+      if (hasCycle) {
+        throw new AppError(
+          'Circular reference detected in category hierarchy',
+          StatusCodes.BAD_REQUEST,
         );
-        if (!nextParent) break;
-        currentParent = nextParent;
       }
     }
 
-    // Check for duplicate name if name is being updated
     if (data.name) {
       const existingCategory = await this.categoryRepository.findAll({
         where: {
           name: data.name,
           parent_id:
             data.parent_id !== undefined ? data.parent_id : category.parent_id,
-          id: { $not: id } as any,
+          id: { [Op.ne]: id },
         },
       });
 
@@ -219,7 +192,6 @@ export class CategoryService {
       }
     }
 
-    // Clean undefined values
     const updateData: Partial<CategoryAttributes> = {};
     Object.entries(data).forEach(([key, value]) => {
       if (value !== undefined) {
@@ -227,6 +199,19 @@ export class CategoryService {
       }
     });
 
-    return await this.categoryRepository.update(id, updateData);
+    return this.categoryRepository.update(id, updateData);
+  }
+
+  private async hasCircularReference(
+    parentId: string,
+    selfId: string,
+  ): Promise<boolean> {
+    const parent = await this.categoryRepository.findById(parentId);
+    if (!parent) return false;
+    if (parent.parent_id === selfId) return true;
+    if (parent.parent_id) {
+      return this.hasCircularReference(parent.parent_id, selfId);
+    }
+    return false;
   }
 }

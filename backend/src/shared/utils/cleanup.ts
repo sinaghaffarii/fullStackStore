@@ -1,6 +1,6 @@
-import { OTP } from '../../infrastructure/database/models';
-import RefreshToken from '../../infrastructure/database/models/refresh-token.model';
-import TokenBlacklist from '../../infrastructure/database/models/token-blacklist.model';
+import OTP from '../../infrastructure/database/models/auth/otp.model';
+import RefreshToken from '../../infrastructure/database/models/auth/refresh-token.model';
+import TokenBlacklist from '../../infrastructure/database/models/auth/token-blacklist.model';
 
 interface CleanupResult {
   otps: number;

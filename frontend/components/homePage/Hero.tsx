@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 'use client';
 
 import { useKeenSlider } from 'keen-slider/react';
@@ -63,9 +64,26 @@ function AutoplayPlugin(interval = 3000) {
   };
 }
 
+// کامپوننت Skeleton
+const HeroSkeleton: React.FC = () => (
+  <section className="bg-surface-solid-50 mx-auto w-11/12 py-6 md:w-full">
+    <div className="relative mx-auto min-h-fit max-w-7xl lg:min-h-[250px]">
+      <div className="w-full animate-pulse overflow-hidden rounded-lg bg-gray-200">
+        <div className="aspect-3/1 w-full" />
+      </div>
+      <div className="absolute -bottom-4 left-1/2 flex -translate-x-1/2 gap-2 md:bottom-4">
+        {heroSlides.map((slide) => (
+          <div className="size-2 rounded-full bg-gray-300" key={slide.id} />
+        ))}
+      </div>
+    </div>
+  </section>
+);
+
 const Hero: React.FC = () => {
   const [currentSlide, setCurrentSlide] = React.useState(0);
   const [loaded, setLoaded] = React.useState(false);
+  const [slideCount, setSlideCount] = React.useState(heroSlides.length);
 
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>(
     {
@@ -74,8 +92,9 @@ const Hero: React.FC = () => {
       slideChanged(slider) {
         setCurrentSlide(slider.track.details.rel);
       },
-      created() {
+      created(slider) {
         setLoaded(true);
+        setSlideCount(slider.track.details.slides.length);
       },
       breakpoints: {
         '(max-width: 768px)': { slides: { perView: 1, spacing: 16 } },
@@ -85,11 +104,38 @@ const Hero: React.FC = () => {
     [AutoplayPlugin(3000)],
   );
 
+  React.useEffect(() => {
+    const details = instanceRef.current?.track?.details;
+    if (details?.slides) {
+      // eslint-disable-next-line @eslint-react/hooks-extra/no-direct-set-state-in-use-effect
+      setSlideCount((prev) =>
+        prev !== details.slides.length ? details.slides.length : prev,
+      );
+    }
+  }, [loaded, instanceRef]);
+
+  // نمایش Skeleton تا زمان آماده‌شدن اسلایدر
+  if (!loaded) {
+    return (
+      <>
+        <HeroSkeleton />
+        {/* اسلایدر مخفی برای initialize شدن */}
+        <div aria-hidden="true" className="sr-only">
+          <div className="keen-slider" ref={sliderRef}>
+            {heroSlides.map((slide) => (
+              <div className="keen-slider__slide" key={slide.id} />
+            ))}
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <section className="bg-surface-solid-50 mx-auto w-11/12 py-6 md:w-full">
       <div className="relative mx-auto min-h-fit max-w-7xl lg:min-h-[250px]">
         <div className="keen-slider [&>*:last-child]:pl-3" ref={sliderRef}>
-          {heroSlides.map((slide) => (
+          {heroSlides.map((slide, idx) => (
             <a
               className="keen-slider__slide block w-full overflow-hidden rounded-lg"
               href={slide.link}
@@ -97,34 +143,34 @@ const Hero: React.FC = () => {
             >
               <Image
                 height={400}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
                 width={1200}
                 alt={slide.alt}
                 className="size-full object-contain"
                 quality={100}
                 src={slide.image}
+                loading={idx === 0 ? 'eager' : 'lazy'}
+                priority={idx === 0}
               />
             </a>
           ))}
         </div>
 
-        {loaded && instanceRef.current && (
-          <div className="absolute -bottom-4 left-1/2 flex -translate-x-1/2 gap-2 md:bottom-4">
-            {Array.from({
-              length: instanceRef.current.track.details.slides.length,
-            }).map((_, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => instanceRef.current?.moveToIdx(idx)}
-                className={`rounded-full transition-all ${
-                  currentSlide === idx
-                    ? 'h-2 w-4 bg-primary'
-                    : 'size-2 bg-secondary'
-                }`}
-              />
-            ))}
-          </div>
-        )}
+        <div className="absolute -bottom-4 left-1/2 flex -translate-x-1/2 gap-2 md:bottom-4">
+          {Array.from({ length: slideCount }).map((_, idx) => (
+            <button
+              aria-label={`نمایش اسلاید ${idx + 1}`}
+              key={heroSlides[idx]?.id ?? `dot-${idx}`}
+              type="button"
+              onClick={() => instanceRef.current?.moveToIdx(idx)}
+              className={`rounded-full transition-all ${
+                currentSlide === idx
+                  ? 'h-2 w-4 bg-primary'
+                  : 'size-2 bg-secondary'
+              }`}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );
