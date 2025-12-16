@@ -82,8 +82,8 @@ function getCategoryData(slugs: string[]): CategoryData {
         originalPrice: 200000 + i * 10000,
         discount: i % 3 === 0 ? 15 : 0,
         base_price: 200000 + i * 10000,
-        image: '/images/products/product_8.webp',
-        images: ['/images/products/product_8.webp'],
+        image: '/images/products/product_2.jpg',
+        images: ['/images/products/product_2.jpg'],
         rating: fixedRating,
         reviews: fixedReviews,
         isNew: fixedIsNew,
@@ -140,7 +140,7 @@ export default function ProductsPage({ params }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 to-blue-50/30">
+    <div className="min-h-screen bg-[#f8f8f872]">
       <div className="mx-auto w-11/12 max-w-7xl">
         <div className="py-6">
           <div className="mb-6">

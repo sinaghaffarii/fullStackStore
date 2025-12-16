@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable max-lines */
+
+import type { Product } from './product';
+
 // ==================== Enums ====================
 export enum ProductStatus {
   DRAFT = 'draft',
@@ -104,62 +107,10 @@ export interface ProductImage {
 }
 
 // ==================== Product ====================
-export interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  description?: string;
-  base_price: number;
-  final_price: number;
-  discount_percent: number;
-  primary_image?: string;
-  stock_status: StockStatus;
-  colors: ColorOption[];
-  sizes: string[];
-  category: {
-    id: string;
-    name: string;
-    slug: string;
-  };
-  brand?: {
-    id: string;
-    name: string;
-    name_fa: string;
-  };
-  rating: number;
-  review_count: number;
-  is_featured: boolean;
-  is_new: boolean;
-}
 
 export interface ColorOption {
   label: string;
   value: string; // hex code
-}
-
-// جزئیات کامل محصول
-export interface ProductDetail extends Product {
-  tags: string[];
-  specifications: Record<string, string>;
-  variants: ProductVariant[];
-  images: ProductImage[];
-  view_count: number;
-  sales_count: number;
-}
-
-// ==================== Discount ====================
-export interface Discount {
-  id: string;
-  name: string;
-  type: DiscountType;
-  value: number;
-  max_amount?: number;
-  scope: DiscountScope;
-  target_id?: string;
-  starts_at: string;
-  ends_at: string;
-  is_active: boolean;
-  badge_text?: string;
 }
 
 // ==================== Cart ====================

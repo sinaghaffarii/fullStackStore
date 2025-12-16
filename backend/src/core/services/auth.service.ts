@@ -96,44 +96,31 @@ export class AuthService {
   async sendOtp(rawPhone: string): Promise<void> {
     const phone = this.normalizePhone(rawPhone);
 
-    // چک کردن OTP موجود
     const existingOtp = await OTP.findActiveByPhone(phone);
-
-    if (existingOtp) {
-      if (!existingOtp.canResend(this.otpCooldownSeconds)) {
-        const waitTime = existingOtp.getResendWaitTime(this.otpCooldownSeconds);
-        throw new AppError(`لطفاً ${waitTime} ثانیه صبر کنید`, {
-          statusCode: StatusCodes.TOO_MANY_REQUESTS,
-        });
-      }
+    if (existingOtp && !existingOtp.canResend(this.otpCooldownSeconds)) {
+      const waitTime = existingOtp.getResendWaitTime(this.otpCooldownSeconds);
+      throw new AppError(`لطفاً ${waitTime} ثانیه صبر کنید`, {
+        statusCode: StatusCodes.TOO_MANY_REQUESTS,
+      });
     }
 
-    // حذف OTP های قبلی
     await OTP.deleteByPhone(phone);
 
-    // تولید کد جدید
-    const code = generateOtp(5);
+    const result = await this.smsService.sendOtp(phone);
 
-    // ارسال پیامک
-    const result = await this.smsService.sendOtp(phone, code);
-    if (!result.success) {
+    if (!result.success || !result.code) {
       throw new AppError(result.message || 'خطا در ارسال پیامک', {
         statusCode: StatusCodes.SERVICE_UNAVAILABLE,
       });
     }
 
-    // ذخیره در دیتابیس
     await OTP.create({
       phone_number: phone,
-      code,
+      code: result.code,
       attempts: 0,
       used: false,
       expires_at: new Date(Date.now() + this.otpTtlSeconds * 1000),
     });
-
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`📱 [OTP] ${phone}: ${code}`);
-    }
   }
 
   async verifyOtp(

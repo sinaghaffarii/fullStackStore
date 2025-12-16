@@ -24,7 +24,7 @@ const NavButton = ({
   className?: string;
 }) => (
   <Button
-    size="icon"
+    size="icon-sm"
     aria-label={label}
     type="button"
     variant="outline"
@@ -46,7 +46,7 @@ const CarouselNavigation: React.FC<Props> = ({ onPrev, onNext, visible }) => {
       <NavButton
         className="-right-5 opacity-0 group-hover/carousel:right-0 group-hover/carousel:opacity-100"
         label="محصول بعدی"
-        icon={ChevronRight} // با توجه به RTL بودن، آیکون‌ها برعکس عمل می‌کنند یا باید جایشان عوض شود. در KeenSlider RTL، next یعنی سمت چپ.
+        icon={ChevronRight}
         onClick={onNext}
       />
 

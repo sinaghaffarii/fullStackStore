@@ -2,191 +2,12 @@ tags:
   - name: Auth
     description: احراز هویت و مدیریت نشست‌ها
 
-paths:
-  /auth/send-otp:
-    post:
-      tags: [Auth]
-      summary: ارسال کد تأیید
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [phoneNumber]
-              properties:
-                phoneNumber:
-                  type: string
-                  example: '09121234567'
-      responses:
-        200:
-          $ref: '#/components/responses/Success'
-
-  /auth/verify-otp:
-    post:
-      tags: [Auth]
-      summary: تأیید کد و ورود
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [phoneNumber, code]
-              properties:
-                phoneNumber:
-                  type: string
-                code:
-                  type: string
-      responses:
-        200:
-          description: ورود موفق
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/UserData'
-
-  /auth/admin/login:
-    post:
-      tags: [Auth]
-      summary: ورود ادمین
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [username, password]
-              properties:
-                username:
-                  type: string
-                password:
-                  type: string
-      responses:
-        200:
-          $ref: '#/components/responses/UserData'
-
-  /auth/me:
-    get:
-      tags: [Auth]
-      summary: اطلاعات کاربر فعلی
-      security:
-        - cookieAuth: []
-      responses:
-        200:
-          $ref: '#/components/responses/UserData'
-
-  /auth/admin/me:
-    get:
-      tags: [Auth]
-      summary: اطلاعات ادمین
-      security:
-        - cookieAuth: []
-      responses:
-        200:
-          $ref: '#/components/responses/UserData'
-
-  /auth/logout:
-    post:
-      tags: [Auth]
-      summary: خروج
-      security:
-        - cookieAuth: []
-      responses:
-        200:
-          $ref: '#/components/responses/Success'
-
-  /auth/logout-all:
-    post:
-      tags: [Auth]
-      summary: خروج از همه دستگاه‌ها
-      security:
-        - cookieAuth: []
-      responses:
-        200:
-          $ref: '#/components/responses/Success'
-
-  /auth/refresh-token:
-    post:
-      tags: [Auth]
-      summary: تازه‌سازی توکن
-      responses:
-        200:
-          $ref: '#/components/responses/Success'
-
-  /auth/sessions:
-    get:
-      tags: [Auth]
-      summary: لیست نشست‌های فعال
-      security:
-        - cookieAuth: []
-      responses:
-        200:
-          description: لیست نشست‌ها
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  data:
-                    type: object
-                    properties:
-                      sessions:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/Session'
-
-  /auth/sessions/{sessionId}:
-    delete:
-      tags: [Auth]
-      summary: بستن نشست
-      security:
-        - cookieAuth: []
-      parameters:
-        - name: sessionId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        200:
-          $ref: '#/components/responses/Success'
-
 components:
   securitySchemes:
     cookieAuth:
       type: apiKey
       in: cookie
       name: accessToken
-
-  responses:
-    Success:
-      description: عملیات موفق
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: true
-              message:
-                type: string
-
-    UserData:
-      description: اطلاعات کاربر
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-              data:
-                $ref: '#/components/schemas/User'
 
   schemas:
     User:
@@ -223,3 +44,225 @@ components:
         createdAt:
           type: string
           format: date-time
+
+paths:
+  /auth/send-otp:
+    post:
+      tags: [Auth]
+      summary: ارسال کد تأیید
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phoneNumber]
+              properties:
+                phoneNumber:
+                  type: string
+                  example: '09121234567'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+  /auth/verify-otp:
+    post:
+      tags: [Auth]
+      summary: تأیید کد و ورود
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phoneNumber, code]
+              properties:
+                phoneNumber:
+                  type: string
+                code:
+                  type: string
+      responses:
+        200:
+          description: ورود موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/User'
+
+  /auth/admin/login:
+    post:
+      tags: [Auth]
+      summary: ورود ادمین
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/User'
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: اطلاعات کاربر فعلی
+      security:
+        - cookieAuth: []
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/User'
+
+  /auth/admin/me:
+    get:
+      tags: [Auth]
+      summary: اطلاعات ادمین
+      security:
+        - cookieAuth: []
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/User'
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: خروج
+      security:
+        - cookieAuth: []
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+
+  /auth/logout-all:
+    post:
+      tags: [Auth]
+      summary: خروج از همه دستگاه‌ها
+      security:
+        - cookieAuth: []
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+
+  /auth/refresh-token:
+    post:
+      tags: [Auth]
+      summary: تازه‌سازی توکن
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+
+  /auth/sessions:
+    get:
+      tags: [Auth]
+      summary: لیست نشست‌های فعال
+      security:
+        - cookieAuth: []
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      sessions:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Session'
+
+  /auth/sessions/{sessionId}:
+    delete:
+      tags: [Auth]
+      summary: بستن نشست
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean

@@ -79,7 +79,7 @@ export function CategoryHeader({
           <div className="flex flex-col gap-3 sm:flex-row">
             <div className="flex items-center gap-2">
               <Select
-                className="w-full border-slate-600 bg-white/10 text-white transition-colors hover:bg-white/15 data-placeholder:text-white/70 sm:w-[200px]"
+                className="w-full border-slate-600 bg-white/10 text-white! transition-colors hover:bg-white/15 data-placeholder:text-white/70 sm:w-[200px]"
                 placeholder="مرتب سازی"
               >
                 {sortOptions.map((option) => (

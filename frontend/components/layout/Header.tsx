@@ -52,8 +52,12 @@ const Header = () => {
     handleMouseLeave,
   } = useHoverMenu();
 
-  const isMobile = useMobile();
+  const { isMobile, isReady } = useMobile();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  if (!isReady) {
+    return <header className="h-20 border-b bg-white" />;
+  }
 
   return (
     <header className="relative z-50 border-b border-gray-200 bg-white">
