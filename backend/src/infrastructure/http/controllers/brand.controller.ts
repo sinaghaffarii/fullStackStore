@@ -23,8 +23,12 @@ export class BrandController {
   };
 
   list = async (req: Request, res: Response) => {
-    const data = await this.service.list(req.query);
-    res.status(StatusCodes.OK).json({ success: true, data });
+    const result = await this.service.list(req.query);
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      data: result,
+    });
   };
 
   update = async (req: Request, res: Response) => {

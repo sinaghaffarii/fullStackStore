@@ -22,6 +22,7 @@ interface OpenApiSpec {
 
 const YAML_FILES = [
   'auth.yaml',
+  'upload.yaml',
   'brand.yaml',
   'category.yaml',
   'product.yaml',
@@ -76,7 +77,13 @@ function buildSwaggerSpec(): OpenApiSpec {
 
     const yamlDoc = YAML.parse(fs.readFileSync(filePath, 'utf8'));
 
-    Object.assign(baseSpec.paths, yamlDoc.paths);
+    for (const [pathKey, pathValue] of Object.entries(yamlDoc.paths || {})) {
+      if (!baseSpec.paths[pathKey]) {
+        baseSpec.paths[pathKey] = pathValue;
+      } else {
+        Object.assign(baseSpec.paths[pathKey], pathValue);
+      }
+    }
 
     if (yamlDoc.components?.schemas) {
       Object.assign(baseSpec.components!.schemas!, yamlDoc.components.schemas);

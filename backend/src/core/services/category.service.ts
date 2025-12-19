@@ -5,10 +5,12 @@ import type {
   CategoryAttributes,
   CategoryCreationAttributes,
 } from '../../infrastructure/database/models';
+import type { PaginatedListResult } from '../../shared/types-enums/paginated-list-result';
 import type { CategoryRepository } from '../repositories/category.repository';
 
 import { Category, Product } from '../../infrastructure/database/models';
 import { AppError } from '../../shared/errors/app-error';
+import { buildPagination } from '../../shared/utils/pagination';
 
 export interface CreateCategoryDTO
   extends Omit<
@@ -99,15 +101,10 @@ export class CategoryService {
   }
 
   async listCategories(
-    page: number = 1,
-    limit: number = 10,
-    includeChildren: boolean = false,
-  ): Promise<{
-    categories: Category[];
-    total: number;
-    page: number;
-    totalPages: number;
-  }> {
+    page = 1,
+    limit = 10,
+    includeChildren = false,
+  ): Promise<PaginatedListResult<Category>> {
     const offset = (page - 1) * limit;
 
     const include = includeChildren
@@ -120,7 +117,7 @@ export class CategoryService {
         ]
       : [];
 
-    const result = await this.categoryRepository.findAndCountAll({
+    const { rows, count } = await this.categoryRepository.findAndCountAll({
       include,
       limit,
       offset,
@@ -128,10 +125,8 @@ export class CategoryService {
     });
 
     return {
-      categories: result.rows,
-      total: result.count,
-      page,
-      totalPages: Math.ceil(result.count / limit),
+      items: rows,
+      pagination: buildPagination(count, page, limit),
     };
   }
 

@@ -1,5 +1,6 @@
 import Joi from 'joi';
 
+import { imagePathValidator } from '../../../shared/utils/pathValidator';
 import {
   PriceRange,
   ProductStatus,
@@ -22,7 +23,7 @@ const variantSchema = Joi.object({
   price: Joi.number().integer().min(0).required(),
   compare_price: Joi.number().integer().min(0).optional(),
   stock: Joi.number().integer().min(0).default(0),
-  image_url: Joi.string().uri().max(500).optional(),
+  image_url: imagePathValidator.optional(),
 });
 
 const imageSchema = Joi.object({

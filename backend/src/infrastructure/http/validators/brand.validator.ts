@@ -1,5 +1,7 @@
 import Joi from 'joi';
 
+import { imagePathValidator } from '../../../shared/utils/pathValidator';
+
 export const brandValidation = {
   create: Joi.object({
     name: Joi.string().min(1).max(100).required(),
@@ -9,7 +11,7 @@ export const brandValidation = {
       .max(100)
       .pattern(/^[-0-9a-z]+$/)
       .required(),
-    logo: Joi.string().uri().max(500).optional(),
+    logo: imagePathValidator.optional(),
     is_active: Joi.boolean().default(true),
   }),
 
@@ -21,7 +23,7 @@ export const brandValidation = {
       .max(100)
       .pattern(/^[-0-9a-z]+$/)
       .optional(),
-    logo: Joi.string().uri().max(500).optional().allow(null),
+    logo: imagePathValidator.optional().allow(null),
     is_active: Joi.boolean().optional(),
   }),
 

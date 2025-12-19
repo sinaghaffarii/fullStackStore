@@ -10,6 +10,8 @@ import type {
 
 import { Discount, DiscountType } from '../../infrastructure/database/models';
 import { AppError } from '../../shared/errors/app-error';
+import { PaginatedListResult } from '../../shared/types-enums/paginated-list-result';
+import { buildPagination } from '../../shared/utils/pagination';
 
 export interface CreateDiscountDTO {
   name: string;
@@ -77,8 +79,11 @@ export class DiscountService {
     return discount;
   }
 
-  async list(filters: DiscountFilters = {}) {
+  async list(
+    filters: DiscountFilters = {},
+  ): Promise<PaginatedListResult<Discount>> {
     const { page = 1, limit = 20, scope, isActive, validOnly } = filters;
+
     const where: WhereOptions<DiscountAttributes> = {};
 
     if (scope) where.scope = scope;
@@ -98,7 +103,10 @@ export class DiscountService {
       order: [['created_at', 'DESC']],
     });
 
-    return { discounts: rows, total: count };
+    return {
+      items: rows,
+      pagination: buildPagination(count, page, limit),
+    };
   }
 
   async toggleActive(id: string): Promise<Discount> {

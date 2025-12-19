@@ -7,6 +7,7 @@ import type {
   PriceRange,
   StockStatus,
 } from '../../infrastructure/database/models/shared';
+import type { PaginatedListResult } from '../../shared/types-enums/paginated-list-result';
 import type { ProductRepository } from '../repositories/product.repository';
 
 import {
@@ -22,6 +23,7 @@ import {
   SortOption,
 } from '../../infrastructure/database/models';
 import { AppError } from '../../shared/errors/app-error';
+import { buildPagination } from '../../shared/utils/pagination';
 
 // DTOs
 export interface ProductFilters {
@@ -127,7 +129,9 @@ export class ProductService {
     return this.enrich(product);
   }
 
-  async list(filters: ProductFilters = {}): Promise<ProductListResult> {
+  async list(
+    filters: ProductFilters = {},
+  ): Promise<PaginatedListResult<EnrichedProduct>> {
     const { page = 1, limit = 12, sort = SortOption.NEWEST } = filters;
     const offset = (page - 1) * limit;
 
@@ -158,13 +162,11 @@ export class ProductService {
       distinct: true,
     });
 
-    const products = await Promise.all(rows.map((p) => this.enrich(p)));
+    const items = await Promise.all(rows.map((p) => this.enrich(p)));
 
     return {
-      products,
-      total: count,
-      page,
-      totalPages: Math.ceil(count / limit),
+      items,
+      pagination: buildPagination(count, page, limit),
     };
   }
 
