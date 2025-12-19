@@ -37,11 +37,27 @@ export class BrandService {
     return brand;
   }
 
-  async list(query: any): Promise<{ brands: Brand[]; total: number }> {
-    const { page = 1, limit = 50, search, is_active: isActive } = query;
+  async list(query: any): Promise<{
+    items: Brand[];
+    pagination: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+      hasNext: boolean;
+      hasPrev: boolean;
+    };
+  }> {
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 50;
+    const { search, is_active } = query;
 
     const where: any = {};
-    if (typeof isActive !== 'undefined') where.is_active = isActive;
+
+    if (typeof is_active !== 'undefined') {
+      where.is_active = is_active;
+    }
+
     if (search) {
       where[Op.or] = [
         { name: { [Op.iLike]: `%${search}%` } },
@@ -56,7 +72,19 @@ export class BrandService {
       order: [['created_at', 'DESC']],
     });
 
-    return { brands: rows, total: count };
+    const totalPages = Math.ceil(count / limit);
+
+    return {
+      items: rows,
+      pagination: {
+        total: count,
+        page,
+        limit,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+      },
+    };
   }
 
   async update(id: string, data: Partial<CreateBrandDTO>): Promise<Brand> {

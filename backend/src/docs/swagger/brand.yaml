@@ -26,6 +26,25 @@ paths:
     get:
       tags: [Brands]
       summary: لیست برندها
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: is_active
+          in: query
+          schema:
+            type: boolean
       responses:
         200:
           description: Success
@@ -39,12 +58,25 @@ paths:
                   data:
                     type: object
                     properties:
-                      brands:
+                      items:
                         type: array
                         items:
                           $ref: '#/components/schemas/Brand'
-                      total:
-                        type: integer
+                      pagination:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                          page:
+                            type: integer
+                          limit:
+                            type: integer
+                          totalPages:
+                            type: integer
+                          hasNext:
+                            type: boolean
+                          hasPrev:
+                            type: boolean
 
     post:
       tags: [Brands]
@@ -62,11 +94,34 @@ paths:
           description: Created
 
   /brands/{id}:
+    get:
+      tags: [Brands]
+      summary: دریافت برند با ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+        404:
+          description: Brand not found
+
     put:
       tags: [Brands]
       summary: ویرایش برند
       security:
         - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         200:
           description: Updated
@@ -76,6 +131,15 @@ paths:
       summary: حذف برند
       security:
         - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         200:
           description: Deleted
+        404:
+          description: Brand not found

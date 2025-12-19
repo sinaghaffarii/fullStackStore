@@ -33,7 +33,10 @@ export class CategoryController {
       Number(req.query.limit) || 20,
       req.query.include_children === 'true',
     );
-    res.status(StatusCodes.OK).json({ success: true, data });
+    res.status(StatusCodes.OK).json({
+      success: true,
+      data,
+    });
   };
 
   subcategories = async (req: Request, res: Response) => {

@@ -5,6 +5,7 @@ import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import path from 'path';
 
 import { sequelize } from './configs/database';
 import { config } from './configs/environment';
@@ -21,6 +22,7 @@ import { categoryRoutes } from './infrastructure/http/routes/category.routes';
 import { discountRoutes } from './infrastructure/http/routes/discount.routes';
 import { productRoutes } from './infrastructure/http/routes/product.routes';
 import { profileRoutes } from './infrastructure/http/routes/profile.routes';
+import { uploadRoutes } from './infrastructure/http/routes/upload.routes';
 import { CleanupService } from './shared/utils/cleanup';
 
 class App {
@@ -115,6 +117,14 @@ class App {
     this.app.use(express.json({ limit: '10mb' }));
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
+
+    // 📂 Static Images (Public)
+    this.app.use(
+      '/images',
+      express.static(
+        path.join(process.cwd(), 'src/infrastructure/storage/uploads/images'),
+      ),
+    );
   }
 
   private initializeRoutes(): void {
@@ -154,6 +164,7 @@ class App {
     this.app.use('/api/brands', brandRoutes);
     this.app.use('/api/cart', cartRoutes);
     this.app.use('/api/discounts', discountRoutes);
+    this.app.use('/api/uploads', uploadRoutes);
 
     console.log('✅ Routes setup completed');
   }

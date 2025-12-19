@@ -1,0 +1,48 @@
+tags:
+  - name: Upload
+    description: آپلود تصاویر (ذخیره‌سازی لوکال)
+
+paths:
+  /uploads/image:
+    post:
+      tags: [Upload]
+      summary: آپلود تصویر
+      description: |
+        فرمت‌های مجاز: jpg، jpeg، png، webp
+        حداکثر حجم فایل: ۵ مگابایت
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+                - file
+      responses:
+        201:
+          description: Upload successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      url:
+                        type: string
+                        example: '/images/2025-12-19T19-38-52-531Z-gihwhh.jpg'
+        400:
+          description: Invalid file
+        401:
+          description: Unauthorized
+        413:
+          description: File too large
