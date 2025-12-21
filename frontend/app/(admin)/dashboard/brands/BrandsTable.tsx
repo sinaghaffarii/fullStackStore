@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu';
 import { useDeleteBrandItem } from '@/services/Brand';
+import { topersianDate } from '@/utils/toPersianDate';
 
 interface Props {
   data: IBrand[];
@@ -104,7 +105,15 @@ export function BrandsTable({
       cell: ({ row }) => (
         <div className="flex flex-col gap-1">
           <span className="font-medium">
-            {row.original.is_active ? <CheckCircle /> : <XCircle />}
+            {row.original.is_active ? (
+              <Button size="icon" variant="secondary">
+                <CheckCircle className="size-5 text-green-500" />
+              </Button>
+            ) : (
+              <Button size="icon" variant="secondary">
+                <XCircle className="size-5 text-red-500" />
+              </Button>
+            )}
           </span>
         </div>
       ),
@@ -114,7 +123,9 @@ export function BrandsTable({
       header: 'تاریخ ایجاد',
       cell: ({ row }) => (
         <div className="flex flex-col gap-1">
-          <span className="font-medium">{row.original.createdAt}</span>
+          <span className="font-medium">
+            {topersianDate(row.original.createdAt)}
+          </span>
         </div>
       ),
     },
@@ -123,7 +134,9 @@ export function BrandsTable({
       header: 'تاریخ به روزرسانی',
       cell: ({ row }) => (
         <div className="flex flex-col gap-1">
-          <span className="font-medium">{row.original.updatedAt}</span>
+          <span className="font-medium">
+            {topersianDate(row.original.updatedAt)}
+          </span>
         </div>
       ),
     },

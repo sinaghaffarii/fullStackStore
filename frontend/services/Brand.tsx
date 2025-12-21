@@ -21,6 +21,7 @@ interface GetBrandListParams {
 }
 
 export type CreateBrandDto = Omit<IBrand, 'createdAt' | 'id' | 'updatedAt'>;
+export type UpsertBrandDto = Omit<IBrand, 'createdAt' | 'updatedAt'>;
 
 export const useGetBrandList = (params: GetBrandListParams) => {
   return useQuery<
@@ -61,13 +62,16 @@ export const useCreateBrandItem = () => {
 export const useUpsertBrandItem = () => {
   const queryClient = useQueryClient();
   return useMutation<
-    ApiSuccessResponse<CreateBrandDto>,
+    ApiSuccessResponse<UpsertBrandDto>,
     AxiosError<ApiErrorResponse>,
-    CreateBrandDto & { id?: string }
+    UpsertBrandDto
   >({
     mutationKey: [QUERY_KEY.BRAND, 'upsert'],
-    mutationFn: async (requestBody: CreateBrandDto) => {
-      const { data } = await apiClient.post('/brands', requestBody);
+    mutationFn: async (requestBody: UpsertBrandDto) => {
+      const { data } = await apiClient.put(
+        `/brands/${requestBody.id}`,
+        requestBody,
+      );
       return data;
     },
     onSuccess: () => {

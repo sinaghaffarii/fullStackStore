@@ -1,11 +1,12 @@
 /* eslint-disable max-lines-per-function */
 'use client';
 
+import { debounce } from 'lodash';
 import { Plus, Search } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
-import type { CreateBrandDto } from '@/services/Brand';
+import type { CreateBrandDto, UpsertBrandDto } from '@/services/Brand';
 import type { IBrand } from '@/types/brand';
 
 import { Button } from '@/components/ui/Button';
@@ -18,8 +19,14 @@ import {
 } from '@/components/ui/Dialog';
 import { ImageUploader } from '@/components/ui/ImageUploader';
 import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/Label';
+import { Switch } from '@/components/ui/Switch';
 import { useDialog } from '@/context/DialogContext';
-import { useCreateBrandItem, useGetBrandList } from '@/services/Brand';
+import {
+  useCreateBrandItem,
+  useGetBrandList,
+  useUpsertBrandItem,
+} from '@/services/Brand';
 
 import { BrandsTable } from './BrandsTable';
 
@@ -27,9 +34,8 @@ export default function BrandsPage() {
   const { isOpen, setOpen, open } = useDialog();
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
-  const [filters, setFilters] = useState<{ name: string }>({
-    name: '',
-  });
+  const [searchInput, setSearchInput] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
 
   const { control, handleSubmit, reset, setValue, watch } = useForm<
     CreateBrandDto & { id?: string }
@@ -44,15 +50,35 @@ export default function BrandsPage() {
     },
   });
 
-  const { mutate: upsertBrandItem, isPending: upsertBrandItemPending } =
+  const brandId = watch('id');
+
+  const { mutate: createBrandItem, isPending: createBrandItemPending } =
     useCreateBrandItem();
+  const { mutate: upsertBrandItem, isPending: upsertBrandItemPending } =
+    useUpsertBrandItem();
+
+  const debouncedSetSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setDebouncedSearch(value);
+        setPage(1);
+      }, 1000),
+    [],
+  );
+
+  useEffect(() => {
+    debouncedSetSearch(searchInput);
+
+    return () => {
+      debouncedSetSearch.cancel();
+    };
+  }, [searchInput, debouncedSetSearch]);
 
   const { data: BrandsList, isLoading } = useGetBrandList({
     page,
     limit: +limit,
+    search: debouncedSearch || undefined,
   });
-
-  const brandId = watch('id');
 
   const handleEdit = (brand: IBrand) => {
     reset({
@@ -78,17 +104,54 @@ export default function BrandsPage() {
     });
   };
 
-  const createBrandItemHandler = handleSubmit((data) => {
-    upsertBrandItem(data, {
-      onSuccess: () => {
-        handleCloseModal();
-      },
-    });
+  const onSubmit = handleSubmit((data) => {
+    if (brandId) {
+      const updateData: UpsertBrandDto = {
+        id: data.id!,
+        name: data.name,
+        name_fa: data.name_fa,
+        slug: data.slug,
+        logo: data.logo,
+        is_active: data.is_active,
+      };
+
+      upsertBrandItem(updateData, {
+        onSuccess: () => {
+          handleCloseModal();
+        },
+      });
+    } else {
+      const createData: CreateBrandDto = {
+        name: data.name,
+        name_fa: data.name_fa,
+        slug: data.slug,
+        logo: data.logo,
+        is_active: data.is_active,
+      };
+
+      createBrandItem(createData, {
+        onSuccess: () => {
+          handleCloseModal();
+        },
+      });
+    }
   });
+
+  useEffect(() => {
+    if (!isOpen) {
+      reset({
+        id: undefined,
+        name: '',
+        name_fa: '',
+        slug: '',
+        logo: '',
+        is_active: true,
+      });
+    }
+  }, [isOpen, reset]);
 
   return (
     <div className="space-y-6">
-      {/* Modal Adding/Editing Brand */}
       <Dialog onOpenChange={setOpen} open={isOpen}>
         <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
           <DialogHeader>
@@ -97,7 +160,6 @@ export default function BrandsPage() {
             </DialogTitle>
           </DialogHeader>
 
-          {/* ✅ ImageUploader خارج از form */}
           <div className="mb-4">
             <Controller
               name="logo"
@@ -125,8 +187,7 @@ export default function BrandsPage() {
             />
           </div>
 
-          {/* ✅ Form فقط برای text fields */}
-          <form className="space-y-4" onSubmit={createBrandItemHandler}>
+          <form className="space-y-4" onSubmit={onSubmit}>
             <Controller
               name="name"
               rules={{ required: 'نام برند الزامی است' }}
@@ -175,6 +236,31 @@ export default function BrandsPage() {
               }}
             />
 
+            <Controller
+              name="is_active"
+              control={control}
+              render={({ field }) => (
+                <div className="flex items-center justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <Label
+                      className="text-base font-medium"
+                      htmlFor="is_active"
+                    >
+                      وضعیت برند
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      برند فعال در سایت نمایش داده می‌شود
+                    </p>
+                  </div>
+                  <Switch
+                    checked={field.value}
+                    id="is_active"
+                    onCheckedChange={field.onChange}
+                  />
+                </div>
+              )}
+            />
+
             <DialogFooter>
               <Button
                 type="button"
@@ -183,7 +269,10 @@ export default function BrandsPage() {
               >
                 لغو
               </Button>
-              <Button type="submit" loading={upsertBrandItemPending}>
+              <Button
+                type="submit"
+                loading={createBrandItemPending || upsertBrandItemPending}
+              >
                 {brandId ? 'ویرایش برند' : 'ذخیره برند'}
               </Button>
             </DialogFooter>
@@ -191,7 +280,6 @@ export default function BrandsPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">مدیریت برند</h1>
@@ -201,18 +289,15 @@ export default function BrandsPage() {
         </div>
       </div>
 
-      {/* Search & Filters */}
       <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
         <div className="flex flex-col gap-4 sm:flex-row">
           <div className="relative flex-1">
             <Search className="absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               className="pr-10 text-sm"
-              value={filters.name}
+              value={searchInput}
               dimension="lg"
-              onChange={(e) =>
-                setFilters((prev) => ({ ...prev, name: e.target.value }))
-              }
+              onChange={(e) => setSearchInput(e.target.value)}
               placeholder="جستجو در برند..."
             />
           </div>
@@ -224,7 +309,6 @@ export default function BrandsPage() {
         </Button>
       </div>
 
-      {/* Table */}
       <BrandsTable
         data={BrandsList?.data.items || []}
         page={page}
