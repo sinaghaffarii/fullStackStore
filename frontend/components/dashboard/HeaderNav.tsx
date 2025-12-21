@@ -173,7 +173,7 @@ export function HeaderNav({ className }: HeaderNavProps) {
           <DropdownMenuTrigger asChild>
             <Button size="icon" className="size-9 rounded-full" variant="ghost">
               <Avatar className="size-8">
-                <AvatarImage alt="کاربر" src="/avatars/admin.jpg" />
+                <AvatarImage alt="کاربر" src="" />
                 <AvatarFallback className="bg-primary/10 text-sm font-semibold text-primary">
                   م
                 </AvatarFallback>

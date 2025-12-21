@@ -1,12 +1,11 @@
+/* eslint-disable max-lines-per-function */
 'use client';
 
 import type { ColumnDef } from '@tanstack/react-table';
 
-import { Edit, MoreVertical, Trash2 } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { CheckCircle, Edit, MoreVertical, Trash2, XCircle } from 'lucide-react';
 
-import type { Brand } from '@/types/brands';
+import type { IBrand } from '@/types/brand';
 
 import { confirmAction } from '@/components/ui/Alert';
 import { Button } from '@/components/ui/Button';
@@ -17,15 +16,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu';
-import { useDeleteBrand } from '@/services/products/Brands';
+import { useDeleteBrandItem } from '@/services/Brand';
 
 interface Props {
-  data: Brand[];
+  data: IBrand[];
   isLoading: boolean;
   page: number;
   pageSize: number;
   total: number;
   onPageChange: (page: number) => void;
+  onEdit: (brand: IBrand) => void;
 }
 
 export function BrandsTable({
@@ -35,9 +35,10 @@ export function BrandsTable({
   pageSize,
   total,
   onPageChange,
+  onEdit,
 }: Props) {
   const { mutate: deleteBrand, isPending: deleteBrandPending } =
-    useDeleteBrand();
+    useDeleteBrandItem();
 
   const handleDelete = async (id: string) => {
     const confirmed = await confirmAction({
@@ -51,20 +52,24 @@ export function BrandsTable({
     }
   };
 
-  const columns: ColumnDef<Brand>[] = [
+  const columns: ColumnDef<IBrand>[] = [
     {
-      accessorKey: 'image',
+      accessorKey: 'logo',
       header: 'تصویر',
-      cell: ({ row }) => (
-        <div className="relative size-12 overflow-hidden rounded-md border">
-          <Image
-            fill
-            alt={row.original.name}
-            className="object-cover"
-            src={row.original.image ?? ''}
-          />
-        </div>
-      ),
+      cell: ({ row }) => {
+        const imageSrc = row.original.logo
+          ? `${process.env.NEXT_PUBLIC_API_URL_IMAGE}${row.original.logo}`
+          : '/images/products/defaultImage.jpg';
+        return (
+          <div className="relative size-12 overflow-hidden rounded-md border">
+            <img
+              alt={row.original.name}
+              className="size-full object-cover"
+              src={imageSrc}
+            />
+          </div>
+        );
+      },
     },
     {
       accessorKey: 'name',
@@ -76,9 +81,53 @@ export function BrandsTable({
       ),
     },
     {
-      accessorKey: 'description',
-      header: 'توضیحات',
+      accessorKey: 'name_fa',
+      header: 'نام محصول به فارسی',
+      cell: ({ row }) => (
+        <div className="flex flex-col gap-1">
+          <span className="font-medium">{row.original.name_fa}</span>
+        </div>
+      ),
     },
+    {
+      accessorKey: 'slug',
+      header: 'slug',
+      cell: ({ row }) => (
+        <div className="flex flex-col gap-1">
+          <span className="font-medium">{row.original.slug}</span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: 'is_active',
+      header: 'وضعیت',
+      cell: ({ row }) => (
+        <div className="flex flex-col gap-1">
+          <span className="font-medium">
+            {row.original.is_active ? <CheckCircle /> : <XCircle />}
+          </span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: 'createdAt',
+      header: 'تاریخ ایجاد',
+      cell: ({ row }) => (
+        <div className="flex flex-col gap-1">
+          <span className="font-medium">{row.original.createdAt}</span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: 'updatedAt',
+      header: 'تاریخ به روزرسانی',
+      cell: ({ row }) => (
+        <div className="flex flex-col gap-1">
+          <span className="font-medium">{row.original.updatedAt}</span>
+        </div>
+      ),
+    },
+
     {
       id: 'actions',
       header: 'عملیات',
@@ -90,14 +139,17 @@ export function BrandsTable({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem asChild>
-              <Link href={`/dashboard/products/${row.original.id}/edit`}>
-                <Edit className="ml-2 size-4" />
-                ویرایش
-              </Link>
+            <DropdownMenuItem
+              onSelect={() => {
+                onEdit(row.original);
+              }}
+            >
+              <Edit className="ml-2 size-4" />
+              ویرایش
             </DropdownMenuItem>
             <DropdownMenuItem
               className="text-destructive focus:text-destructive"
+              variant="destructive"
               onClick={() => handleDelete(row.original.id)}
             >
               <Trash2 className="ml-2 size-4" />

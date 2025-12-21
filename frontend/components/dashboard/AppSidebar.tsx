@@ -238,7 +238,7 @@ const sidebarData: {
   user: {
     name: 'مدیر فروشگاه',
     email: 'admin@store.com',
-    avatar: '/avatars/admin.jpg',
+    avatar: '',
   },
 };
 

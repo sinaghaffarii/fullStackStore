@@ -48,16 +48,6 @@ export enum DiscountScope {
 
 export type StockStatus = 'in-stock' | 'low-stock' | 'out-of-stock';
 
-// ==================== Brand ====================
-export interface Brand {
-  id: string;
-  name: string;
-  name_fa: string;
-  slug: string;
-  logo?: string;
-  is_active: boolean;
-}
-
 // ==================== Category ====================
 export interface Category {
   id: string;
