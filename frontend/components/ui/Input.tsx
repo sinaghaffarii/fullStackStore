@@ -45,6 +45,7 @@ interface InputProps
   rightIcon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
   error?: string;
+  label?: string;
 }
 
 function Input({
@@ -57,40 +58,50 @@ function Input({
   rounded,
   variant,
   error,
+  label,
   ...props
 }: InputProps) {
   const hasLeftIcon = leftIcon && iconPosition === 'left';
   const hasRightIcon = rightIcon && iconPosition === 'right';
 
   return (
-    <div className="group relative w-full">
-      {hasLeftIcon && (
-        <div className="absolute top-1/2 left-3 -translate-y-1/2 transform text-muted-foreground transition-colors group-focus-within:text-primary">
-          {leftIcon}
-        </div>
+    <div className="w-full space-y-1.5">
+      {label && (
+        <label className="block text-sm font-medium text-foreground">
+          {label}
+        </label>
       )}
-      <input
-        type={type}
-        data-slot="input"
-        className={cn(
-          inputVariants({
-            dimension,
-            rounded,
-            variant: error ? 'error' : variant,
-          }),
-          hasLeftIcon && 'pl-10',
-          hasRightIcon && 'pr-10',
-          className,
+
+      <div className="group relative w-full">
+        {hasLeftIcon && (
+          <div className="absolute top-1/2 left-3 -translate-y-1/2 transform text-muted-foreground transition-colors group-focus-within:text-primary">
+            {leftIcon}
+          </div>
         )}
-        {...props}
-      />
-      {hasRightIcon && (
-        <div className="absolute top-1/2 right-3 -translate-y-1/2 transform text-muted-foreground transition-colors group-focus-within:text-primary">
-          {rightIcon}
-        </div>
-      )}
+        <input
+          type={type}
+          data-slot="input"
+          className={cn(
+            inputVariants({
+              dimension,
+              rounded,
+              variant: error ? 'error' : variant,
+            }),
+            hasLeftIcon && 'pl-10',
+            hasRightIcon && 'pr-10',
+            className,
+          )}
+          {...props}
+        />
+        {hasRightIcon && (
+          <div className="absolute top-1/2 right-3 -translate-y-1/2 transform text-muted-foreground transition-colors group-focus-within:text-primary">
+            {rightIcon}
+          </div>
+        )}
+      </div>
+
       {error && (
-        <span className="mt-1 block text-xs font-medium text-destructive">
+        <span className="block text-xs font-medium text-destructive">
           {error}
         </span>
       )}

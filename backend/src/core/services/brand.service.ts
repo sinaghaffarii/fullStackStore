@@ -89,6 +89,19 @@ export class BrandService {
 
   async update(id: string, data: Partial<CreateBrandDTO>): Promise<Brand> {
     const brand = await this.getById(id);
+
+    if (data.slug && data.slug !== brand.slug) {
+      const exists = await Brand.findOne({
+        where: {
+          slug: data.slug,
+          id: { [Op.ne]: id },
+        },
+      });
+      if (exists) {
+        throw new AppError('Brand slug exists', StatusCodes.CONFLICT);
+      }
+    }
+
     await brand.update(data);
     return brand;
   }

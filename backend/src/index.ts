@@ -123,6 +123,13 @@ class App {
       '/images',
       express.static(
         path.join(process.cwd(), 'src/infrastructure/storage/uploads/images'),
+        {
+          setHeaders: (res) => {
+            if (process.env.NODE_ENV !== 'production') {
+              res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+            }
+          },
+        },
       ),
     );
   }

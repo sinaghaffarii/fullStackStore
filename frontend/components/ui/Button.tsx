@@ -2,6 +2,7 @@ import type { VariantProps } from 'class-variance-authority';
 
 import { Slot } from '@radix-ui/react-slot';
 import { cva } from 'class-variance-authority';
+import { Loader2 } from 'lucide-react';
 import * as React from 'react';
 
 import { cn } from '../../lib/utils';
@@ -12,7 +13,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:bg-primary/90 hover:shadow-primary/30 hover:-translate-y-0.5 active:translate-y-0', // افزودن افکت هاور مدرن
+          'bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:bg-primary/90 hover:shadow-primary/30 hover:-translate-y-0.5 active:translate-y-0',
         destructive:
           'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
         outline:
@@ -40,13 +41,84 @@ const buttonVariants = cva(
 );
 
 interface ButtonProps
-  extends React.ComponentProps<'button'>,
+  extends Omit<React.ComponentProps<'button'>, 'type'>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
+  loading?: boolean;
+  type?: 'button' | 'reset' | 'submit';
+}
+
+function resolveLeftIcon({
+  loading,
+  leftIcon,
+  icon,
+  iconPosition,
+}: {
+  loading: boolean;
+  leftIcon?: React.ReactNode;
+  icon?: React.ReactNode;
+  iconPosition: 'left' | 'right';
+}) {
+  if (loading) {
+    return <Loader2 className="animate-spin" />;
+  }
+
+  if (leftIcon) {
+    return leftIcon;
+  }
+
+  if (icon && iconPosition === 'left') {
+    return icon;
+  }
+
+  return null;
+}
+
+function resolveRightIcon({
+  rightIcon,
+  icon,
+  iconPosition,
+}: {
+  rightIcon?: React.ReactNode;
+  icon?: React.ReactNode;
+  iconPosition: 'left' | 'right';
+}) {
+  if (rightIcon) {
+    return rightIcon;
+  }
+
+  if (icon && iconPosition === 'right') {
+    return icon;
+  }
+
+  return null;
+}
+function renderButtonContent({
+  asChild,
+  children,
+  leftIcon,
+  rightIcon,
+}: {
+  asChild: boolean;
+  children: React.ReactNode;
+  leftIcon: React.ReactNode;
+  rightIcon: React.ReactNode;
+}) {
+  if (asChild) {
+    return children;
+  }
+
+  return (
+    <>
+      {leftIcon}
+      {children}
+      {rightIcon}
+    </>
+  );
 }
 
 function Button({
@@ -58,29 +130,39 @@ function Button({
   rightIcon,
   icon,
   iconPosition = 'left',
+  loading = false,
+  disabled,
+  type = 'button',
   children,
   ...props
 }: ButtonProps) {
   const Comp = asChild ? Slot : 'button';
 
-  const resolvedLeftIcon =
-    leftIcon || (iconPosition === 'left' && icon ? icon : null);
-  const resolvedRightIcon =
-    rightIcon || (iconPosition === 'right' && icon ? icon : null);
+  const resolvedLeftIcon = resolveLeftIcon({
+    loading,
+    leftIcon,
+    icon,
+    iconPosition,
+  });
 
-  const content = asChild ? (
-    children
-  ) : (
-    <>
-      {resolvedLeftIcon}
-      {children}
-      {resolvedRightIcon}
-    </>
-  );
+  const resolvedRightIcon = resolveRightIcon({
+    rightIcon,
+    icon,
+    iconPosition,
+  });
+
+  const content = renderButtonContent({
+    asChild,
+    children,
+    leftIcon: resolvedLeftIcon,
+    rightIcon: resolvedRightIcon,
+  });
 
   return (
     <Comp
       className={cn(buttonVariants({ variant, size, className }))}
+      disabled={disabled || loading}
+      type={asChild ? undefined : type}
       data-slot="button"
       {...props}
     >

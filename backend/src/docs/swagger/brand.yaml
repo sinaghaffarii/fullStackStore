@@ -88,7 +88,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Brand'
+              type: object
+              required:
+                - name
+                - name_fa
+                - slug
+              properties:
+                name:
+                  type: string
+                name_fa:
+                  type: string
+                slug:
+                  type: string
+                logo:
+                  type: string
+                is_active:
+                  type: boolean
       responses:
         201:
           description: Created
@@ -107,8 +122,6 @@ paths:
       responses:
         200:
           description: Success
-        404:
-          description: Brand not found
 
     put:
       tags: [Brands]
@@ -122,6 +135,24 @@ paths:
           schema:
             type: string
             format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                name_fa:
+                  type: string
+                slug:
+                  type: string
+                logo:
+                  type: string
+                  nullable: true
+                is_active:
+                  type: boolean
       responses:
         200:
           description: Updated
@@ -141,5 +172,3 @@ paths:
       responses:
         200:
           description: Deleted
-        404:
-          description: Brand not found

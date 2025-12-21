@@ -1,5 +1,32 @@
 import type { Product } from './product';
 
+export interface IPaginationMeta {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+}
+
+export interface IListResponse<TItem> {
+  items: TItem[];
+  pagination: IPaginationMeta;
+}
+
+export interface ApiSuccessResponse<T> {
+  success: true;
+  data: T;
+}
+
+export interface ApiErrorResponse {
+  success: false;
+  message: string;
+  error?: {
+    code?: string;
+  };
+}
+
 export interface User {
   id: string;
   email: string;
