@@ -8,14 +8,14 @@ const FooterLegal: React.FC = () => (
       <span>کلیه حقوق برای شرکت آریاس فاران آرایشی محفوظ است.</span>
       <a
         className="underline-offset-4 hover:underline"
-        href="https://rojashop.com/posts/قوانین-و-مقررات"
+        href="/posts/قوانین-و-مقررات"
       >
         قوانین و مقررات
       </a>
       <span aria-hidden>•</span>
       <a
         className="underline-offset-4 hover:underline"
-        href="https://rojashop.com/posts/حریم-خصوصی"
+        href="/posts/حریم-خصوصی"
       >
         حریم خصوصی
       </a>

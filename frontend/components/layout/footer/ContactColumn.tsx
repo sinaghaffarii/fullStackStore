@@ -34,7 +34,7 @@ const ContactColumn: React.FC = () => (
           <strong>آدرس فروشگاه:</strong>{' '}
           <a
             className="text-black underline-offset-4 hover:underline"
-            href="https://rojashop.com/branches"
+            href="/branches"
           >
             فروشگاه‌های فاران آرایشی
           </a>
