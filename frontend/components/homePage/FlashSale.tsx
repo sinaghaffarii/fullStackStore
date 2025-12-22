@@ -74,7 +74,7 @@ const FlashSale: React.FC<Props> = ({ products, isLoading = false }) => {
               </span>
 
               <span className="mt-4 text-lg font-bold text-white drop-shadow-md">
-                یه ویترین پر از تخفیف
+                یه عالمه تخفیف
               </span>
 
               <div className="mt-auto mb-8 flex items-center justify-center gap-2">
