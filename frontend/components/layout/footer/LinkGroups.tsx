@@ -3,23 +3,23 @@ import React from 'react';
 const userMenuLinks = [
   {
     id: 'contact-us',
-    href: 'https://rojashop.com/posts/تماس-با-ما',
+    href: '/posts/تماس-با-ما',
     text: 'تماس با ما',
   },
   {
     id: 'about-us',
-    href: 'https://rojashop.com/posts/درباره-ما',
+    href: '/posts/درباره-ما',
     text: 'درباره ما',
   },
   { id: 'branches', href: '/branches', text: 'فروشگاه‌های فاران آرایشی' },
   {
     id: 'order-guide',
-    href: 'https://rojashop.com/posts/راهنمای-سفارش-و-خرید',
+    href: '/posts/راهنمای-سفارش-و-خرید',
     text: 'راهنمای سفارش و خرید',
   },
   {
     id: 'gift-card',
-    href: 'https://rojashop.com/landing/gift-card-usage-guide',
+    href: '/landing/gift-card-usage-guide',
     text: 'راهنمای استفاده از کارت هدیه',
   },
 ];
@@ -27,23 +27,23 @@ const userMenuLinks = [
 const auxiliaryMenuLinks = [
   {
     id: 'privacy',
-    href: 'https://rojashop.com/posts/حریم-خصوصی',
+    href: '/posts/حریم-خصوصی',
     text: 'حریم خصوصی',
   },
   { id: 'jobs', href: '/jobs', text: 'فرصت‌های شغلی' },
   {
     id: 'rules',
-    href: 'https://rojashop.com/posts/قوانین-و-مقررات',
+    href: '/posts/قوانین-و-مقررات',
     text: 'قوانین و مقررات',
   },
   {
     id: 'gift-sending',
-    href: 'https://rojashop.com/posts/ارسال-هدیه-برای-عزیزان',
+    href: '/posts/ارسال-هدیه-برای-عزیزان',
     text: 'ارسال هدیه',
   },
   {
     id: 'faq',
-    href: 'https://rojashop.com/posts/سوالات-متداول',
+    href: '/posts/سوالات-متداول',
     text: 'سوالات متداول',
   },
 ];

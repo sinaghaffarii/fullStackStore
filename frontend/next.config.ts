@@ -5,19 +5,12 @@ const nextConfig: NextConfig = {
     globalNotFound: true,
   },
   images: {
-    domains: [
-      'storage.khanoumi.com',
-      'trustseal.enamad.ir',
-      'logo.samandehi.ir',
-      'images.rojashop.com',
-      'Trustseal.eNamad.ir',
-    ],
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'storage.khanoumi.com',
-        port: '',
-        pathname: '/ProductImages/**',
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '8000',
+        pathname: '/**',
       },
     ],
   },

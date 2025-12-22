@@ -8,22 +8,22 @@ const LINK_GROUPS = [
       {
         id: 'contact-us',
         text: 'تماس با ما',
-        href: 'https://rojashop.com/posts/تماس-با-ما',
+        href: '/posts/تماس-با-ما',
       },
       {
         id: 'order-guide',
         text: 'راهنمای سفارش و خرید',
-        href: 'https://rojashop.com/posts/راهنمای-سفارش-و-خرید',
+        href: '/posts/راهنمای-سفارش-و-خرید',
       },
       {
         id: 'gift-card',
         text: 'راهنمای استفاده از کارت هدیه',
-        href: 'https://rojashop.com/landing/gift-card-usage-guide',
+        href: '/landing/gift-card-usage-guide',
       },
       {
         id: 'faq',
         text: 'سوالات متداول',
-        href: 'https://rojashop.com/posts/سوالات-متداول',
+        href: '/posts/سوالات-متداول',
       },
     ],
   },
@@ -34,17 +34,17 @@ const LINK_GROUPS = [
       {
         id: 'privacy',
         text: 'حریم خصوصی',
-        href: 'https://rojashop.com/posts/حریم-خصوصی',
+        href: '/posts/حریم-خصوصی',
       },
       {
         id: 'rules',
         text: 'قوانین و مقررات',
-        href: 'https://rojashop.com/posts/قوانین-و-مقررات',
+        href: '/posts/قوانین-و-مقررات',
       },
       {
         id: 'gift-sending',
         text: 'ارسال هدیه',
-        href: 'https://rojashop.com/posts/ارسال-هدیه-برای-عزیزان',
+        href: '/posts/ارسال-هدیه-برای-عزیزان',
       },
       { id: 'branches', text: 'فروشگاه‌های فاران آرایشی', href: '/branches' },
     ],
@@ -56,7 +56,7 @@ const LINK_GROUPS = [
       {
         id: 'about-us',
         text: 'درباره ما',
-        href: 'https://rojashop.com/posts/درباره-ما',
+        href: '/posts/درباره-ما',
       },
       { id: 'jobs', text: 'فرصت‌های شغلی', href: '/jobs' },
       { id: 'blog', text: 'مجله زیبایی', href: '/blog' },

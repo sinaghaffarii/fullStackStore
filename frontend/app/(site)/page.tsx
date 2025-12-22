@@ -208,10 +208,10 @@ export default function Home() {
 
       <section className="mx-auto my-10 w-11/12 max-w-7xl text-justify text-sm text-gray-500">
         <h2 className="mb-2 font-bold text-gray-700">
-          فروشگاه اینترنتی ویترین
+          فروشگاه اینترنتی فاران بیوتی
         </h2>
         <p>
-          ویترین، اولین فروشگاه آنلاین تخصصی آرایشی، بهداشتی و عطر و ادکلن در
+          فارانی اولین فروشگاه آنلاین تخصصی آرایشی، بهداشتی و عطر و ادکلن در
           حوزه سلامت و زیبایی است...
         </p>
       </section>
