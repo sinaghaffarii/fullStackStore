@@ -10,7 +10,6 @@ import { categoryValidation } from '../validators';
 
 const router = Router();
 
-/* ✅ Dependency Injection */
 const categoryRepository = new CategoryRepository();
 const categoryService = new CategoryService(categoryRepository);
 const controller = new CategoryController(categoryService);
@@ -20,8 +19,12 @@ router.get(
   validateRequest(categoryValidation.list, 'query'),
   controller.list,
 );
-
 router.get('/hierarchy', controller.hierarchy);
+router.get(
+  '/search',
+  validateRequest(categoryValidation.search, 'query'),
+  controller.search,
+);
 router.get('/:id/subcategories', controller.subcategories);
 router.get('/:id', controller.get);
 
