@@ -36,19 +36,18 @@ export class CategoryService {
       }
     }
 
-    const existingCategory = await this.categoryRepository.findAll({
+    const existingCategory = await this.categoryRepository.findOne({
       where: { name: data.name, parent_id: data.parent_id || null },
     });
 
-    if (existingCategory.length > 0) {
+    if (existingCategory) {
       throw new AppError(
         'Category name already exists in this level',
         StatusCodes.CONFLICT,
       );
     }
 
-    const categoryData: CategoryCreationAttributes = { ...data };
-    return this.categoryRepository.create(categoryData);
+    return this.categoryRepository.create(data as CategoryCreationAttributes);
   }
 
   async deleteCategory(id: string): Promise<void> {
@@ -57,7 +56,7 @@ export class CategoryService {
     const children = await this.categoryRepository.findByParentId(id);
     if (children.length > 0) {
       throw new AppError(
-        'Cannot delete category with subcategories. Please delete subcategories first.',
+        'Cannot delete category with subcategories',
         StatusCodes.CONFLICT,
       );
     }
@@ -65,7 +64,7 @@ export class CategoryService {
     const productCount = await Product.count({ where: { category_id: id } });
     if (productCount > 0) {
       throw new AppError(
-        'Cannot delete category with associated products. Please reassign products first.',
+        'Cannot delete category with associated products',
         StatusCodes.CONFLICT,
       );
     }
@@ -121,7 +120,10 @@ export class CategoryService {
       include,
       limit,
       offset,
-      order: [['created_at', 'ASC']],
+      order: [
+        ['sort_order', 'ASC'],
+        ['created_at', 'ASC'],
+      ],
     });
 
     return {
@@ -145,7 +147,7 @@ export class CategoryService {
   async updateCategory(id: string, data: UpdateCategoryDTO): Promise<Category> {
     const category = await this.getCategoryById(id);
 
-    if (data.parent_id) {
+    if (data.parent_id !== undefined) {
       if (data.parent_id === id) {
         throw new AppError(
           'Category cannot be its own parent',
@@ -153,24 +155,29 @@ export class CategoryService {
         );
       }
 
-      const parentCategory = await this.categoryRepository.findById(
-        data.parent_id,
-      );
-      if (!parentCategory) {
-        throw new AppError('Parent category not found', StatusCodes.NOT_FOUND);
-      }
-
-      const hasCycle = await this.hasCircularReference(data.parent_id, id);
-      if (hasCycle) {
-        throw new AppError(
-          'Circular reference detected in category hierarchy',
-          StatusCodes.BAD_REQUEST,
+      if (data.parent_id) {
+        const parentCategory = await this.categoryRepository.findById(
+          data.parent_id,
         );
+        if (!parentCategory) {
+          throw new AppError(
+            'Parent category not found',
+            StatusCodes.NOT_FOUND,
+          );
+        }
+
+        const hasCycle = await this.hasCircularReference(data.parent_id, id);
+        if (hasCycle) {
+          throw new AppError(
+            'Circular reference detected in category hierarchy',
+            StatusCodes.BAD_REQUEST,
+          );
+        }
       }
     }
 
     if (data.name) {
-      const existingCategory = await this.categoryRepository.findAll({
+      const existingCategory = await this.categoryRepository.findOne({
         where: {
           name: data.name,
           parent_id:
@@ -179,7 +186,7 @@ export class CategoryService {
         },
       });
 
-      if (existingCategory.length > 0) {
+      if (existingCategory) {
         throw new AppError(
           'Category name already exists in this level',
           StatusCodes.CONFLICT,
@@ -187,12 +194,7 @@ export class CategoryService {
       }
     }
 
-    const updateData: Partial<CategoryAttributes> = {};
-    Object.entries(data).forEach(([key, value]) => {
-      if (value !== undefined) {
-        (updateData as any)[key] = value;
-      }
-    });
+    const updateData: Partial<CategoryAttributes> = { ...data };
 
     return this.categoryRepository.update(id, updateData);
   }

@@ -44,9 +44,7 @@ export class CategoryRepository {
 
   async findHierarchy(): Promise<Category[]> {
     return Category.findAll({
-      where: {
-        parent_id: { [Op.eq]: null },
-      },
+      where: { parent_id: { [Op.eq]: null } },
       include: [
         {
           model: Category,
@@ -54,7 +52,15 @@ export class CategoryRepository {
           include: [{ model: Category, as: 'children' }],
         },
       ],
+      order: [
+        ['sort_order', 'ASC'],
+        ['created_at', 'ASC'],
+      ],
     });
+  }
+
+  async findOne(options: FindOptions): Promise<Category | null> {
+    return Category.findOne(options);
   }
 
   async update(
@@ -65,8 +71,7 @@ export class CategoryRepository {
     if (!category) {
       throw new Error('Category not found');
     }
-
-    await category.update(data); // ✅ overload سالم
+    await category.update(data);
     return category;
   }
 }
