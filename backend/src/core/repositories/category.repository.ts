@@ -1,77 +1,69 @@
-import type { CreateOptions, FindOptions } from 'sequelize';
-
-import { Op } from 'sequelize';
+import type { FindOptions, WhereOptions } from 'sequelize';
 
 import type {
-  CategoryAttributes,
-  CategoryCreationAttributes,
-} from '../../infrastructure/database/models';
+  CreateCategoryDto,
+  UpdateCategoryDto,
+} from '../types/category.dto';
+import type { ICategory } from '../types/category.interface';
 
 import { Category } from '../../infrastructure/database/models';
 
 export class CategoryRepository {
-  async create(
-    data: CategoryCreationAttributes,
-    options?: CreateOptions,
-  ): Promise<Category> {
-    return Category.create(data, options);
+  async count(options?: { where?: WhereOptions }): Promise<number> {
+    return Category.count(options);
   }
 
-  async delete(id: string): Promise<boolean> {
-    return (await Category.destroy({ where: { id } })) > 0;
+  async create(data: CreateCategoryDto): Promise<ICategory> {
+    const category = await Category.create(data as any);
+    return category.toJSON() as ICategory;
   }
 
-  async findAll(options?: FindOptions): Promise<Category[]> {
-    return Category.findAll(options);
+  async delete(id: string): Promise<void> {
+    await Category.destroy({ where: { id } });
+  }
+
+  async findAll(options?: FindOptions): Promise<ICategory[]> {
+    const categories = await Category.findAll(options);
+    return categories.map((c: Category) => c.toJSON() as ICategory);
   }
 
   async findAndCountAll(
-    options?: FindOptions,
-  ): Promise<{ rows: Category[]; count: number }> {
-    return Category.findAndCountAll(options);
+    options: FindOptions,
+  ): Promise<{ rows: ICategory[]; count: number }> {
+    const { rows, count } = await Category.findAndCountAll(options);
+    return {
+      rows: rows.map((r: Category) => r.toJSON() as ICategory),
+      count,
+    };
   }
 
-  async findById(id: string, options?: FindOptions): Promise<Category | null> {
-    return Category.findByPk(id, options);
-  }
-
-  async findByParentId(parentId: string): Promise<Category[]> {
-    return Category.findAll({
-      where: { parent_id: parentId },
-      include: [{ model: Category, as: 'children' }],
-    });
-  }
-
-  async findHierarchy(): Promise<Category[]> {
-    return Category.findAll({
-      where: { parent_id: { [Op.eq]: null } },
-      include: [
-        {
-          model: Category,
-          as: 'children',
-          include: [{ model: Category, as: 'children' }],
-        },
-      ],
-      order: [
-        ['sort_order', 'ASC'],
-        ['created_at', 'ASC'],
-      ],
-    });
-  }
-
-  async findOne(options: FindOptions): Promise<Category | null> {
-    return Category.findOne(options);
-  }
-
-  async update(
-    id: string,
-    data: Partial<CategoryAttributes>,
-  ): Promise<Category> {
+  async findById(id: string): Promise<ICategory | null> {
     const category = await Category.findByPk(id);
-    if (!category) {
-      throw new Error('Category not found');
-    }
-    await category.update(data);
-    return category;
+    return category ? (category.toJSON() as ICategory) : null;
+  }
+
+  async findOne(options: FindOptions): Promise<ICategory | null> {
+    const category = await Category.findOne(options);
+    return category ? (category.toJSON() as ICategory) : null;
+  }
+
+  async max(
+    field: 'sort_order',
+    options?: { where?: WhereOptions },
+  ): Promise<number> {
+    const result = await Category.max(field, options);
+    return result ? Number(result) : 0;
+  }
+
+  async update(id: string, data: UpdateCategoryDto): Promise<ICategory> {
+    const category = await Category.findByPk(id);
+    if (!category) throw new Error('Category not found');
+
+    const sanitizedData: any = { ...data };
+    if (sanitizedData.image === null) sanitizedData.image = undefined;
+    if (sanitizedData.parent_id === null) sanitizedData.parent_id = undefined;
+
+    await category.update(sanitizedData);
+    return category.toJSON() as ICategory;
   }
 }

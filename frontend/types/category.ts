@@ -9,4 +9,5 @@ export interface ICategory {
   is_active: boolean;
   createdAt: string;
   updatedAt: string;
+  children?: ICategory[];
 }

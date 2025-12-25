@@ -2,7 +2,7 @@ import Joi from 'joi';
 
 import { imagePathValidator } from '../../../shared/utils/pathValidator';
 
-const emptyStringToNull = (value: any, helpers: any) => {
+const emptyStringToNull = (value: any) => {
   if (value === '') return null;
   return value;
 };
@@ -22,7 +22,7 @@ export const categoryValidation = {
       .optional()
       .allow('', null)
       .custom(emptyStringToNull),
-    sort_order: Joi.number().integer().min(0).default(0),
+    sort_order: Joi.number().integer().min(0).optional(),
     is_active: Joi.boolean().default(true),
   }),
 
@@ -45,9 +45,10 @@ export const categoryValidation = {
   }),
 
   list: Joi.object({
-    parent_id: Joi.string().uuid().optional().allow(null),
+    parent_id: Joi.string().uuid().optional().allow(null, ''),
     is_active: Joi.boolean().optional(),
     include_children: Joi.boolean().default(false),
+    search: Joi.string().max(100).optional(),
     page: Joi.number().integer().min(1).default(1),
     limit: Joi.number().integer().min(1).max(100).default(20),
   }),
