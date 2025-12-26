@@ -15,6 +15,7 @@ import { CategoryTreeSelector } from '@/components/dashboard/categories/Category
 import { Button } from '@/components/ui/Button';
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -155,104 +156,110 @@ export default function CategoriesPage() {
   return (
     <div className="space-y-6">
       <Dialog onOpenChange={handleFormOpenChange} open={isFormOpen}>
-        <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto">
+        <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle>
               {categoryId ? 'ویرایش دسته‌بندی' : 'ایجاد دسته‌بندی'}
             </DialogTitle>
           </DialogHeader>
 
-          <Controller
-            name="image"
-            control={control}
-            render={({ field }) => (
-              <ImageUploader
-                label="تصویر دسته‌بندی"
-                value={field.value ?? undefined}
-                onChange={(url) =>
-                  setValue('image', url, { shouldDirty: true })
-                }
-              />
-            )}
-          />
-
-          <form className="space-y-4" onSubmit={onSubmit}>
-            <Controller
-              name="parent_id"
-              control={control}
-              render={({ field }) => (
-                <CategoryTreeSelector
-                  excludeId={categoryId}
-                  value={field.value}
-                  categories={treeCategories}
-                  onChange={field.onChange}
-                />
-              )}
-            />
-
-            <Controller
-              name="name"
-              rules={{ required: 'نام الزامی است' }}
-              control={control}
-              render={({ field, fieldState }) => (
-                <Input
-                  {...field}
-                  label="نام دسته‌بندی"
-                  error={fieldState.error?.message}
-                />
-              )}
-            />
-
-            <Controller
-              name="slug"
-              control={control}
-              render={({ field, fieldState }) => (
-                <Input
-                  {...field}
-                  label="Slug"
-                  error={fieldState.error?.message}
-                />
-              )}
-              rules={{
-                required: 'اسلاگ الزامی است',
-                pattern: {
-                  value: /^[0-9a-z]+(?:-[0-9a-z]+)*$/,
-                  message: 'اسلاگ معتبر نیست',
-                },
-              }}
-            />
-
-            <Controller
-              name="description"
-              control={control}
-              render={({ field: { ref, ...field } }) => (
-                <Textarea {...field} label="توضیحات" rows={3} />
-              )}
-            />
-
-            <Controller
-              name="is_active"
-              control={control}
-              render={({ field }) => (
-                <div className="flex items-center justify-between rounded-lg border p-4">
-                  <Label>وضعیت فعال</Label>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
+          <DialogBody>
+            <form className="space-y-4" id="category-form" onSubmit={onSubmit}>
+              <Controller
+                name="image"
+                control={control}
+                render={({ field }) => (
+                  <ImageUploader
+                    label="تصویر دسته‌بندی"
+                    value={field.value ?? undefined}
+                    onChange={(url) =>
+                      setValue('image', url, { shouldDirty: true })
+                    }
                   />
-                </div>
-              )}
-            />
+                )}
+              />
 
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={closeFormModal}>
-                لغو
-              </Button>
-              <Button type="submit" loading={creating || updating}>
-                ذخیره
-              </Button>
-            </DialogFooter>
-          </form>
+              <Controller
+                name="parent_id"
+                control={control}
+                render={({ field }) => (
+                  <CategoryTreeSelector
+                    excludeId={categoryId}
+                    value={field.value}
+                    categories={treeCategories}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+
+              <Controller
+                name="name"
+                rules={{ required: 'نام الزامی است' }}
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Input
+                    {...field}
+                    label="نام دسته‌بندی"
+                    error={fieldState.error?.message}
+                  />
+                )}
+              />
+
+              <Controller
+                name="slug"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Input
+                    {...field}
+                    label="Slug"
+                    error={fieldState.error?.message}
+                  />
+                )}
+                rules={{
+                  required: 'اسلاگ الزامی است',
+                  pattern: {
+                    value: /^[0-9a-z]+(?:-[0-9a-z]+)*$/,
+                    message: 'اسلاگ معتبر نیست',
+                  },
+                }}
+              />
+
+              <Controller
+                name="description"
+                control={control}
+                render={({ field: { ref, ...field } }) => (
+                  <Textarea {...field} label="توضیحات" rows={3} />
+                )}
+              />
+
+              <Controller
+                name="is_active"
+                control={control}
+                render={({ field }) => (
+                  <div className="flex items-center justify-between rounded-lg border p-4">
+                    <Label>وضعیت فعال</Label>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </div>
+                )}
+              />
+            </form>
+          </DialogBody>
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={closeFormModal}>
+              لغو
+            </Button>
+            <Button
+              type="submit"
+              form="category-form"
+              loading={creating || updating}
+            >
+              ذخیره
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
@@ -264,15 +271,15 @@ export default function CategoriesPage() {
               ساختار درختی دسته‌بندی‌ها
             </DialogTitle>
           </DialogHeader>
-
-          {treeCategories.length > 0 ? (
-            <CategoryTreePreview categories={treeCategories} />
-          ) : (
-            <div className="py-12 text-center text-muted-foreground">
-              هنوز دسته‌بندی‌ای ایجاد نشده است
-            </div>
-          )}
-
+          <DialogBody>
+            {treeCategories.length > 0 ? (
+              <CategoryTreePreview categories={treeCategories} />
+            ) : (
+              <div className="py-12 text-center text-muted-foreground">
+                هنوز دسته‌بندی‌ای ایجاد نشده است
+              </div>
+            )}
+          </DialogBody>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsTreeOpen(false)}>
               بستن

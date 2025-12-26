@@ -56,7 +56,7 @@ export function HeaderNav({ className }: HeaderNavProps) {
   return (
     <header
       className={cn(
-        'sticky top-0 z-40 flex h-16 items-center justify-between gap-4 border-b border-border bg-card/95 px-4 backdrop-blur-sm supports-backdrop-filter:bg-card/60 lg:px-6',
+        'sticky top-0 z-40 flex h-14 items-center justify-between gap-4 border-b border-border bg-card/95 px-4 backdrop-blur-sm supports-backdrop-filter:bg-card/60 lg:px-6',
         className,
       )}
     >
