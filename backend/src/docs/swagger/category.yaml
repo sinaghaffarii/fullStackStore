@@ -34,28 +34,10 @@ components:
         updated_at:
           type: string
           format: date-time
-        parent:
-          type: object
-          nullable: true
-          properties:
-            id:
-              type: string
-              format: uuid
-            name:
-              type: string
         children:
           type: array
           items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uuid
-              name:
-                type: string
-              description:
-                type: string
-                nullable: true
+            $ref: '#/components/schemas/Category'
 
     CreateCategoryRequest:
       type: object
@@ -85,7 +67,6 @@ components:
         sort_order:
           type: integer
           minimum: 0
-          default: 0
         is_active:
           type: boolean
           default: true
@@ -95,16 +76,10 @@ components:
       properties:
         name:
           type: string
-          minLength: 2
-          maxLength: 100
         slug:
           type: string
-          minLength: 2
-          maxLength: 120
-          pattern: '^[-0-9a-z]+$'
         description:
           type: string
-          maxLength: 500
         image:
           type: string
           nullable: true
@@ -114,41 +89,8 @@ components:
           nullable: true
         sort_order:
           type: integer
-          minimum: 0
         is_active:
           type: boolean
-
-    CategoryListResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-        data:
-          type: object
-          properties:
-            items:
-              type: array
-              items:
-                $ref: '#/components/schemas/Category'
-            pagination:
-              type: object
-              properties:
-                total:
-                  type: integer
-                page:
-                  type: integer
-                limit:
-                  type: integer
-                totalPages:
-                  type: integer
-
-    CategoryResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-        data:
-          $ref: '#/components/schemas/Category'
 
 paths:
   /categories:
@@ -160,14 +102,11 @@ paths:
           name: page
           schema:
             type: integer
-            minimum: 1
             default: 1
         - in: query
           name: limit
           schema:
             type: integer
-            minimum: 1
-            maximum: 100
             default: 20
         - in: query
           name: include_children
@@ -183,13 +122,13 @@ paths:
           name: is_active
           schema:
             type: boolean
+        - in: query
+          name: search
+          schema:
+            type: string
       responses:
         200:
           description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CategoryListResponse'
 
     post:
       tags: [Categories]
@@ -205,60 +144,33 @@ paths:
       responses:
         201:
           description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CategoryResponse'
 
   /categories/hierarchy:
     get:
       tags: [Categories]
-      summary: ساختار درختی دسته‌بندی‌ها
+      summary: ساختار درختی
       responses:
         200:
           description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Category'
 
   /categories/search:
     get:
       tags: [Categories]
-      summary: جستجو در دسته‌بندی‌ها
+      summary: جستجو
       parameters:
         - in: query
           name: query
           required: true
           schema:
             type: string
-            minLength: 1
       responses:
         200:
           description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Category'
 
   /categories/{id}:
     get:
       tags: [Categories]
-      summary: دریافت جزئیات دسته‌بندی
+      summary: جزئیات دسته‌بندی
       parameters:
         - in: path
           name: id
@@ -269,14 +181,10 @@ paths:
       responses:
         200:
           description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CategoryResponse'
 
     put:
       tags: [Categories]
-      summary: ویرایش دسته‌بندی
+      summary: ویرایش
       security:
         - bearerAuth: []
       parameters:
@@ -295,14 +203,10 @@ paths:
       responses:
         200:
           description: Updated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CategoryResponse'
 
     delete:
       tags: [Categories]
-      summary: حذف دسته‌بندی
+      summary: حذف
       security:
         - bearerAuth: []
       parameters:
@@ -315,18 +219,11 @@ paths:
       responses:
         200:
           description: Deleted
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
 
   /categories/{id}/subcategories:
     get:
       tags: [Categories]
-      summary: دریافت زیردسته‌ها
+      summary: زیردسته‌ها
       parameters:
         - in: path
           name: id
@@ -337,14 +234,33 @@ paths:
       responses:
         200:
           description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Category'
+
+  /categories/{id}/breadcrumb:
+    get:
+      tags: [Categories]
+      summary: مسیر breadcrumb
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+
+  /categories/{id}/slug-path:
+    get:
+      tags: [Categories]
+      summary: مسیر کامل slug
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success

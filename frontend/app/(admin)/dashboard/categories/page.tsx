@@ -2,17 +2,20 @@
 'use client';
 
 import { debounce } from 'lodash';
-import { Plus, Search } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { GitBranch, Plus, Search } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 import type { CreateCategoryDto, UpsertCategoryDto } from '@/services/Category';
 import type { ICategory } from '@/types/category';
 
 import { CategoriesTable } from '@/components/dashboard/categories/CategoriesTable';
+import { CategoryTreePreview } from '@/components/dashboard/categories/CategoryTreePreview';
+import { CategoryTreeSelector } from '@/components/dashboard/categories/CategoryTreeSelector';
 import { Button } from '@/components/ui/Button';
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -22,18 +25,30 @@ import { ImageUploader } from '@/components/ui/ImageUploader';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 import { Switch } from '@/components/ui/Switch';
-import { useDialog } from '@/context/DialogContext';
+import { Textarea } from '@/components/ui/Textarea';
 import {
   useCreateCategoryItem,
+  useGetCategoryHierarchy,
   useGetCategoryList,
   useUpsertCategoryItem,
 } from '@/services/Category';
 
 const DEFAULT_LIMIT = 20;
 
-export default function CategoriesPage() {
-  const { isOpen, setOpen, open } = useDialog();
+const defaultFormValues: CreateCategoryDto & { id?: string } = {
+  id: undefined,
+  name: '',
+  slug: '',
+  description: '',
+  image: null,
+  is_active: true,
+  parent_id: null,
+  sort_order: 0,
+};
 
+export default function CategoriesPage() {
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isTreeOpen, setIsTreeOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -41,15 +56,7 @@ export default function CategoriesPage() {
   const { control, handleSubmit, reset, setValue, watch } = useForm<
     CreateCategoryDto & { id?: string }
   >({
-    defaultValues: {
-      id: undefined,
-      name: '',
-      slug: '',
-      description: '',
-      image: '',
-      is_active: true,
-      parent_id: null,
-    },
+    defaultValues: defaultFormValues,
   });
 
   const categoryId = watch('id');
@@ -71,14 +78,24 @@ export default function CategoriesPage() {
   const { data, isLoading } = useGetCategoryList({
     page,
     limit: DEFAULT_LIMIT,
-    includeChildren: true,
+    includeChildren: false,
     search: debouncedSearch || undefined,
   });
+
+  const { data: hierarchyData } = useGetCategoryHierarchy();
 
   const { mutate: createCategory, isPending: creating } =
     useCreateCategoryItem();
   const { mutate: upsertCategory, isPending: updating } =
     useUpsertCategoryItem();
+
+  const items = data?.data.items ?? [];
+  const pagination = data?.data.pagination;
+  const treeCategories = hierarchyData?.data ?? [];
+
+  const resetForm = useCallback(() => {
+    reset(defaultFormValues);
+  }, [reset]);
 
   const handleEdit = (category: ICategory) => {
     reset({
@@ -86,25 +103,28 @@ export default function CategoriesPage() {
       name: category.name,
       slug: category.slug,
       description: category.description || '',
-      image: category.image || '',
+      image: category.image,
       is_active: category.is_active,
       parent_id: category.parent_id,
+      sort_order: category.sort_order || 0,
     });
-    setOpen(true);
+    setIsFormOpen(true);
   };
 
-  const closeModal = () => {
-    reset({
-      id: undefined,
-      name: '',
-      slug: '',
-      description: '',
-      image: '',
-      is_active: true,
-      parent_id: null,
-    });
-    setOpen(false);
-  };
+  const closeFormModal = useCallback(() => {
+    setIsFormOpen(false);
+    resetForm();
+  }, [resetForm]);
+
+  const handleFormOpenChange = useCallback(
+    (isDialogOpen: boolean) => {
+      setIsFormOpen(isDialogOpen);
+      if (!isDialogOpen) {
+        resetForm();
+      }
+    },
+    [resetForm],
+  );
 
   const onSubmit = handleSubmit((formData) => {
     if (categoryId) {
@@ -112,127 +132,180 @@ export default function CategoriesPage() {
         id: categoryId,
         name: formData.name,
         slug: formData.slug,
-        description: formData.description,
+        description: formData.description || '',
         image: formData.image,
         is_active: formData.is_active,
         parent_id: formData.parent_id,
+        sort_order: formData.sort_order || 0,
       };
-      upsertCategory(payload, { onSuccess: closeModal });
+      upsertCategory(payload, { onSuccess: closeFormModal });
     } else {
       const payload: CreateCategoryDto = {
         name: formData.name,
         slug: formData.slug,
-        description: formData.description,
+        description: formData.description || '',
         image: formData.image,
         is_active: formData.is_active,
         parent_id: formData.parent_id,
+        sort_order: formData.sort_order,
       };
-      createCategory(payload, { onSuccess: closeModal });
+      createCategory(payload, { onSuccess: closeFormModal });
     }
   });
 
   return (
     <div className="space-y-6">
-      <Dialog onOpenChange={setOpen} open={isOpen}>
-        <DialogContent className="max-w-2xl">
+      <Dialog onOpenChange={handleFormOpenChange} open={isFormOpen}>
+        <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle>
               {categoryId ? 'ویرایش دسته‌بندی' : 'ایجاد دسته‌بندی'}
             </DialogTitle>
           </DialogHeader>
 
-          <Controller
-            name="image"
-            control={control}
-            render={({ field }) => (
-              <ImageUploader
-                label="تصویر دسته‌بندی"
-                value={field.value ?? undefined}
-                onChange={(url) =>
-                  setValue('image', url, { shouldDirty: true })
-                }
-              />
-            )}
-          />
-
-          <form className="space-y-4" onSubmit={onSubmit}>
-            <Controller
-              name="name"
-              rules={{ required: 'نام الزامی است' }}
-              control={control}
-              render={({ field, fieldState }) => (
-                <Input
-                  {...field}
-                  label="نام دسته‌بندی"
-                  error={fieldState.error?.message}
-                />
-              )}
-            />
-
-            <Controller
-              name="slug"
-              control={control}
-              render={({ field, fieldState }) => (
-                <Input
-                  {...field}
-                  label="Slug"
-                  error={fieldState.error?.message}
-                />
-              )}
-              rules={{
-                required: 'اسلاگ الزامی است',
-                pattern: {
-                  value: /^[0-9a-z]+(?:-[0-9a-z]+)*$/,
-                  message: 'اسلاگ معتبر نیست',
-                },
-              }}
-            />
-
-            <Controller
-              name="description"
-              render={({ field }) => <Input {...field} label="توضیحات" />}
-              control={control}
-            />
-
-            <Controller
-              name="is_active"
-              control={control}
-              render={({ field }) => (
-                <div className="flex items-center justify-between rounded-lg border p-4">
-                  <Label>وضعیت فعال</Label>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
+          <DialogBody>
+            <form className="space-y-4" id="category-form" onSubmit={onSubmit}>
+              <Controller
+                name="image"
+                control={control}
+                render={({ field }) => (
+                  <ImageUploader
+                    label="تصویر دسته‌بندی"
+                    value={field.value ?? undefined}
+                    onChange={(url) =>
+                      setValue('image', url, { shouldDirty: true })
+                    }
                   />
-                </div>
-              )}
-            />
+                )}
+              />
 
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={closeModal}>
-                لغو
-              </Button>
-              <Button type="submit" loading={creating || updating}>
-                ذخیره
-              </Button>
-            </DialogFooter>
-          </form>
+              <Controller
+                name="parent_id"
+                control={control}
+                render={({ field }) => (
+                  <CategoryTreeSelector
+                    excludeId={categoryId}
+                    value={field.value}
+                    categories={treeCategories}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+
+              <Controller
+                name="name"
+                rules={{ required: 'نام الزامی است' }}
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Input
+                    {...field}
+                    label="نام دسته‌بندی"
+                    error={fieldState.error?.message}
+                  />
+                )}
+              />
+
+              <Controller
+                name="slug"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Input
+                    {...field}
+                    label="Slug"
+                    error={fieldState.error?.message}
+                  />
+                )}
+                rules={{
+                  required: 'اسلاگ الزامی است',
+                  pattern: {
+                    value: /^[0-9a-z]+(?:-[0-9a-z]+)*$/,
+                    message: 'اسلاگ معتبر نیست',
+                  },
+                }}
+              />
+
+              <Controller
+                name="description"
+                control={control}
+                render={({ field: { ref, ...field } }) => (
+                  <Textarea {...field} label="توضیحات" rows={3} />
+                )}
+              />
+
+              <Controller
+                name="is_active"
+                control={control}
+                render={({ field }) => (
+                  <div className="flex items-center justify-between rounded-lg border p-4">
+                    <Label>وضعیت فعال</Label>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </div>
+                )}
+              />
+            </form>
+          </DialogBody>
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={closeFormModal}>
+              لغو
+            </Button>
+            <Button
+              type="submit"
+              form="category-form"
+              loading={creating || updating}
+            >
+              ذخیره
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Header + Search + Table same as Brand */}
+      <Dialog onOpenChange={setIsTreeOpen} open={isTreeOpen}>
+        <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <GitBranch className="size-5" />
+              ساختار درختی دسته‌بندی‌ها
+            </DialogTitle>
+          </DialogHeader>
+          <DialogBody>
+            {treeCategories.length > 0 ? (
+              <CategoryTreePreview categories={treeCategories} />
+            ) : (
+              <div className="py-12 text-center text-muted-foreground">
+                هنوز دسته‌بندی‌ای ایجاد نشده است
+              </div>
+            )}
+          </DialogBody>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsTreeOpen(false)}>
+              بستن
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">مدیریت دسته‌بندی‌ها</h1>
           <p className="text-sm text-muted-foreground">
-            {data?.data.pagination.total ?? 0} دسته‌بندی
+            {pagination?.total ?? 0} دسته‌بندی
           </p>
         </div>
 
-        <Button onClick={open}>
-          <Plus className="ml-2 size-4" />
-          افزودن دسته‌بندی
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setIsTreeOpen(true)}>
+            <GitBranch className="ml-2 size-4" />
+            نمایش ساختار
+          </Button>
+          <Button onClick={() => setIsFormOpen(true)}>
+            <Plus className="ml-2 size-4" />
+            افزودن دسته‌بندی
+          </Button>
+        </div>
       </div>
 
       <div className="relative max-w-sm">
@@ -246,13 +319,13 @@ export default function CategoriesPage() {
       </div>
 
       <CategoriesTable
-        data={data?.data.items || []}
+        data={items}
         page={page}
         pageSize={DEFAULT_LIMIT}
         isLoading={isLoading}
         onEdit={handleEdit}
         onPageChange={setPage}
-        total={data?.data.pagination.total ?? 0}
+        total={pagination?.total ?? 0}
       />
     </div>
   );

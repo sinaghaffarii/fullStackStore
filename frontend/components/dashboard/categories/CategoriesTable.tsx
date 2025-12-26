@@ -81,7 +81,7 @@ export function CategoriesTable({
     },
     {
       accessorKey: 'slug',
-      header: 'slug',
+      header: 'Slug',
     },
     {
       accessorKey: 'is_active',

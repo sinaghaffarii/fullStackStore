@@ -1,8 +1,9 @@
+/* eslint-disable max-lines-per-function */
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 import type { Product } from '@/types/product';
@@ -25,6 +26,7 @@ export function ProductForm({ initialData }: Props) {
 
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -45,18 +47,13 @@ export function ProductForm({ initialData }: Props) {
     },
   });
 
-  // const { fields, append, remove } = useFieldArray({
-  //   control,
-  //   name: 'specifications',
-  // });
-
   const { data: options } = useQuery({
     queryKey: ['product-options'],
     queryFn: () => fetch('/api/products/options').then((res) => res.json()),
   });
 
   const mutation = useMutation({
-    mutationFn: (data: any) => {
+    mutationFn: (data: Product) => {
       const url = isEdit ? `/api/products/${initialData.id}` : '/api/products';
       const method = isEdit ? 'PUT' : 'POST';
       return fetch(url, {
@@ -77,7 +74,7 @@ export function ProductForm({ initialData }: Props) {
     },
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: Product) => {
     mutation.mutate(data);
   };
 
@@ -89,69 +86,90 @@ export function ProductForm({ initialData }: Props) {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="name">نام محصول *</Label>
-              <Input
-                id="name"
-                {...register('name', { required: 'نام محصول الزامی است' })}
-              />
-              {errors.name && (
-                <p className="text-xs text-destructive">
-                  {errors.name.message}
-                </p>
+            <Controller
+              name="name"
+              rules={{ required: 'نام محصول الزامی است' }}
+              control={control}
+              render={({ field, fieldState }) => (
+                <Input
+                  {...field}
+                  id="name"
+                  label="نام محصول"
+                  error={fieldState.error?.message}
+                />
               )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="slug">نامک (Slug) *</Label>
-              <Input
-                id="slug"
-                {...register('slug', { required: 'نامک الزامی است' })}
-              />
-              {errors.slug && (
-                <p className="text-xs text-destructive">
-                  {errors.slug.message}
-                </p>
+            />
+            <Controller
+              name="slug"
+              rules={{ required: 'نامک الزامی است' }}
+              control={control}
+              render={({ field, fieldState }) => (
+                <Input
+                  {...field}
+                  id="slug"
+                  label="نامک (Slug)"
+                  error={fieldState.error?.message}
+                />
               )}
-            </div>
+            />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="description">توضیحات</Label>
-            <Textarea id="description" rows={4} {...register('description')} />
-          </div>
+          <Controller
+            name="description"
+            control={control}
+            render={({ field: { ref, ...field } }) => (
+              <Textarea {...field} id="description" label="توضیحات" rows={4} />
+            )}
+          />
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="category">دسته‌بندی *</Label>
-              <Select
-                {...register('category', { required: true })}
-                placeholder="انتخاب کنید"
-              >
-                {options?.categories?.map((cat: string) => (
-                  <SelectItem key={cat} value={cat}>
-                    {cat}
-                  </SelectItem>
-                ))}
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="brand">برند *</Label>
-              <Select
-                {...register('brand', { required: true })}
-                placeholder="انتخاب کنید"
-              >
-                {options?.brands?.map((brand: string) => (
-                  <SelectItem key={brand} value={brand}>
-                    {brand}
-                  </SelectItem>
-                ))}
-              </Select>
-            </div>
+            <Controller
+              name="category"
+              rules={{ required: 'دسته‌بندی الزامی است' }}
+              control={control}
+              render={({ field, fieldState }) => (
+                <div className="space-y-2">
+                  <Label htmlFor="category">دسته‌بندی</Label>
+                  <Select {...field} placeholder="انتخاب کنید">
+                    {options?.categories?.map((cat: string) => (
+                      <SelectItem key={cat} value={cat}>
+                        {cat}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                  {fieldState.error && (
+                    <p className="text-xs text-destructive">
+                      {fieldState.error.message}
+                    </p>
+                  )}
+                </div>
+              )}
+            />
+            <Controller
+              name="brand"
+              rules={{ required: 'برند الزامی است' }}
+              control={control}
+              render={({ field, fieldState }) => (
+                <div className="space-y-2">
+                  <Label htmlFor="brand">برند</Label>
+                  <Select {...field} placeholder="انتخاب کنید">
+                    {options?.brands?.map((brand: string) => (
+                      <SelectItem key={brand} value={brand}>
+                        {brand}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                  {fieldState.error && (
+                    <p className="text-xs text-destructive">
+                      {fieldState.error.message}
+                    </p>
+                  )}
+                </div>
+              )}
+            />
           </div>
         </CardContent>
       </Card>
-
-      {/* ... بخش‌های دیگر فرم ... */}
 
       <div className="flex justify-end gap-4">
         <Button type="button" variant="outline" onClick={() => router.back()}>

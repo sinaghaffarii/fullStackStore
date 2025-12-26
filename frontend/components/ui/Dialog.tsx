@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 'use client';
 
 import type { ComponentProps } from 'react';
@@ -8,9 +7,6 @@ import { XIcon } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
-// ─────────────────────────────────────────────────────────────
-// Root
-// ─────────────────────────────────────────────────────────────
 const Dialog = DialogPrimitive.Root;
 
 const DialogTrigger = DialogPrimitive.Trigger;
@@ -19,9 +15,6 @@ const DialogPortal = DialogPrimitive.Portal;
 
 const DialogClose = DialogPrimitive.Close;
 
-// ─────────────────────────────────────────────────────────────
-// Overlay
-// ─────────────────────────────────────────────────────────────
 const DialogOverlay = ({
   ref,
   className,
@@ -45,9 +38,6 @@ const DialogOverlay = ({
 );
 DialogOverlay.displayName = 'DialogOverlay';
 
-// ─────────────────────────────────────────────────────────────
-// Content
-// ─────────────────────────────────────────────────────────────
 interface DialogContentProps
   extends ComponentProps<typeof DialogPrimitive.Content> {
   showCloseButton?: boolean;
@@ -71,25 +61,16 @@ const DialogContent = ({
       ref={ref}
       data-slot="dialog-content"
       className={cn(
-        // Position & Size
         'fixed top-1/2 left-1/2 z-50 w-full max-w-lg',
         '-translate-1/2',
-        'max-h-[90vh] overflow-y-auto',
-
-        // Appearance
-        'rounded-xl border border-border bg-background p-6 shadow-2xl',
-
-        // ✅ Animation (Top → Bottom)
+        'flex max-h-[90vh] flex-col',
+        'rounded-xl border border-border bg-background shadow-2xl',
         'duration-200',
         'data-[state=open]:animate-in data-[state=open]:fade-in-0',
         'data-[state=open]:slide-in-from-top-2',
-
         'data-[state=closed]:animate-out data-[state=closed]:fade-out-0',
         'data-[state=closed]:slide-out-to-top-2',
-
-        // Responsive
-        'max-sm:max-w-[calc(100%-2rem)] max-sm:rounded-lg max-sm:p-4',
-
+        'max-sm:max-w-[calc(100%-2rem)] max-sm:rounded-lg',
         className,
       )}
       {...props}
@@ -98,7 +79,7 @@ const DialogContent = ({
         <DialogPrimitive.Close
           data-slot="dialog-close"
           className={cn(
-            'absolute top-4 left-4',
+            'absolute top-4 left-4 z-10',
             'flex size-8 items-center justify-center rounded-full',
             'bg-muted/50 text-muted-foreground',
             'transition-all duration-150',
@@ -117,29 +98,13 @@ const DialogContent = ({
 );
 DialogContent.displayName = 'DialogContent';
 
-// ─────────────────────────────────────────────────────────────
-// Header
-// ─────────────────────────────────────────────────────────────
 function DialogHeader({ className, ...props }: ComponentProps<'header'>) {
   return (
     <header
-      className={cn('flex flex-col gap-2 text-right', className)}
       data-slot="dialog-header"
-      {...props}
-    />
-  );
-}
-
-// ─────────────────────────────────────────────────────────────
-// Footer
-// ─────────────────────────────────────────────────────────────
-function DialogFooter({ className, ...props }: ComponentProps<'footer'>) {
-  return (
-    <footer
-      data-slot="dialog-footer"
       className={cn(
-        'flex flex-col-reverse gap-2 pt-4',
-        'sm:flex-row-reverse sm:justify-start',
+        'flex shrink-0 flex-col gap-2 border-b border-border p-6 text-right',
+        'max-sm:p-4',
         className,
       )}
       {...props}
@@ -147,9 +112,31 @@ function DialogFooter({ className, ...props }: ComponentProps<'footer'>) {
   );
 }
 
-// ─────────────────────────────────────────────────────────────
-// Title
-// ─────────────────────────────────────────────────────────────
+function DialogBody({ className, ...props }: ComponentProps<'div'>) {
+  return (
+    <div
+      className={cn('flex-1 overflow-y-auto p-6', 'max-sm:p-4', className)}
+      data-slot="dialog-body"
+      {...props}
+    />
+  );
+}
+
+function DialogFooter({ className, ...props }: ComponentProps<'footer'>) {
+  return (
+    <footer
+      data-slot="dialog-footer"
+      className={cn(
+        'flex shrink-0 flex-col-reverse gap-2 border-t border-border py-3 px-6',
+        'sm:flex-row-reverse sm:justify-start',
+        'max-sm:p-4',
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
 const DialogTitle = ({
   ref,
   className,
@@ -169,9 +156,6 @@ const DialogTitle = ({
 );
 DialogTitle.displayName = 'DialogTitle';
 
-// ─────────────────────────────────────────────────────────────
-// Description
-// ─────────────────────────────────────────────────────────────
 const DialogDescription = ({
   ref,
   className,
@@ -190,11 +174,9 @@ const DialogDescription = ({
 );
 DialogDescription.displayName = 'DialogDescription';
 
-// ─────────────────────────────────────────────────────────────
-// Export
-// ─────────────────────────────────────────────────────────────
 export {
   Dialog,
+  DialogBody,
   DialogClose,
   DialogContent,
   DialogDescription,

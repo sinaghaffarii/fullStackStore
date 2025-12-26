@@ -25,6 +25,8 @@ router.get(
   validateRequest(categoryValidation.search, 'query'),
   controller.search,
 );
+router.get('/:id/breadcrumb', controller.breadcrumb);
+router.get('/:id/slug-path', controller.slugPath);
 router.get('/:id/subcategories', controller.subcategories);
 router.get('/:id', controller.get);
 

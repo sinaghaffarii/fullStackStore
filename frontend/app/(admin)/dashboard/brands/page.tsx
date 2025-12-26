@@ -30,10 +30,12 @@ import {
 
 import { BrandsTable } from './BrandsTable';
 
+const DEFAULT_LIMIT = 10;
+
 export default function BrandsPage() {
   const { isOpen, setOpen, open } = useDialog();
+
   const [page, setPage] = useState(1);
-  const [limit] = useState(10);
   const [searchInput, setSearchInput] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
@@ -52,12 +54,10 @@ export default function BrandsPage() {
 
   const brandId = watch('id');
 
-  const { mutate: createBrandItem, isPending: createBrandItemPending } =
-    useCreateBrandItem();
-  const { mutate: upsertBrandItem, isPending: upsertBrandItemPending } =
-    useUpsertBrandItem();
+  const { mutate: createBrand, isPending: creating } = useCreateBrandItem();
+  const { mutate: upsertBrand, isPending: updating } = useUpsertBrandItem();
 
-  const debouncedSetSearch = useMemo(
+  const debounceSearch = useMemo(
     () =>
       debounce((value: string) => {
         setDebouncedSearch(value);
@@ -67,18 +67,18 @@ export default function BrandsPage() {
   );
 
   useEffect(() => {
-    debouncedSetSearch(searchInput);
+    debounceSearch(searchInput);
+    return () => debounceSearch.cancel();
+  }, [searchInput, debounceSearch]);
 
-    return () => {
-      debouncedSetSearch.cancel();
-    };
-  }, [searchInput, debouncedSetSearch]);
-
-  const { data: BrandsList, isLoading } = useGetBrandList({
+  const { data, isLoading } = useGetBrandList({
     page,
-    limit: +limit,
+    limit: DEFAULT_LIMIT,
     search: debouncedSearch || undefined,
   });
+
+  const items = data?.data.items ?? [];
+  const pagination = data?.data.pagination;
 
   const handleEdit = (brand: IBrand) => {
     reset({
@@ -92,66 +92,37 @@ export default function BrandsPage() {
     setOpen(true);
   };
 
-  const handleCloseModal = () => {
+  const closeModal = () => {
     setOpen(false);
-    reset({
-      id: undefined,
-      name: '',
-      name_fa: '',
-      slug: '',
-      logo: '',
-      is_active: true,
-    });
+    reset();
   };
 
-  const onSubmit = handleSubmit((data) => {
+  const onSubmit = handleSubmit((formData) => {
     if (brandId) {
-      const updateData: UpsertBrandDto = {
-        id: data.id!,
-        name: data.name,
-        name_fa: data.name_fa,
-        slug: data.slug,
-        logo: data.logo,
-        is_active: data.is_active,
+      const payload: UpsertBrandDto = {
+        id: brandId,
+        name: formData.name,
+        name_fa: formData.name_fa,
+        slug: formData.slug,
+        logo: formData.logo,
+        is_active: formData.is_active,
       };
-
-      upsertBrandItem(updateData, {
-        onSuccess: () => {
-          handleCloseModal();
-        },
-      });
+      upsertBrand(payload, { onSuccess: closeModal });
     } else {
-      const createData: CreateBrandDto = {
-        name: data.name,
-        name_fa: data.name_fa,
-        slug: data.slug,
-        logo: data.logo,
-        is_active: data.is_active,
+      const payload: CreateBrandDto = {
+        name: formData.name,
+        name_fa: formData.name_fa,
+        slug: formData.slug,
+        logo: formData.logo,
+        is_active: formData.is_active,
       };
-
-      createBrandItem(createData, {
-        onSuccess: () => {
-          handleCloseModal();
-        },
-      });
+      createBrand(payload, { onSuccess: closeModal });
     }
   });
 
-  useEffect(() => {
-    if (!isOpen) {
-      reset({
-        id: undefined,
-        name: '',
-        name_fa: '',
-        slug: '',
-        logo: '',
-        is_active: true,
-      });
-    }
-  }, [isOpen, reset]);
-
   return (
     <div className="space-y-6">
+      {/* Modal */}
       <Dialog onOpenChange={setOpen} open={isOpen}>
         <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
           <DialogHeader>
@@ -160,32 +131,30 @@ export default function BrandsPage() {
             </DialogTitle>
           </DialogHeader>
 
-          <div className="mb-4">
-            <Controller
-              name="logo"
-              rules={{ required: 'لوگو الزامی است' }}
-              control={control}
-              render={({ field, fieldState }) => (
-                <div>
-                  <ImageUploader
-                    label="لوگوی برند"
-                    value={field.value}
-                    onChange={(url) => {
-                      setValue('logo', url, {
-                        shouldValidate: true,
-                        shouldDirty: true,
-                      });
-                    }}
-                  />
-                  {fieldState.error && (
-                    <p className="mt-1 text-sm text-destructive">
-                      {fieldState.error.message}
-                    </p>
-                  )}
-                </div>
-              )}
-            />
-          </div>
+          <Controller
+            name="logo"
+            rules={{ required: 'لوگو الزامی است' }}
+            control={control}
+            render={({ field, fieldState }) => (
+              <div>
+                <ImageUploader
+                  label="لوگوی برند"
+                  value={field.value ?? undefined}
+                  onChange={(url) =>
+                    setValue('logo', url, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    })
+                  }
+                />
+                {fieldState.error && (
+                  <p className="mt-1 text-sm text-destructive">
+                    {fieldState.error.message}
+                  </p>
+                )}
+              </div>
+            )}
+          />
 
           <form className="space-y-4" onSubmit={onSubmit}>
             <Controller
@@ -262,17 +231,10 @@ export default function BrandsPage() {
             />
 
             <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleCloseModal}
-              >
+              <Button type="button" variant="outline" onClick={closeModal}>
                 لغو
               </Button>
-              <Button
-                type="submit"
-                loading={createBrandItemPending || upsertBrandItemPending}
-              >
+              <Button type="submit" loading={creating || updating}>
                 {brandId ? 'ویرایش برند' : 'ذخیره برند'}
               </Button>
             </DialogFooter>
@@ -280,27 +242,13 @@ export default function BrandsPage() {
         </DialogContent>
       </Dialog>
 
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">مدیریت برند</h1>
           <p className="text-sm text-muted-foreground">
-            {BrandsList?.data.pagination.total || 0} برند
+            {pagination?.total ?? 0} برند
           </p>
-        </div>
-      </div>
-
-      <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-        <div className="flex flex-col gap-4 sm:flex-row">
-          <div className="relative flex-1">
-            <Search className="absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              className="pr-10 text-sm"
-              value={searchInput}
-              dimension="lg"
-              onChange={(e) => setSearchInput(e.target.value)}
-              placeholder="جستجو در برند..."
-            />
-          </div>
         </div>
 
         <Button onClick={open}>
@@ -309,14 +257,26 @@ export default function BrandsPage() {
         </Button>
       </div>
 
+      {/* Search */}
+      <div className="relative max-w-sm">
+        <Search className="absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          className="pr-10"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          placeholder="جستجو در برند…"
+        />
+      </div>
+
+      {/* Table */}
       <BrandsTable
-        data={BrandsList?.data.items || []}
+        data={items}
         page={page}
-        pageSize={limit}
+        pageSize={DEFAULT_LIMIT}
         isLoading={isLoading}
         onEdit={handleEdit}
         onPageChange={setPage}
-        total={BrandsList?.data.pagination.total || 0}
+        total={pagination?.total ?? 0}
       />
     </div>
   );

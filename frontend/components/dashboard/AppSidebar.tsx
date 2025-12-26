@@ -255,7 +255,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {...props}
     >
       {/* Header - Brand */}
-      <SidebarHeader className="border-b border-sidebar-border p-3">
+      <SidebarHeader className="border-b border-sidebar-border p-3 h-14">
         <Link className="flex items-center gap-3" href="/admin">
           <div className="flex size-8 shrink-0 items-center justify-center rounded-sm bg-primary text-primary-foreground shadow-md">
             <Sparkles className="size-5" />
