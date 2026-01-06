@@ -65,7 +65,7 @@ export function BrandsTable({
           <div className="relative size-12 overflow-hidden rounded-md border">
             <img
               alt={row.original.name}
-              className="size-full object-cover"
+              className="size-full object-cover p-1"
               src={imageSrc}
             />
           </div>

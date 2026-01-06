@@ -4,16 +4,18 @@ import { useKeenSlider } from 'keen-slider/react';
 import Image from 'next/image';
 import React, { useState } from 'react';
 
-const brands = [
-  { id: 1, name: 'Brand 1', logo: '/images/categories/fragrance.png' },
-  { id: 2, name: 'Brand 2', logo: '/images/categories/fragrance.png' },
-  { id: 3, name: 'Brand 3', logo: '/images/categories/fragrance.png' },
-  { id: 4, name: 'Brand 4', logo: '/images/categories/fragrance.png' },
-  { id: 5, name: 'Brand 5', logo: '/images/categories/fragrance.png' },
-  { id: 6, name: 'Brand 6', logo: '/images/categories/fragrance.png' },
-  { id: 7, name: 'Brand 7', logo: '/images/categories/fragrance.png' },
-  { id: 8, name: 'Brand 8', logo: '/images/categories/fragrance.png' },
-];
+import { useGetBrandList } from '@/services/Brand';
+
+// const brands = [
+//   { id: 1, name: 'Brand 1', logo: '/images/categories/fragrance.png' },
+//   { id: 2, name: 'Brand 2', logo: '/images/categories/fragrance.png' },
+//   { id: 3, name: 'Brand 3', logo: '/images/categories/fragrance.png' },
+//   { id: 4, name: 'Brand 4', logo: '/images/categories/fragrance.png' },
+//   { id: 5, name: 'Brand 5', logo: '/images/categories/fragrance.png' },
+//   { id: 6, name: 'Brand 6', logo: '/images/categories/fragrance.png' },
+//   { id: 7, name: 'Brand 7', logo: '/images/categories/fragrance.png' },
+//   { id: 8, name: 'Brand 8', logo: '/images/categories/fragrance.png' },
+// ];
 
 // Skeleton برای یک برند
 const BrandSkeleton: React.FC = () => (
@@ -38,9 +40,14 @@ const BrandSliderSkeleton: React.FC = () => (
   </section>
 );
 
+const DEFAULT_LIMIT = 10;
 const BrandSlider: React.FC = () => {
   const [loaded, setLoaded] = useState(false);
-
+  const [page, setPage] = useState(1);
+  const { data: brands, isPending: brandsPending } = useGetBrandList({
+    page,
+    limit: DEFAULT_LIMIT,
+  });
   const [sliderRef] = useKeenSlider<HTMLDivElement>({
     loop: true,
     rtl: true,
@@ -61,7 +68,7 @@ const BrandSlider: React.FC = () => {
         {/* اسلایدر مخفی برای initialize */}
         <div aria-hidden="true" className="sr-only">
           <div className="keen-slider" ref={sliderRef}>
-            {brands.map((brand) => (
+            {brands?.data.items.map((brand) => (
               <div className="keen-slider__slide" key={brand.id} />
             ))}
           </div>
@@ -79,7 +86,7 @@ const BrandSlider: React.FC = () => {
       </div>
       <div className="rounded-lg bg-white p-6 shadow-sm">
         <div className="keen-slider" ref={sliderRef}>
-          {brands.map((brand, idx) => (
+          {brands?.data.items.map((brand, idx) => (
             <div
               className="keen-slider__slide flex items-center justify-center grayscale transition hover:grayscale-0"
               key={brand.id}
@@ -90,7 +97,7 @@ const BrandSlider: React.FC = () => {
                   sizes="128px"
                   alt={brand.name}
                   className="object-contain"
-                  src={brand.logo}
+                  src={`${process.env.NEXT_PUBLIC_API_URL_IMAGE}${brand.logo}`}
                   loading={idx < 3 ? 'eager' : 'lazy'}
                 />
               </div>

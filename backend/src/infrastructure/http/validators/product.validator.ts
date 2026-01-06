@@ -1,17 +1,10 @@
+// product.validators.ts
 import Joi from 'joi';
 
-import { imagePathValidator } from '../../../shared/utils/pathValidator';
-import {
-  PriceRange,
-  ProductStatus,
-  SortOption,
-  VariantType,
-} from '../../database/models';
+import { PriceRange, ProductStatus, SortOption } from '../../database/models';
 
 const variantOptionSchema = Joi.object({
-  type: Joi.string()
-    .valid(...Object.values(VariantType))
-    .required(),
+  type: Joi.string().valid('color', 'size', 'material', 'custom').required(),
   label: Joi.string().max(50).required(),
   value: Joi.string().max(100).required(),
 });
@@ -20,17 +13,17 @@ const variantSchema = Joi.object({
   sku: Joi.string().max(100).required(),
   name: Joi.string().max(255).required(),
   options: Joi.array().items(variantOptionSchema).min(1).required(),
-  price: Joi.number().integer().min(0).required(),
+  price: Joi.number().integer().min(0).optional(),
   compare_price: Joi.number().integer().min(0).optional(),
   stock: Joi.number().integer().min(0).default(0),
-  image_url: imagePathValidator.optional(),
+  image_url: Joi.string().uri().max(1000).optional(),
 });
 
 const imageSchema = Joi.object({
-  url: Joi.string().uri().max(500).required(),
+  url: Joi.string().uri().max(1000).required(),
   alt: Joi.string().max(255).optional(),
-  sort_order: Joi.number().integer().min(0).default(0),
-  is_primary: Joi.boolean().default(false),
+  sort_order: Joi.number().integer().min(0).optional(),
+  is_primary: Joi.boolean().optional(),
 });
 
 export const productValidation = {
@@ -43,6 +36,7 @@ export const productValidation = {
       .required(),
     description: Joi.string().max(5000).optional().allow(''),
     base_price: Joi.number().integer().min(0).required(),
+    currency_code: Joi.string().length(3).default('IRR'),
     category_id: Joi.string().uuid().required(),
     brand_id: Joi.string().uuid().optional(),
     tags: Joi.array().items(Joi.string().max(50)).max(20).default([]),
@@ -67,6 +61,7 @@ export const productValidation = {
       .optional(),
     description: Joi.string().max(5000).optional().allow(''),
     base_price: Joi.number().integer().min(0).optional(),
+    currency_code: Joi.string().length(3).optional(),
     category_id: Joi.string().uuid().optional(),
     brand_id: Joi.string().uuid().optional().allow(null),
     tags: Joi.array().items(Joi.string().max(50)).max(20).optional(),
@@ -95,7 +90,13 @@ export const productValidation = {
     tags: Joi.alternatives()
       .try(
         Joi.array().items(Joi.string()),
-        Joi.string().custom((value) => value.split(',')),
+        Joi.string().custom((value, helpers) => {
+          if (!value) return [];
+          return value
+            .split(',')
+            .map((s: string) => s.trim())
+            .filter(Boolean);
+        }),
       )
       .optional(),
     sort: Joi.string()

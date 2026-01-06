@@ -3,7 +3,7 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 interface TextareaProps
-  extends Omit<React.ComponentProps<'textarea'>, 'maxLength' | 'ref'> {
+  extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'maxLength'> {
   label?: string;
   error?: string;
   maxLength?: number | false;
@@ -64,3 +64,4 @@ const Textarea = ({
 Textarea.displayName = 'Textarea';
 
 export { Textarea };
+export type { TextareaProps };

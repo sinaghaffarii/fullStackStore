@@ -1,57 +1,148 @@
-import type { ProductDetail } from '@/types/product';
+import type { AxiosError } from 'axios';
 
-export async function getProductById(
-  id: string,
-): Promise<ProductDetail | null> {
-  await new Promise((r) => {
-    setTimeout(r, 100);
-  });
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 
-  if (!id) return null;
+import type { Product } from '@/types/product';
+import type {
+  ApiErrorResponse,
+  ApiSuccessResponse,
+  IListResponse,
+} from '@/types/public';
 
-  return {
-    id: Number(id),
-    slug: 'argan-oil-serum',
-    name: 'سرم موی روغن آرگان مراکش نوتریگا',
-    description:
-      'سرم تقویتی و ترمیمی مو با روغن آرگان خالص مراکش. این محصول با فرمول پیشرفته خود، موهای آسیب‌دیده را ترمیم کرده و درخشندگی طبیعی را به آن‌ها باز می‌گرداند.',
-    price: 485_000,
-    originalPrice: 650_000,
-    discount: 25,
-    base_price: 650_000,
-    image: '/images/products/product_2.jpg',
-    images: [
-      '/images/products/product_2.jpg',
-      '/images/products/product_2.jpg',
-      '/images/products/product_2.jpg',
-    ],
-    rating: '4.4',
-    reviews: 128,
-    isNew: false,
-    isBestseller: true,
-    inStock: true,
-    stock: 42,
-    brand: 'Nutriga',
-    brandFa: 'نوتریگا',
-    category: 'hair-care',
-    tags: ['hair', 'serum', 'argan-oil'],
-    specifications: [
-      { label: 'برند', value: 'نوتریگا' },
-      { label: 'کشور', value: 'ایتالیا' },
-      { label: 'حجم', value: '۱۰۰ میلی‌لیتر' },
-      { label: 'نوع مو', value: 'همه انواع مو' },
-    ],
-    colors: [
-      { id: 1, name: '۱۰۰ میل', code: '#EAB308', value: '100ml' },
-      { id: 2, name: '۵۰ میل', code: '#94A3B8', value: '50ml' },
-    ],
-    features: ['فاقد سولفات', 'حاوی ویتامین E', 'محافظت حرارتی', 'براق کننده'],
-    highlights: [
-      'ترمیم موهای آسیب‌دیده ظرف ۴ هفته',
-      'مناسب موهای کراتین شده',
-      'آنتی‌اکسیدان طبیعی',
-    ],
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  };
+import { apiClient } from '@/lib/apiClient';
+import { QUERY_KEY } from '@/utils/constants';
+
+interface ProductFilters {
+  page: number;
+  limit: number;
+  search?: string;
+  category_id?: string;
+  brand_id?: string;
+  sort?: string;
+  is_featured?: boolean;
+  is_new?: boolean;
 }
+
+export interface CreateProductDto {
+  name: string;
+  slug: string;
+  description?: string;
+  base_price: number;
+  category_id: string;
+  brand_id?: string;
+  tags?: string[];
+  specifications?: Record<string, string>;
+  is_featured?: boolean;
+  is_new?: boolean;
+  variants: {
+    sku: string;
+    name: string;
+    options: { type: string; label: string; value: string }[];
+    price?: number;
+    compare_price?: number;
+    stock: number;
+    image_url?: string;
+  }[];
+  images: {
+    url: string;
+    alt?: string;
+    sort_order?: number;
+    is_primary?: boolean;
+  }[];
+}
+
+export const useGetProductList = (filters: ProductFilters) => {
+  return useQuery<ApiSuccessResponse<IListResponse<Product>>>({
+    queryKey: [QUERY_KEY.PRODUCT, filters],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+          params.set(key, String(value));
+        }
+      });
+      const { data } = await apiClient.get<
+        ApiSuccessResponse<IListResponse<Product>>
+      >(`/products?${params.toString()}`);
+      return data;
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+};
+
+export const useGetProductById = (id: string) => {
+  return useQuery<ApiSuccessResponse<Product>>({
+    queryKey: [QUERY_KEY.PRODUCT, id],
+    queryFn: async () => {
+      const { data } = await apiClient.get<ApiSuccessResponse<Product>>(
+        `/products/${id}`,
+      );
+      return data;
+    },
+    enabled: !!id,
+  });
+};
+
+export const useCreateProduct = () => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    ApiSuccessResponse<Product>,
+    AxiosError<ApiErrorResponse>,
+    CreateProductDto
+  >({
+    mutationFn: async (requestBody) => {
+      const { data } = await apiClient.post('/products', requestBody);
+      return data;
+    },
+    onSuccess: () => {
+      toast.success('محصول با موفقیت ایجاد شد');
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.PRODUCT] });
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || 'خطا در ایجاد محصول');
+    },
+  });
+};
+
+export const useUpdateProduct = () => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    ApiSuccessResponse<Product>,
+    AxiosError<ApiErrorResponse>,
+    { id: string; dto: Partial<CreateProductDto> }
+  >({
+    mutationFn: async ({ id, dto }) => {
+      const { data } = await apiClient.put(`/products/${id}`, dto);
+      return data;
+    },
+    onSuccess: () => {
+      toast.success('محصول با موفقیت ویرایش شد');
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.PRODUCT] });
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || 'خطا در ویرایش محصول');
+    },
+  });
+};
+
+export const useDeleteProduct = () => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    ApiSuccessResponse<null>,
+    AxiosError<ApiErrorResponse>,
+    string
+  >({
+    mutationFn: async (id) => {
+      const { data } = await apiClient.delete(`/products/${id}`);
+      return data;
+    },
+    onSuccess: () => {
+      toast.success('محصول با موفقیت حذف شد');
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.PRODUCT] });
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || 'خطا در حذف محصول');
+    },
+  });
+};

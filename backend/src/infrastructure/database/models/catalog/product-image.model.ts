@@ -1,3 +1,5 @@
+import type { Optional } from 'sequelize';
+
 import { DataTypes, Model } from 'sequelize';
 
 import { sequelize } from '../../../../configs/database';
@@ -9,13 +11,20 @@ export interface ProductImageAttributes {
   alt?: string;
   sort_order: number;
   is_primary: boolean;
+  created_at: Date;
 }
 
+export type ProductImageCreationAttributes = Optional<
+  ProductImageAttributes,
+  'alt' | 'created_at' | 'id' | 'is_primary' | 'sort_order'
+>;
+
 export class ProductImage
-  extends Model<ProductImageAttributes>
+  extends Model<ProductImageAttributes, ProductImageCreationAttributes>
   implements ProductImageAttributes
 {
   public alt?: string;
+  public readonly created_at!: Date;
   public id!: string;
   public is_primary!: boolean;
   public product_id!: string;
@@ -50,6 +59,10 @@ ProductImage.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    created_at: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
   },
   {
     sequelize,
@@ -57,7 +70,8 @@ ProductImage.init(
     timestamps: true,
     underscored: true,
     updatedAt: false,
-    indexes: [{ fields: ['product_id'] }],
+    createdAt: 'created_at',
+    indexes: [{ fields: ['product_id'] }, { fields: ['is_primary'] }],
   },
 );
 

@@ -1,3 +1,4 @@
+// product.controller.ts
 import type { Request, Response } from 'express';
 
 import { StatusCodes } from 'http-status-codes';
@@ -13,20 +14,17 @@ export class ProductController {
   };
 
   delete = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    await this.service.delete(id);
-    res.status(StatusCodes.OK).json({ success: true });
+    await this.service.delete(req.params.id);
+    res.status(StatusCodes.NO_CONTENT).send();
   };
 
   getById = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const data = await this.service.getById(id);
+    const data = await this.service.getById(req.params.id);
     res.status(StatusCodes.OK).json({ success: true, data });
   };
 
   getBySlug = async (req: Request, res: Response) => {
-    const { slug } = req.params;
-    const data = await this.service.getBySlug(slug);
+    const data = await this.service.getBySlug(req.params.slug);
     res.status(StatusCodes.OK).json({ success: true, data });
   };
 
@@ -36,14 +34,13 @@ export class ProductController {
   };
 
   update = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const product = await this.service.update(id, req.body);
+    const product = await this.service.update(req.params.id, req.body);
     res.status(StatusCodes.OK).json({ success: true, data: product });
   };
 
   updateStock = async (req: Request, res: Response) => {
-    const { variant_id: variantId, stock } = req.body;
-    const variant = await this.service.updateStock(variantId, stock);
+    const { variant_id, stock } = req.body;
+    const variant = await this.service.updateStock(variant_id, stock);
     res.status(StatusCodes.OK).json({ success: true, data: variant });
   };
 }
