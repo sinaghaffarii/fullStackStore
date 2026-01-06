@@ -5,11 +5,12 @@ interface Props {
   className?: string;
 }
 
+// اینماد enamad -- footer logoes
 const ICONS = [
   {
     id: 'ecunion',
     alt: 'عضو اتحادیه کشوری کسب و کارهای مجازی',
-    src: 'https://images.rojashop.com/pr:sharp/rs:fill:100:0:0/plain/s3://uploads/icons/logo-ecunion.png',
+    src: '/images/products/defaultImage.jpg',
   },
   // فضای آینده برای enamad و samanadehi
 ];

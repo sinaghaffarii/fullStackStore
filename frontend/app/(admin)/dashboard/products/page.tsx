@@ -1,54 +1,51 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
 import { Plus, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+import { useDebounce } from 'react-use';
 
-import { ProductFilters } from '@/components/dashboard/products/ProductFilters';
 import { ProductsTable } from '@/components/dashboard/products/ProductsTable';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-
-interface ProductFilters {
-  search: string;
-  category: string;
-  brand: string;
-  minPrice: number;
-  maxPrice: number;
-  inStock: boolean | null;
-}
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/Select';
+import { useGetProductList } from '@/services/Products';
 
 export default function ProductsPage() {
   const [page, setPage] = useState(1);
-  const [pageSize] = useState(10);
-  const [filters, setFilters] = useState<ProductFilters>({
-    search: '',
-    category: '',
-    brand: '',
-    minPrice: 0,
-    maxPrice: 0,
-    inStock: null,
-  });
+  const [limit] = useState(12);
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [sort, setSort] = useState('newest');
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['products', page, pageSize, filters],
-    queryFn: () =>
-      fetch(
-        `/api/products?page=${page}&pageSize=${pageSize}&${new URLSearchParams(
-          filters as any,
-        )}`,
-      ).then((res) => res.json()),
+  useDebounce(
+    () => {
+      setDebouncedSearch(search);
+    },
+    500,
+    [search],
+  );
+
+  const { data, isLoading } = useGetProductList({
+    page,
+    limit,
+    search: debouncedSearch || undefined,
+    sort,
   });
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">مدیریت محصولات</h1>
           <p className="text-sm text-muted-foreground">
-            {data?.total || 0} محصول
+            {data?.data.pagination.total || 0} محصول
           </p>
         </div>
         <Button asChild>
@@ -59,31 +56,38 @@ export default function ProductsPage() {
         </Button>
       </div>
 
-      {/* Search & Filters */}
       <div className="flex flex-col gap-4 sm:flex-row">
         <div className="relative flex-1">
           <Search className="absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            className="pr-10 text-sm"
-            value={filters.search}
+            className="pr-10 w-2xs"
+            value={search}
             dimension="lg"
-            onChange={(e) =>
-              setFilters((prev) => ({ ...prev, search: e.target.value }))
-            }
+            onChange={(e) => setSearch(e.target.value)}
             placeholder="جستجو در محصولات..."
           />
         </div>
-        <ProductFilters filters={filters} onFiltersChange={setFilters} />
+        <Select value={sort} onValueChange={setSort}>
+          <SelectTrigger size="lg" className="w-48">
+            <SelectValue placeholder="مرتب‌سازی" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="newest">جدیدترین</SelectItem>
+            <SelectItem value="oldest">قدیمی‌ترین</SelectItem>
+            <SelectItem value="price_low">ارزان‌ترین</SelectItem>
+            <SelectItem value="price_high">گران‌ترین</SelectItem>
+            <SelectItem value="best_selling">پرفروش‌ترین</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
-      {/* Table */}
       <ProductsTable
-        data={data?.products || []}
+        data={data?.data.items || []}
         page={page}
-        pageSize={pageSize}
+        pageSize={limit}
         isLoading={isLoading}
         onPageChange={setPage}
-        total={data?.total || 0}
+        total={data?.data.pagination.total || 0}
       />
     </div>
   );

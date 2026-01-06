@@ -97,12 +97,12 @@ const sidebarData: {
           icon: Lightbulb,
           color: 'text-yellow-600',
         },
-        {
-          title: 'موجودی انبار',
-          url: '/dashboard/inventory',
-          icon: FileText,
-          color: 'text-orange-600',
-        },
+        // {
+        //   title: 'موجودی انبار',
+        //   url: '/dashboard/inventory',
+        //   icon: FileText,
+        //   color: 'text-orange-600',
+        // },
       ],
     },
     {

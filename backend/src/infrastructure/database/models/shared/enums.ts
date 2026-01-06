@@ -1,20 +1,32 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-// ==================== Product Enums ====================
 export enum ProductStatus {
   DRAFT = 'draft',
   ACTIVE = 'active',
   INACTIVE = 'inactive',
+  OUT_OF_STOCK = 'out_of_stock',
 }
 
 export enum VariantType {
   COLOR = 'color',
   SIZE = 'size',
+  MATERIAL = 'material',
+  WEIGHT = 'weight',
   VOLUME = 'volume',
-  FLAVOR = 'flavor',
-  NICOTINE = 'nicotine',
+  CUSTOM = 'custom',
+}
+
+export enum DiscountType {
+  PERCENTAGE = 'percentage',
+  FIXED = 'fixed',
 }
 
 // ==================== Filter & Sort Enums ====================
+export enum DiscountScope {
+  GLOBAL = 'global',
+  CATEGORY = 'category',
+  BRAND = 'brand',
+  PRODUCT = 'product',
+}
+
 export enum SortOption {
   NEWEST = 'newest',
   OLDEST = 'oldest',
@@ -22,47 +34,32 @@ export enum SortOption {
   PRICE_HIGH = 'price_high',
   BEST_SELLING = 'best_selling',
   MOST_POPULAR = 'most_popular',
+  HIGHEST_RATED = 'highest_rated',
 }
 
 export enum PriceRange {
   UNDER_100K = 'under_100k',
-  UNDER_200K = 'under_200k',
-  UNDER_500K = 'under_500k',
-  UNDER_1M = 'under_1m',
-  ABOVE_1M = 'above_1m',
+  RANGE_100K_500K = '100k_500k',
+  RANGE_500K_1M = '500k_1m',
+  RANGE_1M_5M = '1m_5m',
+  OVER_5M = 'over_5m',
 }
 
 export const PRICE_RANGE_VALUES: Record<
   PriceRange,
-  { min: number; max: number | null }
+  { min: number; max?: number }
 > = {
-  [PriceRange.UNDER_100K]: { min: 0, max: 100_000 },
-  [PriceRange.UNDER_200K]: { min: 0, max: 200_000 },
-  [PriceRange.UNDER_500K]: { min: 0, max: 500_000 },
-  [PriceRange.UNDER_1M]: { min: 0, max: 1_000_000 },
-  [PriceRange.ABOVE_1M]: { min: 1_000_000, max: null },
+  [PriceRange.UNDER_100K]: { min: 0, max: 1_000_000 },
+  [PriceRange.RANGE_100K_500K]: { min: 1_000_000, max: 5_000_000 },
+  [PriceRange.RANGE_500K_1M]: { min: 5_000_000, max: 10_000_000 },
+  [PriceRange.RANGE_1M_5M]: { min: 10_000_000, max: 50_000_000 },
+  [PriceRange.OVER_5M]: { min: 50_000_000 },
 };
 
-// ==================== Discount Enums ====================
-export enum DiscountType {
-  PERCENTAGE = 'percentage',
-  FIXED = 'fixed',
+export type StockStatus = 'in_stock' | 'low_stock' | 'out_of_stock';
+
+export function getStockStatus(stock: number): StockStatus {
+  if (stock === 0) return 'out_of_stock';
+  if (stock <= 5) return 'low_stock';
+  return 'in_stock';
 }
-
-export enum DiscountScope {
-  PRODUCT = 'product',
-  CATEGORY = 'category',
-  BRAND = 'brand',
-}
-
-// ==================== Stock Status ====================
-export type StockStatus = 'in-stock' | 'low-stock' | 'out-of-stock';
-
-export const getStockStatus = (
-  quantity: number,
-  threshold = 5,
-): StockStatus => {
-  if (quantity <= 0) return 'out-of-stock';
-  if (quantity <= threshold) return 'low-stock';
-  return 'in-stock';
-};

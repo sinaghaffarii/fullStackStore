@@ -12,6 +12,7 @@ import type { IBrand } from '@/types/brand';
 import { Button } from '@/components/ui/Button';
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -124,121 +125,123 @@ export default function BrandsPage() {
     <div className="space-y-6">
       {/* Modal */}
       <Dialog onOpenChange={setOpen} open={isOpen}>
-        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
+        <DialogContent className="max-h-[90vh] max-w-2xl">
           <DialogHeader>
             <DialogTitle>
               {brandId ? 'ویرایش برند' : 'ایجاد برند جدید'}
             </DialogTitle>
           </DialogHeader>
 
-          <Controller
-            name="logo"
-            rules={{ required: 'لوگو الزامی است' }}
-            control={control}
-            render={({ field, fieldState }) => (
-              <div>
-                <ImageUploader
-                  label="لوگوی برند"
-                  value={field.value ?? undefined}
-                  onChange={(url) =>
-                    setValue('logo', url, {
-                      shouldValidate: true,
-                      shouldDirty: true,
-                    })
-                  }
-                />
-                {fieldState.error && (
-                  <p className="mt-1 text-sm text-destructive">
-                    {fieldState.error.message}
-                  </p>
-                )}
-              </div>
-            )}
-          />
-
-          <form className="space-y-4" onSubmit={onSubmit}>
+          <DialogBody>
             <Controller
-              name="name"
-              rules={{ required: 'نام برند الزامی است' }}
+              name="logo"
+              rules={{ required: 'لوگو الزامی است' }}
               control={control}
               render={({ field, fieldState }) => (
-                <Input
-                  {...field}
-                  label="نام برند (English)"
-                  error={fieldState.error?.message}
-                  placeholder="مثال: BOBBY JONES"
-                />
-              )}
-            />
-
-            <Controller
-              name="name_fa"
-              rules={{ required: 'نام فارسی برند الزامی است' }}
-              control={control}
-              render={({ field, fieldState }) => (
-                <Input
-                  {...field}
-                  label="نام برند (فارسی)"
-                  error={fieldState.error?.message}
-                  placeholder="مثال: بابی جونز"
-                />
-              )}
-            />
-
-            <Controller
-              name="slug"
-              control={control}
-              render={({ field, fieldState }) => (
-                <Input
-                  {...field}
-                  label="اسلاگ (Slug)"
-                  error={fieldState.error?.message}
-                  placeholder="مثال: bobby-jones"
-                />
-              )}
-              rules={{
-                required: 'اسلاگ الزامی است',
-                pattern: {
-                  value: /^[0-9a-z]+(?:-[0-9a-z]+)*$/,
-                  message: 'فقط حروف کوچک، اعداد و خط تیره مجاز است',
-                },
-              }}
-            />
-
-            <Controller
-              name="is_active"
-              control={control}
-              render={({ field }) => (
-                <div className="flex items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <Label
-                      className="text-base font-medium"
-                      htmlFor="is_active"
-                    >
-                      وضعیت برند
-                    </Label>
-                    <p className="text-sm text-muted-foreground">
-                      برند فعال در سایت نمایش داده می‌شود
-                    </p>
-                  </div>
-                  <Switch
-                    checked={field.value}
-                    id="is_active"
-                    onCheckedChange={field.onChange}
+                <div>
+                  <ImageUploader
+                    label="لوگوی برند"
+                    value={field.value ?? undefined}
+                    onChange={(url) =>
+                      setValue('logo', url, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      })
+                    }
                   />
+                  {fieldState.error && (
+                    <p className="mt-1 text-sm text-destructive">
+                      {fieldState.error.message}
+                    </p>
+                  )}
                 </div>
               )}
             />
 
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={closeModal}>
-                لغو
-              </Button>
-              <Button type="submit" loading={creating || updating}>
-                {brandId ? 'ویرایش برند' : 'ذخیره برند'}
-              </Button>
-            </DialogFooter>
-          </form>
+            <form className="space-y-4" onSubmit={onSubmit}>
+              <Controller
+                name="name"
+                rules={{ required: 'نام برند الزامی است' }}
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Input
+                    {...field}
+                    label="نام برند (English)"
+                    error={fieldState.error?.message}
+                    placeholder="مثال: BOBBY JONES"
+                  />
+                )}
+              />
+
+              <Controller
+                name="name_fa"
+                rules={{ required: 'نام فارسی برند الزامی است' }}
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Input
+                    {...field}
+                    label="نام برند (فارسی)"
+                    error={fieldState.error?.message}
+                    placeholder="مثال: بابی جونز"
+                  />
+                )}
+              />
+
+              <Controller
+                name="slug"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Input
+                    {...field}
+                    label="اسلاگ (Slug)"
+                    error={fieldState.error?.message}
+                    placeholder="مثال: bobby-jones"
+                  />
+                )}
+                rules={{
+                  required: 'اسلاگ الزامی است',
+                  pattern: {
+                    value: /^[0-9a-z]+(?:-[0-9a-z]+)*$/,
+                    message: 'فقط حروف کوچک، اعداد و خط تیره مجاز است',
+                  },
+                }}
+              />
+
+              <Controller
+                name="is_active"
+                control={control}
+                render={({ field }) => (
+                  <div className="flex items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <Label
+                        className="text-base font-medium"
+                        htmlFor="is_active"
+                      >
+                        وضعیت برند
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        برند فعال در سایت نمایش داده می‌شود
+                      </p>
+                    </div>
+                    <Switch
+                      checked={field.value}
+                      id="is_active"
+                      onCheckedChange={field.onChange}
+                    />
+                  </div>
+                )}
+              />
+
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={closeModal}>
+                  لغو
+                </Button>
+                <Button type="submit" loading={creating || updating}>
+                  {brandId ? 'ویرایش برند' : 'ذخیره برند'}
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogBody>
         </DialogContent>
       </Dialog>
 

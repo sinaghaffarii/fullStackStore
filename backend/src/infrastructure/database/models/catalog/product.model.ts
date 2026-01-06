@@ -1,12 +1,48 @@
-import { DataTypes, Model } from 'sequelize';
+import type { Optional } from 'sequelize';
 
-import type {
-  ProductAttributes,
-  ProductCreationAttributes,
-} from './entities/product.entity';
+import { DataTypes, Model } from 'sequelize';
 
 import { sequelize } from '../../../../configs/database';
 import { ProductStatus } from '../shared';
+
+export interface ProductAttributes {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  base_price: number;
+  category_id: string;
+  brand_id?: string;
+  tags: string[];
+  specifications: Record<string, string>;
+  view_count: number;
+  sales_count: number;
+  rating: number;
+  review_count: number;
+  status: ProductStatus;
+  is_featured: boolean;
+  is_new: boolean;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export type ProductCreationAttributes = Optional<
+  ProductAttributes,
+  | 'brand_id'
+  | 'created_at'
+  | 'description'
+  | 'id'
+  | 'is_featured'
+  | 'is_new'
+  | 'rating'
+  | 'review_count'
+  | 'sales_count'
+  | 'specifications'
+  | 'status'
+  | 'tags'
+  | 'updated_at'
+  | 'view_count'
+>;
 
 export class Product
   extends Model<ProductAttributes, ProductCreationAttributes>
@@ -15,7 +51,6 @@ export class Product
   public base_price!: number;
   public readonly brand?: any;
   public brand_id?: string;
-  // Relations (populated by associations)
   public readonly category?: any;
   public category_id!: string;
   public readonly created_at!: Date;
@@ -59,7 +94,7 @@ Product.init(
       allowNull: true,
     },
     base_price: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
       allowNull: false,
       validate: { min: 0 },
     },
@@ -107,12 +142,22 @@ Product.init(
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
+    created_at: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
   },
   {
     sequelize,
     tableName: 'products',
     timestamps: true,
     underscored: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
     indexes: [
       { fields: ['slug'], unique: true },
       { fields: ['category_id'] },
@@ -126,4 +171,3 @@ Product.init(
 );
 
 export default Product;
-export type { ProductAttributes, ProductCreationAttributes };

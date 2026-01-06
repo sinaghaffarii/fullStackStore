@@ -27,7 +27,7 @@ const inputVariants = cva(
       variant: {
         default: 'border-input focus:bg-white hover:bg-gray-50/50',
         error:
-          'border-destructive ring-destructive/20 focus-visible:ring-destructive/20',
+          'border-destructive ring-destructive/20 focus-visible:border-destructive focus-visible:ring-destructive/20',
       },
     },
     defaultVariants: {
@@ -48,7 +48,8 @@ interface InputProps
   label?: string;
 }
 
-function Input({
+const Input = ({
+  ref,
   className,
   type,
   leftIcon,
@@ -59,16 +60,48 @@ function Input({
   variant,
   error,
   label,
+  required,
+  onInvalid,
   ...props
-}: InputProps) {
+}: InputProps & { ref?: React.RefObject<HTMLInputElement | null> }) => {
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
   const hasLeftIcon = leftIcon && iconPosition === 'left';
   const hasRightIcon = rightIcon && iconPosition === 'right';
+
+  React.useImperativeHandle(ref, () => inputRef.current!);
+
+  const handleInvalid = (e: React.InvalidEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+    onInvalid?.(e);
+  };
+
+  React.useEffect(() => {
+    if (error && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [error]);
 
   return (
     <div className="w-full space-y-1.5">
       {label && (
-        <label className="block text-sm font-medium text-foreground">
-          {label}
+        <label
+          className="block text-sm font-medium text-foreground"
+          htmlFor={props.id}
+        >
+          <span className="inline-flex items-center gap-1">
+            {label}
+            {required && (
+              <>
+                <span aria-hidden="true" className="text-destructive">
+                  *
+                </span>
+                <span className="sr-only">الزامی</span>
+              </>
+            )}
+          </span>
         </label>
       )}
 
@@ -79,8 +112,13 @@ function Input({
           </div>
         )}
         <input
+          aria-invalid={!!error}
+          aria-required={!!required}
+          ref={inputRef}
+          required={required}
           type={type}
           data-slot="input"
+          onInvalid={handleInvalid}
           className={cn(
             inputVariants({
               dimension,
@@ -101,12 +139,17 @@ function Input({
       </div>
 
       {error && (
-        <span className="block text-xs font-medium text-destructive">
+        <span
+          className="block text-xs font-medium text-destructive"
+          role="alert"
+        >
           {error}
         </span>
       )}
     </div>
   );
-}
+};
+
+Input.displayName = 'Input';
 
 export { Input, inputVariants };

@@ -4,7 +4,105 @@ tags:
 
 components:
   schemas:
-    Product:
+    ProductVariantOption:
+      type: object
+      required:
+        - type
+        - label
+        - value
+      properties:
+        type:
+          type: string
+          enum: [color, size, material, weight, volume, custom]
+        label:
+          type: string
+        value:
+          type: string
+
+    ProductVariant:
+      type: object
+      required:
+        - sku
+        - name
+        - options
+        - price
+        - stock
+      properties:
+        sku:
+          type: string
+        name:
+          type: string
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductVariantOption'
+        price:
+          type: integer
+        compare_price:
+          type: integer
+        stock:
+          type: integer
+        image_url:
+          type: string
+
+    ProductImage:
+      type: object
+      required:
+        - url
+      properties:
+        url:
+          type: string
+        alt:
+          type: string
+        sort_order:
+          type: integer
+        is_primary:
+          type: boolean
+
+    CreateProductRequest:
+      type: object
+      required:
+        - name
+        - slug
+        - base_price
+        - category_id
+        - variants
+        - images
+      properties:
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        base_price:
+          type: integer
+        category_id:
+          type: string
+          format: uuid
+        brand_id:
+          type: string
+          format: uuid
+        tags:
+          type: array
+          items:
+            type: string
+        specifications:
+          type: object
+        is_featured:
+          type: boolean
+        is_new:
+          type: boolean
+        variants:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductVariant'
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductImage'
+
+    ProductListResponse:
       type: object
       properties:
         id:
@@ -14,45 +112,150 @@ components:
           type: string
         slug:
           type: string
+        base_price:
+          type: integer
         final_price:
           type: integer
+        discount_percent:
+          type: integer
+        primary_image:
+          type: string
         stock_status:
           type: string
         is_featured:
           type: boolean
+        is_new:
+          type: boolean
+        category:
+          type: object
+        brand:
+          type: object
+        rating:
+          type: number
+        review_count:
+          type: integer
 
 paths:
   /products:
     get:
       tags: [Products]
       summary: لیست محصولات
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+        - in: query
+          name: search
+          schema:
+            type: string
+        - in: query
+          name: category_id
+          schema:
+            type: string
+        - in: query
+          name: brand_id
+          schema:
+            type: string
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum:
+              [
+                newest,
+                oldest,
+                price_low,
+                price_high,
+                best_selling,
+                most_popular,
+                highest_rated,
+              ]
       responses:
         200:
           description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ProductListResponse'
+                      pagination:
+                        type: object
 
     post:
       tags: [Products]
       summary: ایجاد محصول
       security:
         - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductRequest'
       responses:
         201:
           description: Created
 
-  /products/{slug}:
+  /products/slug/{slug}:
     get:
       tags: [Products]
-      summary: دریافت محصول
+      summary: دریافت محصول با slug
+      parameters:
+        - in: path
+          name: slug
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: Success
 
   /products/{id}:
+    get:
+      tags: [Products]
+      summary: دریافت محصول با ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+
     put:
       tags: [Products]
       summary: ویرایش محصول
       security:
         - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductRequest'
       responses:
         200:
           description: Updated
@@ -62,6 +265,13 @@ paths:
       summary: حذف محصول
       security:
         - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         200:
           description: Deleted
@@ -72,6 +282,17 @@ paths:
       summary: بروزرسانی موجودی
       security:
         - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                variant_id:
+                  type: string
+                  format: uuid
+                stock:
+                  type: integer
       responses:
         200:
           description: Updated
