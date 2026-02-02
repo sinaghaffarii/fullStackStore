@@ -60,7 +60,7 @@ export default function ProductsPage() {
         <div className="relative flex-1">
           <Search className="absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            className="pr-10 w-2xs"
+            className="w-2xs pr-10"
             value={search}
             dimension="lg"
             onChange={(e) => setSearch(e.target.value)}

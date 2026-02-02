@@ -10,10 +10,12 @@ import {
   StarIcon,
   UserIcon,
 } from 'lucide-react';
+import Link from 'next/link';
 import { useRef, useState } from 'react';
 import { useClickAway } from 'react-use';
 
 import { useMobile } from '@/hooks/useMobile';
+import { ROUTE_OBJECT } from '@/utils/constants';
 
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
@@ -70,27 +72,31 @@ const Header = () => {
             </h1>
 
             <div className="flex items-center gap-3">
-              <Button
-                className="flex items-center gap-2 bg-white transition-colors hover:bg-gray-50"
-                variant="outline"
-              >
-                <UserIcon className="size-5" />
-                <span className="hidden sm:inline">
-                  سلام فاران آرایشیی عزیز
-                </span>
-              </Button>
+              <Link href={ROUTE_OBJECT.PROFILE}>
+                <Button
+                  className="flex items-center gap-2 bg-white transition-colors hover:bg-gray-50"
+                  variant="outline"
+                >
+                  <UserIcon className="size-5" />
+                  <span className="hidden sm:inline">
+                    سلام فاران آرایشیی عزیز
+                  </span>
+                </Button>
+              </Link>
 
               <Separator className="h-6 bg-gray-300" orientation="vertical" />
 
-              <Button
-                className="relative bg-white px-2 text-gray-500 transition-colors hover:bg-gray-50"
-                variant="outline"
-              >
-                <ShoppingBasket className="size-6" />
-                <span className="absolute -top-2 -right-2 flex size-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-                  3
-                </span>
-              </Button>
+              <Link href={ROUTE_OBJECT.HOME}>
+                <Button
+                  className="relative bg-white px-2 text-gray-500 transition-colors hover:bg-gray-50"
+                  variant="outline"
+                >
+                  <ShoppingBasket className="size-6" />
+                  <span className="absolute -top-2 -right-2 flex size-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                    3
+                  </span>
+                </Button>
+              </Link>
             </div>
           </div>
         ) : (
@@ -117,16 +123,18 @@ const Header = () => {
                 <UserIcon className="size-5" />
               </Button>
 
-              <Button
-                size="sm"
-                className="relative p-2 text-gray-600"
-                variant="ghost"
-              >
-                <ShoppingBasket className="size-5" />
-                <span className="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-                  3
-                </span>
-              </Button>
+              <Link href={ROUTE_OBJECT.HOME}>
+                <Button
+                  size="sm"
+                  className="relative p-2 text-gray-600"
+                  variant="ghost"
+                >
+                  <ShoppingBasket className="size-5" />
+                  <span className="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                    3
+                  </span>
+                </Button>
+              </Link>
             </div>
           </div>
         )}

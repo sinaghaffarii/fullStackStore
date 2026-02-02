@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 
 import type { AdminLoginRequest, AuthError } from '@/types/auth';
 
+import { ROUTE_OBJECT } from '@/utils/constants';
+
 import { authService } from './index';
 
 // کلیدهای Query
@@ -38,7 +40,7 @@ export function useAdminLogin() {
       toast.success(data.message || 'ورود موفقیت‌آمیز');
 
       // ریدایرکت به داشبورد
-      router.push('/dashboard');
+      router.push(ROUTE_OBJECT.DASHBOARD);
       router.refresh();
     },
     onError: (error: AuthError) => {
@@ -48,7 +50,7 @@ export function useAdminLogin() {
 }
 
 // Hook برای خروج
-export function useLogout() {
+export function useAdminLogout() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -62,7 +64,7 @@ export function useLogout() {
       toast.success('خروج موفقیت‌آمیز');
 
       // ریدایرکت به صفحه لاگین
-      router.push('/login');
+      router.push(ROUTE_OBJECT.ADMIN_LOGIN);
       router.refresh();
     },
     onError: () => {

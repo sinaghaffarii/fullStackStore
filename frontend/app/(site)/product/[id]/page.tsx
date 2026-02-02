@@ -7,7 +7,7 @@ import { ProductInfo } from '@/components/product/single/ProductInfo';
 import { ProductTabs } from '@/components/product/single/ProductTabs';
 import { RelatedProducts } from '@/components/product/single/RelatedProducts';
 import DynamicBreadcrumb from '@/components/ui/DynamicBreadcrumb';
-import { getProductById } from '@/services/Products';
+import { useGetProductById } from '@/services/Products';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -17,19 +17,19 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { id } = await params;
-  const product = await getProductById(id);
+  const { data: product, isPending: productPending } = useGetProductById(id);
 
-  if (!product) {
+  if (!product?.data) {
     return { title: 'محصول یافت نشد' };
   }
 
   return {
-    title: product.name,
-    description: product.description,
+    title: product.data.name,
+    description: product.data.description,
     openGraph: {
-      title: product.name,
-      description: product.description,
-      images: product.images.map((url) => ({ url })),
+      title: product.data.name,
+      description: product.data.description,
+      images: product.data.images?.map((url) => ({ url })),
     },
   };
 }

@@ -14,6 +14,7 @@ import type { AuthError } from '@/types/auth';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
 import { useAdminLogin } from '@/services/auth/hooks';
+import { ROUTE_OBJECT } from '@/utils/constants';
 
 interface LoginFormData {
   username: string;
@@ -29,7 +30,7 @@ interface LoginFormData {
 export function AdminLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
+  const callbackUrl = searchParams.get('callbackUrl') || ROUTE_OBJECT.DASHBOARD;
 
   const [showPassword, setShowPassword] = useState(false);
   // const [captchaToken, setCaptchaToken] = useState<string | null>(null);

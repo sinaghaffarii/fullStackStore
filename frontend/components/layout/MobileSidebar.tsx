@@ -170,7 +170,7 @@ function SidebarUserSection() {
         </motion.div>
         <div>
           <p className="text-sm font-medium text-gray-800">
-            سلام فاران آرایشیی عزیز
+            سلام فاران آرایشی عزیز
           </p>
           <p className="text-xs text-gray-500">خوش آمدید</p>
         </div>

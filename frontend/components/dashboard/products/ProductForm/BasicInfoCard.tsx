@@ -55,13 +55,12 @@ function NameSlugFields({
         control={control}
         render={({ field: { ref, ...field } }) => (
           <div>
-            <Label>نام محصول *</Label>
-            <Input {...field} />
-            {errors.name && (
-              <p className="mt-1.5 text-xs text-destructive">
-                {errors.name.message}
-              </p>
-            )}
+            <Input
+              {...field}
+              required
+              label="نام محصول"
+              error="پر کردن این فیلد الزامیست."
+            />
           </div>
         )}
       />
@@ -70,13 +69,12 @@ function NameSlugFields({
         control={control}
         render={({ field: { ref, ...field } }) => (
           <div>
-            <Label>نامک (Slug) *</Label>
-            <Input {...field} />
-            {errors.slug && (
-              <p className="mt-1.5 text-xs text-destructive">
-                {errors.slug.message}
-              </p>
-            )}
+            <Input
+              {...field}
+              required
+              label="نامک (Slug)"
+              error="پر کردن این فیلد الزامیست."
+            />
           </div>
         )}
       />
@@ -91,8 +89,8 @@ function DescriptionField({ control }: { control: Control<ProductFormData> }) {
       control={control}
       render={({ field }) => (
         <div>
-          <Label>توضیحات</Label>
           <Textarea
+            label="توضیحات"
             maxLength={500}
             value={field.value || ''}
             onBlur={field.onBlur}

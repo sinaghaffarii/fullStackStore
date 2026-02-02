@@ -2,6 +2,8 @@
 
 import type { Product } from '@/types/product';
 
+import { useCart } from '@/hooks/useCart';
+
 import { UnifiedProductCard } from '../ui/UnifiedProductCard';
 
 interface ProductGridProps {
@@ -9,7 +11,9 @@ interface ProductGridProps {
 }
 
 export function ProductGrid({ products }: ProductGridProps) {
-  const handleAddToCart = async (id: number) => {
+  const { addItem } = useCart();
+  const handleAddToCart = async (product: Product) => {
+    addItem(product, 1);
     // منطق افزودن به سبد خرید
     console.log('Added to cart:', id);
   };

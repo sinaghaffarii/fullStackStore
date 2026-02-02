@@ -3,10 +3,10 @@
 import { Loader2, LogOut } from 'lucide-react';
 
 import { Button } from '@/components/ui/Button';
-import { useLogout } from '@/services/auth/hooks';
+import { useAdminLogout } from '@/services/auth/hooks';
 
 export function LogoutButton() {
-  const logoutMutation = useLogout();
+  const logoutMutation = useAdminLogout();
 
   return (
     <Button

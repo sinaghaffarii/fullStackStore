@@ -33,6 +33,7 @@ import {
   useSidebar,
 } from '@/components/ui/Sidebar';
 import { cn } from '@/lib/utils';
+import { ROUTE_OBJECT } from '@/utils/constants';
 
 interface NavItem {
   title: string;
@@ -63,14 +64,14 @@ const sidebarData: {
       items: [
         {
           title: 'داشبورد اصلی',
-          url: '/dashboard',
+          url: ROUTE_OBJECT.DASHBOARD,
           icon: ShoppingCart,
           isActive: true,
           color: 'text-blue-600',
         },
         {
           title: 'گزارش فروش',
-          url: '/dashboard/analytics',
+          url: ROUTE_OBJECT.D_SALE_REPORT,
           icon: Sparkles,
           color: 'text-amber-600',
         },
@@ -81,19 +82,19 @@ const sidebarData: {
       items: [
         {
           title: 'لیست محصولات',
-          url: '/dashboard/products',
+          url: ROUTE_OBJECT.D_PRODUCTS,
           icon: Store,
           color: 'text-purple-600',
         },
         {
           title: 'دسته‌بندی‌ها',
-          url: '/dashboard/categories',
+          url: ROUTE_OBJECT.D_CATEGORIES,
           icon: Building2,
           color: 'text-pink-600',
         },
         {
           title: 'برندها',
-          url: '/dashboard/brands',
+          url: ROUTE_OBJECT.D_BRANDS,
           icon: Lightbulb,
           color: 'text-yellow-600',
         },
@@ -110,20 +111,20 @@ const sidebarData: {
       items: [
         {
           title: 'لیست سفارشات',
-          url: '/dashboard/orders',
+          url: ROUTE_OBJECT.D_ORDERS,
           icon: ShoppingCart,
           badge: '۱۲',
           color: 'text-green-600',
         },
         {
           title: 'فاکتورها',
-          url: '/dashboard/invoices',
+          url: ROUTE_OBJECT.D_INVOICES,
           icon: FileText,
           color: 'text-blue-500',
         },
         {
           title: 'کوپن‌ها و تخفیف‌ها',
-          url: '/dashboard/coupons',
+          url: ROUTE_OBJECT.D_COUPONS,
           icon: Bitcoin,
           color: 'text-emerald-600',
         },
@@ -134,13 +135,13 @@ const sidebarData: {
       items: [
         {
           title: 'لیست مشتریان',
-          url: '/dashboard/customers',
+          url: ROUTE_OBJECT.D_CUSTOMERS,
           icon: Users,
           color: 'text-cyan-600',
         },
         {
           title: 'سطح دسترسی',
-          url: '/dashboard/roles',
+          url: ROUTE_OBJECT.D_ROLES,
           icon: Settings,
           color: 'text-slate-600',
         },
@@ -255,7 +256,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {...props}
     >
       {/* Header - Brand */}
-      <SidebarHeader className="border-b border-sidebar-border p-3 h-14">
+      <SidebarHeader className="h-14 border-b border-sidebar-border p-3">
         <Link className="flex items-center gap-3" href="/admin">
           <div className="flex size-8 shrink-0 items-center justify-center rounded-sm bg-primary text-primary-foreground shadow-md">
             <Sparkles className="size-5" />

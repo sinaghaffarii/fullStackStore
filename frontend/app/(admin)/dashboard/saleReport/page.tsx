@@ -1,17 +1,22 @@
 'use client';
 
-import { Calendar } from 'lucide-react';
 import { useState } from 'react';
 
-import { ExportButton } from '@/components/dashboard/analytics/ExportButton';
-import { RevenueStats } from '@/components/dashboard/analytics/RevenueStats';
-import { SalesChart } from '@/components/dashboard/analytics/SalesChart';
-import { TopProducts } from '@/components/dashboard/analytics/TopProducts';
-import { Select, SelectItem } from '@/components/ui/Select';
+import { ExportButton } from '@/components/dashboard/saleReport/ExportButton';
+import { RevenueStats } from '@/components/dashboard/saleReport/RevenueStats';
+import { SalesChart } from '@/components/dashboard/saleReport/SalesChart';
+import { TopProducts } from '@/components/dashboard/saleReport/TopProducts';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/Select';
 
 type Period = '1y' | '30d' | '7d' | '90d';
 
-export default function AnalyticsPage() {
+export default function SaleReportPage() {
   const [period, setPeriod] = useState<Period>('30d');
 
   return (
@@ -33,16 +38,16 @@ export default function AnalyticsPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Select
-            className="w-32"
-            value={period}
-            icon={<Calendar className="size-4" />}
-            onValueChange={(v) => setPeriod(v as Period)}
-          >
-            <SelectItem value="7d">۷ روز</SelectItem>
-            <SelectItem value="30d">۳۰ روز</SelectItem>
-            <SelectItem value="90d">۹۰ روز</SelectItem>
-            <SelectItem value="1y">یک سال</SelectItem>
+          <Select value={period} onValueChange={(v) => setPeriod(v as Period)}>
+            <SelectTrigger>
+              <SelectValue placeholder="انتخاب کنید" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="7d">۷ روز</SelectItem>
+              <SelectItem value="30d">۳۰ روز</SelectItem>
+              <SelectItem value="90d">۹۰ روز</SelectItem>
+              <SelectItem value="1y">یک سال</SelectItem>
+            </SelectContent>
           </Select>
 
           {/* Export Buttons */}
