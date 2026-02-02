@@ -10,7 +10,7 @@ import type { LoginInput } from '../../../validations';
 import { MobileForm } from './+components/MobileForm';
 import { OTPForm } from './+components/OtpForm';
 
-export default function CustomerLoginPage() {
+export default function UserLoginPage() {
   const [step, setStep] = useState<'mobile' | 'otp'>('mobile');
   const [mobile, setMobile] = useState('');
   const { login, verifyOTP, isLoggingIn, isVerifyingOTP } = useAuth();

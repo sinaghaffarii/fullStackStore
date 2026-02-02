@@ -92,7 +92,7 @@ function getCategoryData(slugs: string[]): CategoryData {
         category: slugs[slugs.length - 1] || 'hair',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-      } as Product;
+      } as unknown as Product;
     });
 
   return {

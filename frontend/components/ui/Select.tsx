@@ -199,7 +199,7 @@ const SelectItem = ({
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex w-full cursor-pointer items-center rounded-sm py-1.5 pr-8 ps-2 text-sm outline-none select-none',
+      'relative flex w-full cursor-pointer items-center rounded-sm py-1.5 ps-2 pr-8 text-sm outline-none select-none',
       'focus:bg-accent focus:text-accent-foreground',
       'data-disabled:pointer-events-none data-disabled:opacity-50',
       className,

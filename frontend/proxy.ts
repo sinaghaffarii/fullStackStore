@@ -3,21 +3,34 @@ import type { NextRequest } from 'next/server';
 
 import { NextResponse } from 'next/server';
 
+import { ROUTE_OBJECT } from './utils/constants';
+
 // ============================================================================
 // Constants
 // ============================================================================
 
 /** مسیرهای عمومی - همه دسترسی دارن */
-const PUBLIC_PATHS = ['/', '/products', '/categories', '/about', '/contact'];
+const PUBLIC_PATHS = [
+  ROUTE_OBJECT.HOME,
+  ROUTE_OBJECT.PRODUCTS,
+  ROUTE_OBJECT.CATEGORIES,
+  ROUTE_OBJECT.ABOUT,
+  ROUTE_OBJECT.CONTACT,
+];
 
 /** مسیرهای فقط مهمان - کاربران لاگین شده ریدایرکت میشن */
-const GUEST_ONLY_PATHS = ['/login', '/auth'];
+const GUEST_ONLY_PATHS = [ROUTE_OBJECT.ADMIN_LOGIN, ROUTE_OBJECT.USER_LOGIN];
 
 /** مسیرهای فقط ادمین */
-const ADMIN_ONLY_PATHS = ['/dashboard'];
+const ADMIN_ONLY_PATHS = [ROUTE_OBJECT.DASHBOARD];
 
 /** مسیرهای نیازمند لاگین (هر نقشی) */
-const AUTH_REQUIRED_PATHS = ['/profile', '/orders', '/checkout'];
+const AUTH_REQUIRED_PATHS = [
+  ROUTE_OBJECT.PROFILE,
+  ROUTE_OBJECT.ORDERS,
+  ROUTE_OBJECT.CHECKOUT,
+  ROUTE_OBJECT.CART,
+];
 
 /** کلید secret برای تایید امضا - باید با بک‌اند یکی باشه */
 const COOKIE_SECRET =
@@ -206,9 +219,9 @@ function handleGuestOnlyPaths(
   if (!auth.isAuthenticated) return null;
 
   if (auth.role === 'admin') {
-    return redirect(request, '/dashboard');
+    return redirect(request, ROUTE_OBJECT.DASHBOARD);
   }
-  return redirect(request, '/');
+  return redirect(request, ROUTE_OBJECT.HOME);
 }
 
 /**
@@ -219,11 +232,11 @@ function handleAdminOnlyPaths(
   auth: AuthState,
 ): NextResponse | null {
   if (!auth.isAuthenticated) {
-    return redirectWithCallback(request, '/login');
+    return redirectWithCallback(request, ROUTE_OBJECT.ADMIN_LOGIN);
   }
 
   if (auth.role !== 'admin') {
-    return redirect(request, '/');
+    return redirect(request, ROUTE_OBJECT.HOME);
   }
 
   return null;
@@ -237,7 +250,7 @@ function handleAuthRequiredPaths(
   auth: AuthState,
 ): NextResponse | null {
   if (!auth.isAuthenticated) {
-    return redirectWithCallback(request, '/auth');
+    return redirectWithCallback(request, ROUTE_OBJECT.USER_LOGIN);
   }
 
   return null;

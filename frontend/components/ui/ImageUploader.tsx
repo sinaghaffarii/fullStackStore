@@ -294,7 +294,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
       {/* ------------------------------------------------------------------ */}
 
       {value && (
-        <div className="group relative size-44 overflow-hidden rounded-lg border-2 border-dashed border-primary/20 bg-muted/30 transition-all hover:border-primary/40 p-2">
+        <div className="group relative size-44 overflow-hidden rounded-lg border-2 border-dashed border-primary/20 bg-muted/30 p-2 transition-all hover:border-primary/40">
           <img
             alt="preview"
             className="size-full object-cover transition-transform group-hover:scale-105"

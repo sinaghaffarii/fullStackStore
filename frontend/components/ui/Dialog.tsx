@@ -127,7 +127,7 @@ function DialogFooter({ className, ...props }: ComponentProps<'footer'>) {
     <footer
       data-slot="dialog-footer"
       className={cn(
-        'flex shrink-0 flex-col-reverse gap-2 border-t border-border py-3 px-6',
+        'flex shrink-0 flex-col-reverse gap-2 border-t border-border px-6 py-3',
         'sm:flex-row-reverse sm:justify-start',
         'max-sm:p-4',
         className,

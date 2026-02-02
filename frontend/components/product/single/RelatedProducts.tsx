@@ -16,34 +16,7 @@ interface RelatedProductsProps {
   className?: string;
 }
 
-const defaultProducts: Product[] = Array.from({ length: 8 }, (_, i) => ({
-  id: i + 1,
-  slug: `product-${i + 1}`,
-  name: `سرم موی روغن آرگان شماره ${i + 1}`,
-  description: 'سرم تقویتی و ترمیمی مو با روغن آرگان خالص',
-  price: 350_000 + i * 25_000,
-  originalPrice: 400_000 + i * 25_000,
-  discount: i % 2 === 0 ? 15 : 0,
-  base_price: 400_000 + i * 25_000,
-  image: '/images/products/product_2.jpg',
-  images: [
-    '/images/products/product_2.jpg',
-    '/images/products/product_8_alt1.webp',
-  ],
-  rating: '4.3',
-  reviews: 45,
-  isNew: i === 0,
-  isBestseller: i === 1,
-  brand: 'Nutriga',
-  category: 'hair-care',
-  created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
-}));
-
-export function RelatedProducts({
-  products = defaultProducts,
-  className,
-}: RelatedProductsProps) {
+export function RelatedProducts({ products, className }: RelatedProductsProps) {
   const [loaded, setLoaded] = useState(false);
 
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
@@ -75,11 +48,15 @@ export function RelatedProducts({
 
       <div className="relative">
         <div className="keen-slider" ref={sliderRef}>
-          {products.map((product) => (
-            <div className="keen-slider__slide" key={product.id}>
-              <UnifiedProductCard product={product} />
-            </div>
-          ))}
+          {products && products.length > 0 ? (
+            products.map((product) => (
+              <div className="keen-slider__slide" key={product.id}>
+                <UnifiedProductCard product={product} />
+              </div>
+            ))
+          ) : (
+            <p>محصولی برای نمایش یافت نشد.</p>
+          )}
         </div>
 
         {loaded && (

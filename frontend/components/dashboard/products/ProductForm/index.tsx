@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import type { Product } from '@/types/product';
 
 import { useCreateProduct, useUpdateProduct } from '@/services/Products';
+import { ROUTE_OBJECT } from '@/utils/constants';
 
 import type { ProductFormData } from './schema';
 
@@ -34,7 +35,7 @@ export function ProductForm({ initialData }: Props) {
     defaultValues: getDefaultValues(initialData),
   });
 
-  const handleSuccess = () => router.push('/dashboard/products');
+  const handleSuccess = () => router.push(ROUTE_OBJECT.D_PRODUCTS);
 
   const onSubmit = (data: ProductFormData) => {
     if (isEdit && initialData) {
