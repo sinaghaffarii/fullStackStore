@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 
 import { User } from '../../infrastructure/database/models';
+import { Role } from '../../shared/types-enums/role.enum';
 
 interface AdminConfig {
   username: string;
@@ -10,9 +11,9 @@ interface AdminConfig {
 
 export async function seedAdmin(config?: AdminConfig): Promise<void> {
   const adminConfig: AdminConfig = config || {
-    username: process.env.ADMIN_USERNAME || 'admin',
-    email: process.env.ADMIN_EMAIL || 'admin@example.com',
-    password: process.env.ADMIN_PASSWORD || 'Admin@123456',
+    username: process.env.ADMIN_USERNAME || 'superadmin',
+    email: process.env.ADMIN_EMAIL || 'superadmin@example.com',
+    password: process.env.ADMIN_PASSWORD || 'SuperAdmin@123456',
   };
 
   try {
@@ -21,7 +22,7 @@ export async function seedAdmin(config?: AdminConfig): Promise<void> {
     });
 
     if (existingAdmin) {
-      console.log('✅ Admin already exists:', adminConfig.username);
+      console.log('✅ Super Admin already exists:', adminConfig.username);
       return;
     }
 
@@ -31,17 +32,19 @@ export async function seedAdmin(config?: AdminConfig): Promise<void> {
       username: adminConfig.username,
       email: adminConfig.email,
       password: hashedPassword,
-      role: 'admin',
+      role: Role.SuperAdmin,
+      is_active: true,
       is_verified: true,
     });
 
-    console.log('✅ Admin created successfully');
+    console.log('✅ Super Admin created successfully');
     console.log(`   ID: ${admin.id}`);
     console.log(`   Username: ${admin.username}`);
     console.log(`   Email: ${admin.email}`);
+    console.log(`   Role: ${admin.role}`);
     console.log('');
-    console.log('⚠️  مهم: رمز عبور پیش‌فرض را تغییر دهید!');
+    console.log('⚠️  IMPORTANT: Change the default password immediately!');
   } catch (error) {
-    console.error('❌ Error creating admin:', error);
+    console.error('❌ Error creating super admin:', error);
   }
 }

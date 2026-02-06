@@ -1,6 +1,8 @@
 tags:
   - name: Auth
     description: احراز هویت و مدیریت نشست‌ها
+  - name: Admin Management
+    description: مدیریت ادمین‌ها (فقط SuperAdmin)
 
 components:
   securitySchemes:
@@ -24,7 +26,9 @@ components:
           type: string
         role:
           type: string
-          enum: [customer, admin]
+          enum: [customer, admin, super-admin]
+        isActive:
+          type: boolean
         isVerified:
           type: boolean
         createdAt:
@@ -45,7 +49,37 @@ components:
           type: string
           format: date-time
 
+    AdminCreate:
+      type: object
+      required:
+        - username
+        - email
+        - password
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+          minLength: 8
+
+    AdminUpdate:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        is_active:
+          type: boolean
+
 paths:
+  # ==================== Customer Auth ====================
+
   /auth/send-otp:
     post:
       tags: [Auth]
@@ -63,16 +97,7 @@ paths:
                   example: '09121234567'
       responses:
         200:
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  message:
-                    type: string
+          description: کد تأیید ارسال شد
 
   /auth/verify-otp:
     post:
@@ -93,15 +118,8 @@ paths:
       responses:
         200:
           description: ورود موفق
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  data:
-                    $ref: '#/components/schemas/User'
+
+  # ==================== Admin Auth ====================
 
   /auth/admin/login:
     post:
@@ -119,47 +137,24 @@ paths:
                   type: string
                 password:
                   type: string
+                  format: password
       responses:
         200:
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  data:
-                    $ref: '#/components/schemas/User'
-
-  /auth/me:
-    get:
-      tags: [Auth]
-      summary: اطلاعات کاربر فعلی
-      security:
-        - cookieAuth: []
-      responses:
-        200:
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  data:
-                    $ref: '#/components/schemas/User'
+          description: ورود موفق
+        401:
+          description: نام کاربری یا رمز عبور اشتباه
+        403:
+          description: حساب غیرفعال است
 
   /auth/admin/me:
     get:
       tags: [Auth]
-      summary: اطلاعات ادمین
+      summary: اطلاعات ادمین فعلی
       security:
         - cookieAuth: []
       responses:
         200:
-          description: Success
+          description: اطلاعات ادمین
           content:
             application/json:
               schema:
@@ -169,6 +164,132 @@ paths:
                     type: boolean
                   data:
                     $ref: '#/components/schemas/User'
+
+  # ==================== Admin Management ====================
+
+  /auth/admin/create:
+    post:
+      tags: [Admin Management]
+      summary: ایجاد ادمین جدید
+      description: فقط SuperAdmin می‌تواند ادمین جدید ایجاد کند
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCreate'
+      responses:
+        201:
+          description: ادمین با موفقیت ایجاد شد
+        403:
+          description: عدم دسترسی
+        409:
+          description: نام کاربری یا ایمیل تکراری
+
+  /auth/admin/list:
+    get:
+      tags: [Admin Management]
+      summary: لیست همه ادمین‌ها
+      description: فقط SuperAdmin می‌تواند لیست ادمین‌ها را ببیند
+      security:
+        - cookieAuth: []
+      responses:
+        200:
+          description: لیست ادمین‌ها
+
+  /auth/admin/{adminId}:
+    get:
+      tags: [Admin Management]
+      summary: دریافت اطلاعات یک ادمین
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: adminId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: اطلاعات ادمین
+        404:
+          description: ادمین یافت نشد
+
+    put:
+      tags: [Admin Management]
+      summary: بروزرسانی اطلاعات ادمین
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: adminId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUpdate'
+      responses:
+        200:
+          description: ادمین بروزرسانی شد
+        403:
+          description: نمی‌توانید SuperAdmin را ویرایش کنید
+
+  /auth/admin/{adminId}/toggle-status:
+    patch:
+      tags: [Admin Management]
+      summary: تغییر وضعیت ادمین (فعال/غیرفعال)
+      description: |
+        این endpoint وضعیت فعلی ادمین را چک کرده و برعکس آن را اعمال می‌کند:
+        - اگر فعال است → غیرفعال می‌شود
+        - اگر غیرفعال است → فعال می‌شود
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: adminId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: وضعیت ادمین تغییر کرد
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    example: 'ادمین با موفقیت غیرفعال شد'
+                  data:
+                    type: object
+                    properties:
+                      admin:
+                        $ref: '#/components/schemas/User'
+        403:
+          description: نمی‌توانید وضعیت SuperAdmin را تغییر دهید
+        404:
+          description: ادمین یافت نشد
+  # ==================== Token Management ====================
+
+  /auth/refresh-token:
+    post:
+      tags: [Auth]
+      summary: تازه‌سازی توکن
+      responses:
+        200:
+          description: توکن تازه‌سازی شد
 
   /auth/logout:
     post:
@@ -178,14 +299,7 @@ paths:
         - cookieAuth: []
       responses:
         200:
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
+          description: خروج موفق
 
   /auth/logout-all:
     post:
@@ -195,29 +309,21 @@ paths:
         - cookieAuth: []
       responses:
         200:
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
+          description: از همه دستگاه‌ها خارج شدید
 
-  /auth/refresh-token:
-    post:
+  # ==================== User Info ====================
+
+  /auth/me:
+    get:
       tags: [Auth]
-      summary: تازه‌سازی توکن
+      summary: اطلاعات کاربر فعلی
+      security:
+        - cookieAuth: []
       responses:
         200:
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
+          description: اطلاعات کاربر
+
+  # ==================== Session Management ====================
 
   /auth/sessions:
     get:
@@ -227,21 +333,7 @@ paths:
         - cookieAuth: []
       responses:
         200:
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  data:
-                    type: object
-                    properties:
-                      sessions:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/Session'
+          description: لیست نشست‌ها
 
   /auth/sessions/{sessionId}:
     delete:
@@ -258,11 +350,4 @@ paths:
             format: uuid
       responses:
         200:
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
+          description: نشست بسته شد
