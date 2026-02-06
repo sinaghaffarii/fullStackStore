@@ -3,33 +3,39 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
+import type { ProductImage } from '@/types/product';
+
 import { cn } from '@/lib/utils';
 
 interface ProductGalleryProps {
-  images: string[];
+  images: ProductImage[] | string[];
   alt: string;
 }
 
 export function ProductGallery({ images, alt }: ProductGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
 
+  const imageList = images.map((img) =>
+    typeof img === 'string' ? { url: img, alt: undefined } : img,
+  );
+
   return (
     <div className="flex flex-col gap-4">
       <div className="relative aspect-square overflow-hidden rounded-2xl bg-gray-50">
         <Image
           fill
-          alt={alt}
+          alt={imageList[activeIndex].alt || alt}
           className="object-contain p-8"
-          src={images[activeIndex]}
+          src={imageList[activeIndex].url}
           priority
         />
       </div>
 
-      {images.length > 1 && (
+      {imageList.length > 1 && (
         <div className="flex gap-3">
-          {images.map((src, idx) => (
+          {imageList.map((img, idx) => (
             <button
-              key={idx}
+              key={img.url}
               type="button"
               onClick={() => setActiveIndex(idx)}
               className={cn(
@@ -39,7 +45,12 @@ export function ProductGallery({ images, alt }: ProductGalleryProps) {
                   : 'opacity-60 hover:opacity-100',
               )}
             >
-              <Image fill alt="" className="object-contain p-2" src={src} />
+              <Image
+                fill
+                alt={img.alt || ''}
+                className="object-contain p-2"
+                src={img.url}
+              />
             </button>
           ))}
         </div>

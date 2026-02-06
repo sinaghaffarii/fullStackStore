@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import { BrandService } from '../../../core/services/brand.service';
+import { Role } from '../../../shared/types-enums/role.enum';
 import { BrandController } from '../controllers/brand.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { roleMiddleware } from '../middlewares/role.middleware';
@@ -23,7 +24,7 @@ router.get('/:id', controller.get); // ✅ FIX
 router.post(
   '/',
   authMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware([Role.Admin, Role.SuperAdmin]),
   validateRequest(brandValidation.create),
   controller.create,
 );
@@ -31,7 +32,7 @@ router.post(
 router.put(
   '/:id',
   authMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware([Role.Admin, Role.SuperAdmin]),
   validateRequest(brandValidation.update),
   controller.update,
 );
@@ -39,7 +40,7 @@ router.put(
 router.delete(
   '/:id',
   authMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware([Role.Admin, Role.SuperAdmin]),
   controller.delete,
 );
 

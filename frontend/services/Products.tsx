@@ -81,6 +81,9 @@ export const useGetProductById = (id: string) => {
       return data;
     },
     enabled: !!id,
+    staleTime: 1000 * 60 * 5, // 5 دقیقه
+    gcTime: 1000 * 60 * 10, // 10 دقیقه (cacheTime قدیمی)
+    retry: 2, // 2 بار تلاش مجدد در صورت خطا
   });
 };
 

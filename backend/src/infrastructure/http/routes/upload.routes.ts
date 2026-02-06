@@ -1,5 +1,6 @@
 import { Router } from 'express';
 
+import { Role } from '../../../shared/types-enums/role.enum';
 import { UploadController } from '../controllers/upload.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { roleMiddleware } from '../middlewares/role.middleware';
@@ -11,7 +12,7 @@ const controller = new UploadController();
 router.post(
   '/image',
   authMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware([Role.Admin, Role.SuperAdmin]),
   uploadSingleImage,
   controller.uploadImage,
 );

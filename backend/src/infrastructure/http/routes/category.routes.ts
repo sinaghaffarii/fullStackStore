@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import { CategoryRepository } from '../../../core/repositories/category.repository';
 import { CategoryService } from '../../../core/services/category.service';
+import { Role } from '../../../shared/types-enums/role.enum';
 import { CategoryController } from '../controllers/category.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { roleMiddleware } from '../middlewares/role.middleware';
@@ -33,7 +34,7 @@ router.get('/:id', controller.get);
 router.post(
   '/',
   authMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware([Role.Admin, Role.SuperAdmin]),
   validateRequest(categoryValidation.create),
   controller.create,
 );
@@ -41,7 +42,7 @@ router.post(
 router.put(
   '/:id',
   authMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware([Role.Admin, Role.SuperAdmin]),
   validateRequest(categoryValidation.update),
   controller.update,
 );
@@ -49,7 +50,7 @@ router.put(
 router.delete(
   '/:id',
   authMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware([Role.Admin, Role.SuperAdmin]),
   controller.delete,
 );
 

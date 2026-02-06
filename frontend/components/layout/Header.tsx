@@ -100,9 +100,7 @@ const Header = () => {
             </div>
           </div>
         ) : (
-          // ردیف اول - موبایل (برگر سمت راست، لوگو وسط، آیکون‌ها سمت چپ)
           <div className="flex items-center justify-between py-3">
-            {/* سمت راست: منوی برگر */}
             <Button
               aria-label="منو"
               className="p-2"
@@ -112,12 +110,10 @@ const Header = () => {
               <Menu className="size-6" />
             </Button>
 
-            {/* وسط: لوگو */}
             <h1 className="flex-1 text-center text-xl font-bold whitespace-nowrap text-primary">
               FaranArayeshi
             </h1>
 
-            {/* سمت چپ: پروفایل و سبد خرید */}
             <div className="flex items-center gap-1">
               <Button size="sm" className="p-2 text-gray-600" variant="ghost">
                 <UserIcon className="size-5" />
@@ -195,19 +191,16 @@ const Header = () => {
 
             <div className="w-full md:w-80 lg:w-[500px]">
               <Input
-                className="h-10 border bg-white transition-all focus:ring-2 focus:ring-primary"
-                iconPosition="right"
+                className="h-10 border bg-white pr-10 transition-all focus:ring-2 focus:ring-primary"
                 placeholder="جستجوی نام محصول، دسته‌بندی و ..."
                 rightIcon={<SearchIcon className="size-5 text-gray-400" />}
               />
             </div>
           </div>
         ) : (
-          // ردیف دوم - موبایل: فقط جستجو
           <div className="pb-3">
             <Input
-              className="h-10 border bg-white text-sm transition-all focus:ring-2 focus:ring-primary"
-              iconPosition="right"
+              className="h-10 border bg-white pr-10 text-sm transition-all focus:ring-2 focus:ring-primary"
               placeholder="جستجوی محصولات..."
               rightIcon={<SearchIcon className="size-5 text-gray-400" />}
             />

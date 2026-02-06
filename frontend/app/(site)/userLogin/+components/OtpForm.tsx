@@ -32,12 +32,14 @@ export function OTPForm({ onSubmit, isLoading, onBack }: OTPFormProps) {
           <FormField
             name="code"
             control={form.control}
-            render={({ field }) => (
+            render={(
+              { field: { ref, ...fieldWithoutRef } }, // ✅ جدا کردن ref
+            ) => (
               <FormItem>
                 <FormLabel className="sr-only">کد تأیید</FormLabel>
                 <FormControl>
                   <Input
-                    {...field}
+                    {...fieldWithoutRef} // ✅ بدون ref
                     dir="ltr"
                     maxLength={6}
                     autoComplete="one-time-code"
