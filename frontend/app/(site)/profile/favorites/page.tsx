@@ -2,55 +2,61 @@
 
 import { useState } from 'react';
 
-import type { Product } from '@/types/product';
+import type { Product, ProductImage } from '@/types/product';
 
-import { UnifiedProductCard } from '@/components/ui/UnifiedProductCard';
+import { ProductCard } from '@/components/ui/ProductCard';
 
 import { EmptyState } from '../+components/EmptyState';
 import { SectionHeader } from '../+components/SectionHeader';
 
+const defaultProductImage: ProductImage = {
+  id: 'default-image-id',
+  url: '/images/products/defaultImage.jpg',
+  is_primary: false,
+};
+
 const mockFavorites: Product[] = [
   {
-    id: 1,
+    id: '1', // ✅ string
     slug: 'smok-novo-x',
     name: 'پاد سیستم اسموک نوو ایکس',
     description: 'پاد سیستم حرفه‌ای با طراحی جمع‌وجور و طعم‌دهی عالی',
-    price: 350_000,
-    originalPrice: 450_000,
-    discount: 22,
-    base_price: 350_000,
-    image: '/images/products/defaultImage.jpg',
-    images: ['/images/products/defaultImage.jpg'],
-    rating: '4.5',
-    reviews: 128,
-    isNew: false,
-    isBestseller: true,
-    brand: 'SMOK',
-    category: 'pod-system',
-    inStock: true,
-    stock: 12,
+    base_price: 450_000,
+    final_price: 350_000,
+    discount_percent: 22,
+    primary_image: '/images/products/defaultImage.jpg',
+    images: [defaultProductImage],
+    rating: 4.5, // ✅ number
+    review_count: 128,
+    is_new: false,
+    is_featured: true,
+    brand: { id: 'brand-smok', name: 'SMOK', name_fa: 'اسموک' },
+    category: { id: 'cat-pod-system', name: 'پاد سیستم', slug: 'pod-system' },
+    stock_status: 'IN_STOCK',
+    colors: [],
+    sizes: [],
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   },
   {
-    id: 2,
+    id: '2', // ✅ string
     slug: 'mat-foundation',
     name: 'کرم پودر مات',
     description: 'کرم پودر مات با پوشش بالا مناسب پوست چرب',
-    price: 420_000,
-    originalPrice: 550_000,
-    discount: 24,
-    base_price: 420_000,
-    image: '/images/products/defaultImage.jpg',
-    images: ['/images/products/defaultImage.jpg'],
-    rating: '4.2',
-    reviews: 64,
-    isNew: true,
-    isBestseller: false,
-    brand: 'UWELL',
-    category: 'makeup',
-    inStock: true,
-    stock: 20,
+    base_price: 550_000,
+    final_price: 420_000,
+    discount_percent: 24,
+    primary_image: '/images/products/defaultImage.jpg',
+    images: [defaultProductImage],
+    rating: 4.2, // ✅ number
+    review_count: 64,
+    is_new: true,
+    is_featured: false,
+    brand: { id: 'brand-uwell', name: 'UWELL', name_fa: 'یوول' }, // ✅ object
+    category: { id: 'cat-makeup', name: 'آرایشی', slug: 'makeup' }, // ✅ object
+    stock_status: 'IN_STOCK', // ✅ enum
+    colors: [],
+    sizes: [],
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   },
@@ -59,16 +65,18 @@ const mockFavorites: Product[] = [
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState(mockFavorites);
 
-  const handleRemove = async (id: number) => {
-    await await new Promise((resolve) => {
+  const handleRemove = async (id: string) => {
+    // ✅ string
+    await new Promise((resolve) => {
       setTimeout(resolve, 500);
     });
     setFavorites((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const handleAddToCart = async (id: number) => {
+  const handleAddToCart = async (id: string) => {
+    // ✅ string
     // منطق افزودن به سبد خرید
-    console.log('Added to cart:', id);
+    // TODO: پیاده‌سازی API call
   };
 
   return (
@@ -85,7 +93,7 @@ export default function FavoritesPage() {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {favorites.map((product) => (
-              <UnifiedProductCard
+              <ProductCard
                 key={product.id}
                 mode="favorite"
                 onAddToCart={handleAddToCart}

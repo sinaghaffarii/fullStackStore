@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import { DiscountService } from '../../../core/services/discount.service';
+import { Role } from '../../../shared/types-enums/role.enum';
 import { DiscountController } from '../controllers/discount.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { roleMiddleware } from '../middlewares/role.middleware';
@@ -21,7 +22,7 @@ router.get('/:id', controller.get);
 router.post(
   '/',
   authMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware([Role.Admin, Role.SuperAdmin]),
   validateRequest(discountValidation.create),
   controller.create,
 );
@@ -29,7 +30,7 @@ router.post(
 router.put(
   '/:id',
   authMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware([Role.Admin, Role.SuperAdmin]),
   validateRequest(discountValidation.update),
   controller.update,
 );
@@ -37,14 +38,14 @@ router.put(
 router.delete(
   '/:id',
   authMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware([Role.Admin, Role.SuperAdmin]),
   controller.delete,
 );
 
 router.patch(
   '/:id/toggle',
   authMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware([Role.Admin, Role.SuperAdmin]),
   controller.toggle,
 );
 

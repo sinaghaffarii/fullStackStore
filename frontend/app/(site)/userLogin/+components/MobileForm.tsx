@@ -36,7 +36,7 @@ export function MobileForm({ onSubmit, isLoading }: MobileFormProps) {
         <FormField
           name="mobile"
           control={form.control}
-          render={({ field }) => (
+          render={({ field: { ref, ...fieldWithoutRef } }) => (
             <FormItem>
               <FormLabel className="sr-only">شماره موبایل</FormLabel>
               <FormControl>
@@ -45,7 +45,7 @@ export function MobileForm({ onSubmit, isLoading }: MobileFormProps) {
                     <Phone size={20} />
                   </div>
                   <Input
-                    {...field}
+                    {...fieldWithoutRef} // ✅ بدون ref
                     dir="ltr"
                     type="tel"
                     dimension="lg"

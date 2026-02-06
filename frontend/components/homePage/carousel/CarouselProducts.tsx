@@ -11,7 +11,7 @@ import React, { useState } from 'react';
 
 import type { Product } from '@/types/product';
 
-import { UnifiedProductCard } from '@/components/ui/UnifiedProductCard';
+import { ProductCard } from '@/components/ui/ProductCard';
 import { cn } from '@/lib/utils';
 
 import CarouselNavigation from './CarouselNavigation';
@@ -35,7 +35,6 @@ const defaultBreakpoints = {
   '(min-width: 1280px)': { slides: { perView: 5, spacing: 10 } },
 };
 
-// Skeleton برای یک کارت محصول
 const ProductCardSkeleton: React.FC<{ id: string }> = ({ id }) => (
   <div
     className="flex size-full animate-pulse flex-col rounded-lg border border-gray-100 bg-white p-3"
@@ -51,7 +50,6 @@ const ProductCardSkeleton: React.FC<{ id: string }> = ({ id }) => (
   </div>
 );
 
-// Skeleton برای کل کاروسل
 const CarouselSkeleton: React.FC<{ count?: number }> = ({ count = 5 }) => (
   <div className="flex gap-2.5 overflow-hidden">
     {Array.from({ length: count }).map((_, idx) => (
@@ -79,12 +77,14 @@ const CarouselProducts: React.FC<Props> = ({
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);
 
-  // از تعداد محصولات برای dot ها استفاده می‌کنیم (ثابت و بدون نیاز به ref)
   const dotCount = products.length;
 
-  const handleAddToCart = async (id: number) => {
-    // منطق افزودن به سبد خرید
-    console.log('Added to cart:', id);
+  const handleAddToCart = async (_id: string) => {
+    await new Promise<void>((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 500);
+    });
   };
 
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>(
@@ -167,11 +167,9 @@ const CarouselProducts: React.FC<Props> = ({
           </div>
         )}
 
-        {/* نمایش Skeleton تا زمان آماده‌شدن */}
         {!loaded && (
           <>
             <CarouselSkeleton count={5} />
-            {/* اسلایدر مخفی برای initialize شدن */}
             <div aria-hidden="true" className="sr-only">
               <div className="keen-slider" ref={sliderRef}>
                 {products.map((product) => (
@@ -182,7 +180,6 @@ const CarouselProducts: React.FC<Props> = ({
           </>
         )}
 
-        {/* محتوای اصلی بعد از load */}
         {loaded && (
           <div className="group/carousel relative">
             <div className="keen-slider" ref={sliderRef}>
@@ -191,14 +188,14 @@ const CarouselProducts: React.FC<Props> = ({
                   className="keen-slider__slide flex h-auto items-stretch"
                   key={product.id}
                 >
-                  <UnifiedProductCard
+                  <ProductCard
                     mode="carousel"
                     onAddToCart={handleAddToCart}
                     onLike={() => {
-                      /* empty */
+                      //like
                     }}
                     onQuickView={() => {
-                      /* empty */
+                      // view
                     }}
                     priority={index < 2}
                     product={product}

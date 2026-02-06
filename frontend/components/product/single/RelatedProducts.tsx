@@ -8,7 +8,7 @@ import { useState } from 'react';
 
 import type { Product } from '@/types/product';
 
-import { UnifiedProductCard } from '@/components/ui/UnifiedProductCard';
+import { ProductCard } from '@/components/ui/ProductCard';
 import { cn } from '@/lib/utils';
 
 interface RelatedProductsProps {
@@ -51,7 +51,7 @@ export function RelatedProducts({ products, className }: RelatedProductsProps) {
           {products && products.length > 0 ? (
             products.map((product) => (
               <div className="keen-slider__slide" key={product.id}>
-                <UnifiedProductCard product={product} />
+                <ProductCard product={product} />
               </div>
             ))
           ) : (

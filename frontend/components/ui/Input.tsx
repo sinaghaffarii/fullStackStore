@@ -36,6 +36,8 @@ export interface InputProps
     VariantProps<typeof inputVariants> {
   label?: string;
   error?: string;
+  rightIcon?: React.ReactNode;
+  leftIcon?: React.ReactNode;
 }
 
 export const Input = ({
@@ -47,6 +49,8 @@ export const Input = ({
   variant,
   rounded,
   required,
+  rightIcon,
+  leftIcon,
   ...props
 }: InputProps & { ref?: React.RefObject<HTMLInputElement | null> }) => (
   <div className="w-full space-y-1.5">
@@ -57,19 +61,35 @@ export const Input = ({
       </label>
     )}
 
-    <input
-      aria-invalid={!!error}
-      ref={ref}
-      className={cn(
-        inputVariants({
-          dimension,
-          variant: error ? 'error' : variant,
-          rounded,
-        }),
-        className,
+    <div className="relative">
+      {rightIcon && (
+        <div className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2">
+          {rightIcon}
+        </div>
       )}
-      {...props}
-    />
+
+      <input
+        aria-invalid={!!error}
+        ref={ref}
+        className={cn(
+          inputVariants({
+            dimension,
+            variant: error ? 'error' : variant,
+            rounded,
+          }),
+          rightIcon && 'pr-10',
+          leftIcon && 'pl-10',
+          className,
+        )}
+        {...props}
+      />
+
+      {leftIcon && (
+        <div className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2">
+          {leftIcon}
+        </div>
+      )}
+    </div>
 
     {error && <p className="text-xs font-medium text-destructive">{error}</p>}
   </div>

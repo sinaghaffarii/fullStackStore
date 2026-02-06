@@ -1,44 +1,36 @@
-import type { Metadata } from 'next';
+'use client';
 
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 
 import { ProductGallery } from '@/components/product/single/ProductGallery';
 import { ProductInfo } from '@/components/product/single/ProductInfo';
 import { ProductTabs } from '@/components/product/single/ProductTabs';
 import { RelatedProducts } from '@/components/product/single/RelatedProducts';
 import DynamicBreadcrumb from '@/components/ui/DynamicBreadcrumb';
+import { Spinner } from '@/components/ui/Spinner';
 import { useGetProductById } from '@/services/Products';
 
-interface PageProps {
-  params: Promise<{ id: string }>;
-}
+export default function ProductPage() {
+  const params = useParams();
+  const id = params.id as string;
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
-  const { id } = await params;
-  const { data: product, isPending: productPending } = useGetProductById(id);
+  const { data, isLoading, isError } = useGetProductById(id);
 
-  if (!product?.data) {
-    return { title: 'محصول یافت نشد' };
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Spinner />
+      </div>
+    );
   }
 
-  return {
-    title: product.data.name,
-    description: product.data.description,
-    openGraph: {
-      title: product.data.name,
-      description: product.data.description,
-      images: product.data.images?.map((url) => ({ url })),
-    },
-  };
-}
+  if (isError || !data?.data) {
+    notFound();
+  }
 
-export default async function ProductPage({ params }: PageProps) {
-  const { id } = await params;
-  const product = await getProductById(id);
+  const product = data.data;
 
-  if (!product) notFound();
+  const imageUrls = product.images?.map((img) => img.url) ?? [];
 
   const breadcrumbs = [
     { title: 'خانه', href: '/' },
@@ -52,7 +44,7 @@ export default async function ProductPage({ params }: PageProps) {
         <DynamicBreadcrumb segments={breadcrumbs} />
 
         <div className="mt-8 grid gap-12 lg:grid-cols-2">
-          <ProductGallery alt={product.name} images={product.images} />
+          <ProductGallery alt={product.name} images={imageUrls} />
           <ProductInfo product={product} />
         </div>
 

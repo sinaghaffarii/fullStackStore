@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
-import { ProductRepository } from '../../../core/repositories/product.repository';
 import { ProductService } from '../../../core/services/product.service';
+import { Role } from '../../../shared/types-enums/role.enum';
 import { ProductController } from '../controllers/product.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { roleMiddleware } from '../middlewares/role.middleware';
@@ -10,51 +10,56 @@ import { productValidation } from '../validators';
 
 const router = Router();
 
-/* ✅ Dependency Injection */
-const productRepository = new ProductRepository();
-const productService = new ProductService(productRepository);
+const productService = new ProductService();
 const controller = new ProductController(productService);
-
-/* ================= Routes ================= */
 
 router.get(
   '/',
   validateRequest(productValidation.list, 'query'),
-  controller.list,
+  controller.list.bind(controller),
 );
 
-router.get('/slug/:slug', controller.getBySlug);
-router.get('/:id', controller.getById);
+router.get('/slug/:slug', controller.getBySlug.bind(controller));
+
+router.get('/:id', controller.getById.bind(controller));
 
 router.post(
   '/',
   authMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware([Role.Admin, Role.SuperAdmin]),
   validateRequest(productValidation.create),
-  controller.create,
+  controller.create.bind(controller),
 );
 
 router.put(
   '/:id',
   authMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware([Role.Admin, Role.SuperAdmin]),
   validateRequest(productValidation.update),
-  controller.update,
+  controller.update.bind(controller),
+);
+
+router.patch(
+  '/:id',
+  authMiddleware,
+  roleMiddleware([Role.Admin, Role.SuperAdmin]),
+  validateRequest(productValidation.update),
+  controller.update.bind(controller),
 );
 
 router.delete(
   '/:id',
   authMiddleware,
-  roleMiddleware(['admin']),
-  controller.delete,
+  roleMiddleware([Role.Admin, Role.SuperAdmin]),
+  controller.delete.bind(controller),
 );
 
 router.patch(
-  '/stock',
+  '/:id/stock',
   authMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware([Role.Admin, Role.SuperAdmin]),
   validateRequest(productValidation.updateStock),
-  controller.updateStock,
+  controller.updateStock.bind(controller),
 );
 
 export { router as productRoutes };
