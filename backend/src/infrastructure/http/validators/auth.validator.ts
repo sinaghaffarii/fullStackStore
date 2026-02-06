@@ -3,6 +3,8 @@ import Joi from 'joi';
 const phoneRegex = /^09\d{9}$/;
 
 export const authValidation = {
+  // ==================== OTP ====================
+
   sendOtp: Joi.object({
     phoneNumber: Joi.string().pattern(phoneRegex).required().messages({
       'string.pattern.base': 'شماره موبایل باید با 09 شروع شود و 11 رقم باشد',
@@ -23,6 +25,8 @@ export const authValidation = {
     }),
   }),
 
+  // ==================== Admin Login ====================
+
   adminLogin: Joi.object({
     username: Joi.string().min(3).max(50).required().messages({
       'string.min': 'نام کاربری باید حداقل 3 کاراکتر باشد',
@@ -33,10 +37,47 @@ export const authValidation = {
       'string.min': 'رمز عبور باید حداقل 6 کاراکتر باشد',
       'any.required': 'رمز عبور الزامی است',
     }),
-    // captchaToken: Joi.string().required().messages({
-    //   'any.required': 'لطفاً کپچا را تکمیل کنید',
-    // }),
   }),
+
+  // ==================== Admin Management ====================
+
+  createAdmin: Joi.object({
+    username: Joi.string().min(3).max(50).required().messages({
+      'string.min': 'نام کاربری باید حداقل 3 کاراکتر باشد',
+      'string.max': 'نام کاربری نمی‌تواند بیش از 50 کاراکتر باشد',
+      'any.required': 'نام کاربری الزامی است',
+    }),
+    email: Joi.string().email().required().messages({
+      'string.email': 'ایمیل نامعتبر است',
+      'any.required': 'ایمیل الزامی است',
+    }),
+    password: Joi.string()
+      .min(8)
+      .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!$%&*?@])[\d!$%&*?-Za-z]/)
+      .required()
+      .messages({
+        'string.min': 'رمز عبور باید حداقل 8 کاراکتر باشد',
+        'string.pattern.base':
+          'رمز عبور باید شامل حروف بزرگ، کوچک، عدد و کاراکتر خاص باشد',
+        'any.required': 'رمز عبور الزامی است',
+      }),
+  }),
+
+  updateAdmin: Joi.object({
+    email: Joi.string().email().optional().messages({
+      'string.email': 'ایمیل نامعتبر است',
+    }),
+    isActive: Joi.boolean().optional(),
+  }).min(1),
+
+  adminId: Joi.object({
+    adminId: Joi.string().uuid().required().messages({
+      'string.guid': 'شناسه ادمین نامعتبر است',
+      'any.required': 'شناسه ادمین الزامی است',
+    }),
+  }),
+
+  // ==================== Token Management ====================
 
   refreshToken: Joi.object({
     refreshToken: Joi.string().optional(),
@@ -48,6 +89,9 @@ export const authValidation = {
       'any.required': 'شناسه نشست الزامی است',
     }),
   }),
+
+  // ==================== Password Reset ====================
+
   requestPasswordReset: Joi.object({
     phoneNumber: Joi.string().pattern(phoneRegex).messages({
       'string.pattern.base': 'شماره موبایل نامعتبر است',
@@ -79,6 +123,8 @@ export const authValidation = {
       'any.required': 'رمز عبور جدید الزامی است',
     }),
   }).or('phoneNumber', 'email'),
+
+  // ==================== Profile Management ====================
 
   updateProfile: Joi.object({
     username: Joi.string().min(3).max(50).messages({

@@ -2,6 +2,7 @@ export const QUERY_KEY = Object.freeze({
   BRAND: 'BRAND',
   CATEGORY: 'CATEGORY',
   PRODUCT: 'PRODUCT',
+  ADMIN: 'ADMIN',
 });
 
 export const ROUTE_OBJECT = Object.freeze({

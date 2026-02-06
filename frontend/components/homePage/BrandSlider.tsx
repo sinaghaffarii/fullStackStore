@@ -1,3 +1,4 @@
+/* eslint-disable next/no-img-element */
 'use client';
 
 import { useKeenSlider } from 'keen-slider/react';
@@ -92,11 +93,11 @@ const BrandSlider: React.FC = () => {
               key={brand.id}
             >
               <div className="relative flex h-16 w-32 items-center justify-center rounded-md bg-gray-200">
-                <Image
-                  fill
+                <img
+                  // fill
                   sizes="128px"
                   alt={brand.name}
-                  className="object-contain"
+                  className="object-cover"
                   src={`${process.env.NEXT_PUBLIC_API_URL_IMAGE}${brand.logo}`}
                   loading={idx < 3 ? 'eager' : 'lazy'}
                 />

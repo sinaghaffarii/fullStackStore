@@ -12,6 +12,7 @@ export interface IPaginationMeta {
 export interface IListResponse<TItem> {
   items: TItem[];
   pagination: IPaginationMeta;
+  totalCount: number;
 }
 
 export interface ApiSuccessResponse<T> {
@@ -27,13 +28,22 @@ export interface ApiErrorResponse {
   };
 }
 
+export type UserRole = 'admin' | 'customer' | 'super-admin';
+
 export interface User {
   id: string;
-  email: string;
-  role: 'admin' | 'customer';
-  is_verified: boolean;
-  created_at?: Date;
-  updated_at?: Date;
+  username?: string;
+  email?: string;
+  phoneNumber?: string;
+  role: UserRole;
+  isActive: boolean;
+  isVerified: boolean;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface AdminUser extends User {
+  role: 'admin' | 'super-admin';
 }
 
 export interface Cart {

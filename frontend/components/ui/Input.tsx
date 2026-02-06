@@ -3,153 +3,76 @@ import type { VariantProps } from 'class-variance-authority';
 import { cva } from 'class-variance-authority';
 import * as React from 'react';
 
-import { cn } from '../../lib/utils';
+import { cn } from '@/lib/utils';
 
 const inputVariants = cva(
-  'w-full min-w-0 border border-input bg-transparent shadow-xs transition-[color,box-shadow,background-color] outline-none selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-primary/50 focus-visible:ring-[3px] focus-visible:ring-primary/10 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30',
+  'w-full border border-input bg-transparent px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50',
   {
     variants: {
       dimension: {
-        default: 'h-11 px-3 py-1 text-base md:text-sm',
-        sm: 'h-8 px-3 text-xs',
-        lg: 'h-10 px-4 text-base',
-        xl: 'h-12 px-4 text-lg tracking-wide',
+        sm: 'h-8',
+        default: 'h-10',
+        lg: 'h-12',
       },
-
+      variant: {
+        default: '',
+        error: 'border-destructive focus-visible:ring-destructive/20',
+      },
       rounded: {
         default: 'rounded-md',
         lg: 'rounded-lg',
-        xl: 'rounded-xl',
-        '2xl': 'rounded-2xl',
-        full: 'rounded-full',
-      },
-
-      variant: {
-        default: 'border-input focus:bg-white hover:bg-gray-50/50',
-        error:
-          'border-destructive ring-destructive/20 focus-visible:border-destructive focus-visible:ring-destructive/20',
       },
     },
     defaultVariants: {
       dimension: 'default',
-      rounded: 'default',
       variant: 'default',
+      rounded: 'default',
     },
   },
 );
 
-interface InputProps
-  extends Omit<React.ComponentProps<'input'>, 'size'>,
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement>,
     VariantProps<typeof inputVariants> {
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
-  iconPosition?: 'left' | 'right';
-  error?: string;
   label?: string;
+  error?: string;
 }
 
-const Input = ({
+export const Input = ({
   ref,
   className,
-  type,
-  leftIcon,
-  rightIcon,
-  iconPosition = 'left',
-  dimension,
-  rounded,
-  variant,
-  error,
   label,
+  error,
+  dimension,
+  variant,
+  rounded,
   required,
-  onInvalid,
   ...props
-}: InputProps & { ref?: React.RefObject<HTMLInputElement | null> }) => {
-  const inputRef = React.useRef<HTMLInputElement | null>(null);
-  const hasLeftIcon = leftIcon && iconPosition === 'left';
-  const hasRightIcon = rightIcon && iconPosition === 'right';
+}: InputProps & { ref?: React.RefObject<HTMLInputElement | null> }) => (
+  <div className="w-full space-y-1.5">
+    {label && (
+      <label className="text-sm font-medium">
+        {label}
+        {required && <span className="text-destructive"> *</span>}
+      </label>
+    )}
 
-  React.useImperativeHandle(ref, () => inputRef.current!);
-
-  const handleInvalid = (e: React.InvalidEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-    onInvalid?.(e);
-  };
-
-  React.useEffect(() => {
-    if (error && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [error]);
-
-  return (
-    <div className="w-full space-y-1.5">
-      {label && (
-        <label
-          className="block text-sm font-medium text-foreground"
-          htmlFor={props.id}
-        >
-          <span className="inline-flex items-center gap-1">
-            {label}
-            {required && (
-              <>
-                <span aria-hidden="true" className="text-destructive">
-                  *
-                </span>
-                <span className="sr-only">الزامی</span>
-              </>
-            )}
-          </span>
-        </label>
+    <input
+      aria-invalid={!!error}
+      ref={ref}
+      className={cn(
+        inputVariants({
+          dimension,
+          variant: error ? 'error' : variant,
+          rounded,
+        }),
+        className,
       )}
+      {...props}
+    />
 
-      <div className="group relative w-full">
-        {hasLeftIcon && (
-          <div className="absolute top-1/2 left-3 -translate-y-1/2 transform text-muted-foreground transition-colors group-focus-within:text-primary">
-            {leftIcon}
-          </div>
-        )}
-        <input
-          aria-invalid={!!error}
-          aria-required={!!required}
-          ref={inputRef}
-          required={required}
-          type={type}
-          data-slot="input"
-          onInvalid={handleInvalid}
-          className={cn(
-            inputVariants({
-              dimension,
-              rounded,
-              variant: error ? 'error' : variant,
-            }),
-            hasLeftIcon && 'pl-10',
-            hasRightIcon && 'pr-10',
-            className,
-          )}
-          {...props}
-        />
-        {hasRightIcon && (
-          <div className="absolute top-1/2 right-3 -translate-y-1/2 transform text-muted-foreground transition-colors group-focus-within:text-primary">
-            {rightIcon}
-          </div>
-        )}
-      </div>
-
-      {error && (
-        <span
-          className="block text-xs font-medium text-destructive"
-          role="alert"
-        >
-          {error}
-        </span>
-      )}
-    </div>
-  );
-};
+    {error && <p className="text-xs font-medium text-destructive">{error}</p>}
+  </div>
+);
 
 Input.displayName = 'Input';
-
-export { Input, inputVariants };

@@ -3,13 +3,21 @@
 import { Filter, Grid3X3, Sparkles } from 'lucide-react';
 
 import { Button } from '../ui/Button';
-import { Select, SelectItem } from '../ui/Select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/Select';
 
 interface CategoryHeaderProps {
   title: string;
   description: string;
   productCount: number;
   activeFilterCount?: number;
+  sortValue?: string;
+  onSortChange?: (value: string) => void;
   onClearFilters?: () => void;
   onOpenMobileFilters?: () => void;
 }
@@ -28,6 +36,8 @@ export function CategoryHeader({
   description,
   productCount,
   activeFilterCount = 0,
+  sortValue = '0',
+  onSortChange,
   onClearFilters,
   onOpenMobileFilters,
 }: CategoryHeaderProps) {
@@ -35,8 +45,8 @@ export function CategoryHeader({
     <div className="relative mb-8 overflow-hidden rounded-lg border border-slate-700 bg-linear-to-r from-slate-900 to-indigo-900 p-6 shadow-2xl">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 right-0 size-64 translate-x-32 -translate-y-32 rounded-full bg-linear-to-br from-purple-500 to-pink-500"></div>
-        <div className="absolute bottom-0 left-0 size-48 -translate-x-24 translate-y-24 rounded-full bg-linear-to-tr from-cyan-500 to-blue-500"></div>
+        <div className="absolute top-0 right-0 size-64 translate-x-32 -translate-y-32 rounded-full bg-linear-to-br from-purple-500 to-pink-500" />
+        <div className="absolute bottom-0 left-0 size-48 -translate-x-24 translate-y-24 rounded-full bg-linear-to-tr from-cyan-500 to-blue-500" />
       </div>
 
       <div className="relative z-10">
@@ -77,22 +87,18 @@ export function CategoryHeader({
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">
-            <div className="flex items-center gap-2">
-              <Select
-                className="w-full border-slate-600 bg-white/10 text-white! transition-colors hover:bg-white/15 data-placeholder:text-white/70 sm:w-[200px]"
-                placeholder="مرتب سازی"
-              >
+            <Select value={sortValue} onValueChange={onSortChange}>
+              <SelectTrigger className="w-44 border-slate-600 bg-slate-800/50 text-white hover:bg-slate-700/50">
+                <SelectValue placeholder="مرتب‌سازی" />
+              </SelectTrigger>
+              <SelectContent>
                 {sortOptions.map((option) => (
-                  <SelectItem
-                    className="focus:bg-slate-700 focus:text-white"
-                    key={option.value}
-                    value={option.value}
-                  >
+                  <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
-              </Select>
-            </div>
+              </SelectContent>
+            </Select>
 
             {/* دکمه فیلتر برای موبایل */}
             <Button

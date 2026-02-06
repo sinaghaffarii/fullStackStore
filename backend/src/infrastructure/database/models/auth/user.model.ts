@@ -3,6 +3,7 @@ import type { Optional } from 'sequelize';
 import { DataTypes, Model } from 'sequelize';
 
 import { sequelize } from '../../../../configs/database';
+import { Role } from '../../../../shared/types-enums/role.enum';
 
 // ============================================================================
 // Attributes Interface
@@ -14,7 +15,8 @@ export interface UserAttributes {
   email?: string;
   phone_number?: string;
   password?: string | null;
-  role: 'admin' | 'customer';
+  role: Role;
+  is_active: boolean;
   is_verified: boolean;
   refresh_token?: string | null;
   created_at?: Date;
@@ -31,11 +33,11 @@ export interface UserCreationAttributes
     | 'created_at'
     | 'email'
     | 'id'
+    | 'is_active'
     | 'is_verified'
     | 'password'
     | 'phone_number'
     | 'refresh_token'
-    | 'role'
     | 'updated_at'
     | 'username'
   > {}
@@ -51,22 +53,35 @@ export class User
   declare readonly created_at: Date;
   declare email?: string;
   declare id: string;
+  declare is_active: boolean;
   declare is_verified: boolean;
   declare password?: string | null;
   declare phone_number?: string;
   declare refresh_token?: string | null;
-  declare role: 'admin' | 'customer';
+  declare role: Role;
   declare readonly updated_at: Date;
   declare username?: string;
 
   // ==================== Helper Methods ====================
 
+  canAccessDashboard(): boolean {
+    return this.isAdmin();
+  }
+
+  canManageAdmins(): boolean {
+    return this.isSuperAdmin();
+  }
+
   isAdmin(): boolean {
-    return this.role === 'admin';
+    return this.role === Role.Admin || this.role === Role.SuperAdmin;
   }
 
   isCustomer(): boolean {
-    return this.role === 'customer';
+    return this.role === Role.Customer;
+  }
+
+  isSuperAdmin(): boolean {
+    return this.role === Role.SuperAdmin;
   }
 
   toSafeObject() {
@@ -76,6 +91,7 @@ export class User
       email: this.email,
       phoneNumber: this.phone_number,
       role: this.role,
+      isActive: this.is_active,
       isVerified: this.is_verified,
       createdAt: this.created_at,
     };
@@ -114,8 +130,13 @@ User.init(
       allowNull: true,
     },
     role: {
-      type: DataTypes.ENUM('customer', 'admin'),
-      defaultValue: 'customer',
+      type: DataTypes.ENUM(Role.Customer, Role.Admin, Role.SuperAdmin),
+      defaultValue: Role.Customer,
+      allowNull: false,
+    },
+    is_active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
       allowNull: false,
     },
     is_verified: {
@@ -139,6 +160,7 @@ User.init(
       { fields: ['email'] },
       { fields: ['username'] },
       { fields: ['role'] },
+      { fields: ['is_active'] },
     ],
   },
 );

@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable max-lines-per-function */
 'use client';
 
@@ -294,10 +295,10 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
       {/* ------------------------------------------------------------------ */}
 
       {value && (
-        <div className="group relative size-44 overflow-hidden rounded-lg border-2 border-dashed border-primary/20 bg-muted/30 p-2 transition-all hover:border-primary/40">
+        <div className="group relative mt-1 mb-4 h-40 w-fit overflow-hidden rounded-lg border-2 border-dashed border-primary/20 bg-muted/30 p-2 transition-all hover:border-primary/40">
           <img
             alt="preview"
-            className="size-full object-cover transition-transform group-hover:scale-105"
+            className="size-full object-contain transition-transform group-hover:scale-105"
             src={`${process.env.NEXT_PUBLIC_API_URL_IMAGE}${value}`}
           />
 

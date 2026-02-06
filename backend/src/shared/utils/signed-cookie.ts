@@ -1,12 +1,14 @@
 import crypto from 'crypto';
 
+import type { Role } from '../types-enums/role.enum';
+
 // ============================================================================
 // Types
 // ============================================================================
 
 export interface AuthStatePayload {
   userId: string;
-  role: 'admin' | 'customer';
+  role: Role;
   exp: number; // Unix timestamp
 }
 
@@ -62,7 +64,7 @@ function decodePayload(encoded: string): AuthStatePayload | null {
  */
 export function createSignedAuthState(
   userId: string,
-  role: 'admin' | 'customer',
+  role: Role,
   expiresInSeconds: number = 7 * 24 * 60 * 60, // 7 روز
 ): string {
   const payload: AuthStatePayload = {

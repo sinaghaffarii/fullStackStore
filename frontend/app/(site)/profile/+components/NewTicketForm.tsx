@@ -70,7 +70,6 @@ export const NewTicketForm = ({ onSubmit, onCancel }: NewTicketFormProps) => {
           دپارتمان <span className="text-red-600">*</span>
         </Label>
         <Select
-          className="w-full"
           value={department}
           // onChange={(e) => setDepartment(e.target.value)}
         >

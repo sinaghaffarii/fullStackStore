@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 'use client';
 
 import type { VariantProps } from 'class-variance-authority';
@@ -34,7 +35,7 @@ const selectVariants = cva(
 const SelectGroup = SelectPrimitive.Group;
 const SelectValue = SelectPrimitive.Value;
 
-// SelectTrigger - defined before Select
+// ============ SelectTrigger ============
 interface SelectTriggerProps
   extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>,
     VariantProps<typeof selectVariants> {}
@@ -64,7 +65,7 @@ const SelectTrigger = ({
 );
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
-// Select wrapper with label/error support
+// ============ Select (with label/error wrapper) ============
 interface SelectProps
   extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root> {
   label?: string;
@@ -79,7 +80,6 @@ function Select({ label, required, error, children, ...props }: SelectProps) {
   const enhancedChildren = React.Children.map(children, (child) => {
     if (!React.isValidElement(child)) return child;
 
-    // Check if child is SelectTrigger by displayName
     const childType = child.type as { displayName?: string };
     if (childType.displayName === SelectPrimitive.Trigger.displayName) {
       return React.cloneElement(
@@ -97,6 +97,13 @@ function Select({ label, required, error, children, ...props }: SelectProps) {
 
     return child;
   });
+
+  // بدون label و error، فقط Root را برگردان
+  if (!label && !error) {
+    return (
+      <SelectPrimitive.Root {...props}>{enhancedChildren}</SelectPrimitive.Root>
+    );
+  }
 
   return (
     <div className="w-full space-y-1.5">
@@ -132,6 +139,7 @@ function Select({ label, required, error, children, ...props }: SelectProps) {
 }
 Select.displayName = 'Select';
 
+// ============ SelectContent ============
 const SelectContent = ({
   ref,
   className,
@@ -173,6 +181,7 @@ const SelectContent = ({
 );
 SelectContent.displayName = SelectPrimitive.Content.displayName;
 
+// ============ SelectLabel ============
 const SelectLabel = ({
   ref,
   className,
@@ -188,6 +197,7 @@ const SelectLabel = ({
 );
 SelectLabel.displayName = SelectPrimitive.Label.displayName;
 
+// ============ SelectItem ============
 const SelectItem = ({
   ref,
   className,
@@ -199,14 +209,14 @@ const SelectItem = ({
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex w-full cursor-pointer items-center rounded-sm py-1.5 ps-2 pr-8 text-sm outline-none select-none',
+      'relative flex w-full cursor-pointer items-center rounded-sm py-1.5 ps-2 pe-8 text-sm outline-none select-none',
       'focus:bg-accent focus:text-accent-foreground',
       'data-disabled:pointer-events-none data-disabled:opacity-50',
       className,
     )}
     {...props}
   >
-    <span className="absolute right-2 flex size-3.5 items-center justify-center">
+    <span className="absolute end-2 flex size-3.5 items-center justify-center">
       <SelectPrimitive.ItemIndicator>
         <CheckIcon className="size-4" />
       </SelectPrimitive.ItemIndicator>
@@ -216,6 +226,7 @@ const SelectItem = ({
 );
 SelectItem.displayName = SelectPrimitive.Item.displayName;
 
+// ============ SelectSeparator ============
 const SelectSeparator = ({
   ref,
   className,
