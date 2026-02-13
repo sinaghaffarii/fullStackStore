@@ -6,7 +6,7 @@ import { NextResponse } from 'next/server';
 import { ROUTE_OBJECT } from './utils/constants';
 
 // ============================================================================
-// Constants
+// Route Groups
 // ============================================================================
 
 const PUBLIC_PATHS = [
@@ -17,11 +17,7 @@ const PUBLIC_PATHS = [
   ROUTE_OBJECT.CONTACT,
 ];
 
-const GUEST_ONLY_PATHS = [ROUTE_OBJECT.ADMIN_LOGIN, ROUTE_OBJECT.USER_LOGIN];
-
-const ADMIN_ONLY_PATHS = [ROUTE_OBJECT.DASHBOARD];
-
-const SUPER_ADMIN_ONLY_PATHS = [ROUTE_OBJECT.D_ROLES];
+const GUEST_ONLY_PATHS = [ROUTE_OBJECT.USER_LOGIN, ROUTE_OBJECT.ADMIN_LOGIN];
 
 const AUTH_REQUIRED_PATHS = [
   ROUTE_OBJECT.PROFILE,
@@ -30,50 +26,52 @@ const AUTH_REQUIRED_PATHS = [
   ROUTE_OBJECT.CART,
 ];
 
-const COOKIE_SECRET =
-  process.env.COOKIE_SECRET ||
-  process.env.NEXT_PUBLIC_COOKIE_SECRET ||
-  'your-secret-key';
+const ADMIN_ONLY_PATHS = [ROUTE_OBJECT.DASHBOARD];
+const SUPER_ADMIN_ONLY_PATHS = [ROUTE_OBJECT.D_ROLES];
+
+// ============================================================================
+// Auth / Cookie
+// ============================================================================
 
 const COOKIE_NAME = 'authState';
+const COOKIE_SECRET =
+  process.env.COOKIE_SECRET || process.env.NEXT_PUBLIC_COOKIE_SECRET;
+
 const SEPARATOR = '.';
 
-// ============================================================================
-// Types
-// ============================================================================
+enum UserRole {
+  Admin = 'admin',
+  Customer = 'customer',
+  SuperAdmin = 'super-admin',
+}
 
-type UserRole = 'admin' | 'customer' | 'super-admin';
-
-interface AuthStatePayload {
+interface AuthPayload {
   userId: string;
   role: UserRole;
   exp: number;
 }
 
 interface AuthState {
-  isAuthenticated: boolean;
-  userId: string | null;
+  authenticated: boolean;
   role: UserRole | null;
 }
 
 // ============================================================================
-// Crypto Helper
+// Crypto Helpers
 // ============================================================================
 
-async function createSignature(data: string): Promise<string> {
+async function sign(data: string): Promise<string> {
   const encoder = new TextEncoder();
-  const keyData = encoder.encode(COOKIE_SECRET);
-  const messageData = encoder.encode(data);
 
   const key = await crypto.subtle.importKey(
     'raw',
-    keyData,
+    encoder.encode(COOKIE_SECRET),
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['sign'],
   );
 
-  const signature = await crypto.subtle.sign('HMAC', key, messageData);
+  const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(data));
 
   return btoa(String.fromCharCode(...new Uint8Array(signature)))
     .replace(/\+/g, '-')
@@ -81,85 +79,57 @@ async function createSignature(data: string): Promise<string> {
     .replace(/[=]/g, '');
 }
 
-function decodePayload(encoded: string): AuthStatePayload | null {
+function decodePayload(encoded: string): AuthPayload | null {
   try {
-    const base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
-    const json = atob(base64);
+    const json = atob(encoded.replace(/-/g, '+').replace(/_/g, '/'));
     return JSON.parse(json);
   } catch {
     return null;
   }
 }
 
-async function verifySignedAuthState(
-  cookieValue: string,
-): Promise<AuthStatePayload | null> {
-  if (!cookieValue) return null;
+async function verifyAuthCookie(cookie?: string): Promise<AuthPayload | null> {
+  if (!cookie) return null;
 
-  const parts = cookieValue.split(SEPARATOR);
-  if (parts.length !== 2) return null;
+  const [payload, signature] = cookie.split(SEPARATOR);
+  if (!payload || !signature) return null;
 
-  const [encodedPayload, signature] = parts;
+  const expectedSignature = await sign(payload);
+  if (signature !== expectedSignature) return null;
 
-  const expectedSignature = await createSignature(encodedPayload);
-  if (signature !== expectedSignature) {
+  const decoded = decodePayload(payload);
+  if (!decoded) return null;
+
+  if (decoded.exp < Math.floor(Date.now() / 1000)) {
     return null;
   }
 
-  const payload = decodePayload(encodedPayload);
-  if (!payload) return null;
-
-  if (payload.exp < Math.floor(Date.now() / 1000)) {
-    return null;
-  }
-
-  return payload;
+  return decoded;
 }
 
 // ============================================================================
-// Helper Functions
+// Utils
 // ============================================================================
 
 function isStaticPath(pathname: string): boolean {
   return (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api') ||
-    pathname.startsWith('/static') ||
     pathname.includes('.') ||
     pathname === '/favicon.ico'
   );
 }
 
-function matchesPath(pathname: string, paths: string[]): boolean {
+function match(pathname: string, paths: string[]): boolean {
   return paths.some(
     (path) => pathname === path || pathname.startsWith(`${path}/`),
   );
 }
 
-async function getAuthState(request: NextRequest): Promise<AuthState> {
-  const authStateCookie = request.cookies.get(COOKIE_NAME)?.value;
-
-  if (!authStateCookie) {
-    return { isAuthenticated: false, userId: null, role: null };
-  }
-
-  const payload = await verifySignedAuthState(authStateCookie);
-
-  if (!payload) {
-    return { isAuthenticated: false, userId: null, role: null };
-  }
-
-  return {
-    isAuthenticated: true,
-    userId: payload.userId,
-    role: payload.role,
-  };
-}
-
-function redirect(request: NextRequest, path: string): NextResponse {
-  const response = NextResponse.redirect(new URL(path, request.url));
-  response.headers.set('x-middleware-cache', 'no-cache');
-  return response;
+function redirect(request: NextRequest, to: string): NextResponse {
+  const res = NextResponse.redirect(new URL(to, request.url));
+  res.headers.set('x-middleware-cache', 'no-cache');
+  return res;
 }
 
 function redirectWithCallback(
@@ -167,68 +137,81 @@ function redirectWithCallback(
   loginPath: string,
 ): NextResponse {
   const url = new URL(loginPath, request.url);
-  url.searchParams.set('callbackUrl', request.nextUrl.pathname);
-  const response = NextResponse.redirect(url);
-  response.headers.set('x-middleware-cache', 'no-cache');
-  return response;
+  url.searchParams.set(
+    'callbackUrl',
+    request.nextUrl.pathname + request.nextUrl.search,
+  );
+  return redirect(request, url.pathname + url.search);
 }
 
 // ============================================================================
-// Route Handlers
+// Auth Resolver
 // ============================================================================
 
-function handleGuestOnlyPaths(
+async function resolveAuth(request: NextRequest): Promise<AuthState> {
+  const cookie = request.cookies.get(COOKIE_NAME)?.value;
+  const payload = await verifyAuthCookie(cookie);
+
+  if (!payload) {
+    return { authenticated: false, role: null };
+  }
+
+  return {
+    authenticated: true,
+    role: payload.role,
+  };
+}
+
+// ============================================================================
+// Middleware Handlers
+// ============================================================================
+
+type MiddlewareHandler = (
   request: NextRequest,
   auth: AuthState,
-): NextResponse | null {
-  if (!auth.isAuthenticated) return null;
+) => NextResponse | null;
 
-  if (auth.role === 'admin' || auth.role === 'super-admin') {
+const handleGuestOnly: MiddlewareHandler = (request, auth) => {
+  if (!auth.authenticated) return null;
+
+  if (auth.role === UserRole.Admin || auth.role === UserRole.SuperAdmin) {
     return redirect(request, ROUTE_OBJECT.DASHBOARD);
   }
-  return redirect(request, ROUTE_OBJECT.HOME);
-}
 
-function handleAdminOnlyPaths(
-  request: NextRequest,
-  auth: AuthState,
-): NextResponse | null {
-  if (!auth.isAuthenticated) {
+  return redirect(request, ROUTE_OBJECT.HOME);
+};
+
+const handleSuperAdmin: MiddlewareHandler = (request, auth) => {
+  if (!auth.authenticated) {
     return redirectWithCallback(request, ROUTE_OBJECT.ADMIN_LOGIN);
   }
 
-  if (auth.role !== 'admin' && auth.role !== 'super-admin') {
+  if (auth.role !== UserRole.SuperAdmin) {
+    return redirect(request, ROUTE_OBJECT.DASHBOARD);
+  }
+
+  return null;
+};
+
+const handleAdmin: MiddlewareHandler = (request, auth) => {
+  if (!auth.authenticated) {
+    return redirectWithCallback(request, ROUTE_OBJECT.ADMIN_LOGIN);
+  }
+
+  if (auth.role !== UserRole.Admin && auth.role !== UserRole.SuperAdmin) {
     return redirect(request, ROUTE_OBJECT.HOME);
   }
 
   return null;
-}
+};
 
-function handleSuperAdminOnlyPaths(
-  request: NextRequest,
-  auth: AuthState,
-): NextResponse | null {
-  if (!auth.isAuthenticated) {
-    return redirectWithCallback(request, ROUTE_OBJECT.ADMIN_LOGIN);
-  }
-
-  if (auth.role !== 'super-admin') {
-    return redirect(request, ROUTE_OBJECT.DASHBOARD);
-  }
-
-  return null;
-}
-
-function handleAuthRequiredPaths(
-  request: NextRequest,
-  auth: AuthState,
-): NextResponse | null {
-  if (!auth.isAuthenticated) {
+const handleAuthRequired: MiddlewareHandler = (request, auth) => {
+  if (!auth.authenticated) {
     return redirectWithCallback(request, ROUTE_OBJECT.USER_LOGIN);
   }
 
   return null;
-}
+};
 
 // ============================================================================
 // Main Middleware
@@ -237,34 +220,34 @@ function handleAuthRequiredPaths(
 export async function proxy(request: NextRequest): Promise<NextResponse> {
   const { pathname } = request.nextUrl;
 
-  if (isStaticPath(pathname)) {
+  if (isStaticPath(pathname) || match(pathname, PUBLIC_PATHS)) {
     return NextResponse.next();
   }
 
-  const auth = await getAuthState(request);
+  const auth = await resolveAuth(request);
 
-  if (matchesPath(pathname, PUBLIC_PATHS)) {
-    return NextResponse.next();
+  if (match(pathname, GUEST_ONLY_PATHS)) {
+    return handleGuestOnly(request, auth) ?? NextResponse.next();
   }
 
-  if (matchesPath(pathname, GUEST_ONLY_PATHS)) {
-    return handleGuestOnlyPaths(request, auth) ?? NextResponse.next();
+  if (match(pathname, SUPER_ADMIN_ONLY_PATHS)) {
+    return handleSuperAdmin(request, auth) ?? NextResponse.next();
   }
 
-  if (matchesPath(pathname, SUPER_ADMIN_ONLY_PATHS)) {
-    return handleSuperAdminOnlyPaths(request, auth) ?? NextResponse.next();
+  if (match(pathname, ADMIN_ONLY_PATHS)) {
+    return handleAdmin(request, auth) ?? NextResponse.next();
   }
 
-  if (matchesPath(pathname, ADMIN_ONLY_PATHS)) {
-    return handleAdminOnlyPaths(request, auth) ?? NextResponse.next();
-  }
-
-  if (matchesPath(pathname, AUTH_REQUIRED_PATHS)) {
-    return handleAuthRequiredPaths(request, auth) ?? NextResponse.next();
+  if (match(pathname, AUTH_REQUIRED_PATHS)) {
+    return handleAuthRequired(request, auth) ?? NextResponse.next();
   }
 
   return NextResponse.next();
 }
+
+// ============================================================================
+// Config
+// ============================================================================
 
 export const config = {
   matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.).*)'],

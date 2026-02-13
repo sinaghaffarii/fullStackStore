@@ -3,14 +3,16 @@ import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
+import fs from 'fs';
 import helmet from 'helmet';
+import https from 'https';
 import morgan from 'morgan';
 import path from 'path';
 
 import { sequelize } from './configs/database';
 import { config } from './configs/environment';
+import { setupSwagger } from './configs/swagger/setup';
 import { seedAdmin } from './core/scripts/admin.seeder';
-import { setupSwagger } from './docs/swagger/setup';
 import { setupAssociations } from './infrastructure/database/models';
 import { errorHandler } from './infrastructure/http/middlewares/error-handler.middleware';
 import { notFoundHandler } from './infrastructure/http/middlewares/not-fount.middleware';
@@ -42,10 +44,15 @@ class App {
   }
 
   public listen(): void {
-    this.app.listen(config.app.port, () => {
+    const options = {
+      key: fs.readFileSync(path.join(__dirname, '..', 'localhost-key.pem')),
+      cert: fs.readFileSync(path.join(__dirname, '..', 'localhost.pem')),
+    };
+
+    https.createServer(options, this.app).listen(config.app.port, () => {
       console.log('\n🎉 Server started successfully!');
       console.log(`📍 Port: ${config.app.port}`);
-      console.log(`📚 Docs: http://localhost:${config.app.port}/api-docs`);
+      console.log(`📚 Docs: https://localhost:${config.app.port}/api-docs`);
       console.log(`🔧 Environment: ${config.app.env}`);
     });
   }

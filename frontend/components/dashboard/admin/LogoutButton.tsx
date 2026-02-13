@@ -3,7 +3,7 @@
 import { Loader2, LogOut } from 'lucide-react';
 
 import { Button } from '@/components/ui/Button';
-import { useAdminLogout } from '@/services/auth/hooks';
+import { useAdminLogout } from '@/services/auth';
 
 export function LogoutButton() {
   const logoutMutation = useAdminLogout();
@@ -11,7 +11,7 @@ export function LogoutButton() {
   return (
     <Button
       size="sm"
-      className="text-red-500 hover:bg-red-500/10 hover:text-red-500"
+      className="w-full justify-start p-0 text-red-500 hover:bg-red-500/10 hover:text-red-500"
       disabled={logoutMutation.isPending}
       variant="ghost"
       onClick={() => logoutMutation.mutate()}
