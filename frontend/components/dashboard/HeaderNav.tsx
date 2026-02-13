@@ -30,6 +30,8 @@ import {
 import { SidebarTrigger } from '@/components/ui/Sidebar';
 import { cn } from '@/lib/utils';
 
+import { LogoutButton } from './admin/LogoutButton';
+
 interface HeaderNavProps {
   className?: string;
 }
@@ -207,10 +209,11 @@ export function HeaderNav({ className }: HeaderNavProps) {
               {isDark ? 'حالت روشن' : 'حالت تاریک'}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive focus:text-destructive">
+            <LogoutButton />
+            {/* <DropdownMenuItem className="text-destructive focus:text-destructive">
               <LogOut className="me-2 size-4" />
               خروج
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

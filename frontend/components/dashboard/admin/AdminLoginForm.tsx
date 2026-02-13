@@ -9,11 +9,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import type { AuthError } from '@/types/auth';
-
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
-import { useAdminLogin } from '@/services/auth/hooks';
+import { useAdminLogin } from '@/services/auth';
 import { ROUTE_OBJECT } from '@/utils/constants';
 
 interface LoginFormData {
@@ -42,7 +40,6 @@ export function AdminLoginForm() {
     register,
     handleSubmit,
     formState: { errors },
-    setError,
   } = useForm<LoginFormData>({
     defaultValues: {
       username: '',
@@ -69,13 +66,6 @@ export function AdminLoginForm() {
         onSuccess: () => {
           router.push(callbackUrl);
           router.refresh();
-        },
-        onError: (error: AuthError) => {
-          if (error.field) {
-            setError(error.field, { message: error.message });
-          }
-          // setCaptchaToken(null);
-          // transtileRef.current?.reset();
         },
       },
     );

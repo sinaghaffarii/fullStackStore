@@ -33,6 +33,7 @@ import {
   useSidebar,
 } from '@/components/ui/Sidebar';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/services/auth';
 import { ROUTE_OBJECT } from '@/utils/constants';
 
 interface NavItem {
@@ -42,6 +43,7 @@ interface NavItem {
   isActive?: boolean;
   badge?: string;
   color?: string;
+  notForAdmin?: boolean;
 }
 
 interface NavSection {
@@ -144,6 +146,7 @@ const sidebarData: {
           url: ROUTE_OBJECT.D_ROLES,
           icon: Settings,
           color: 'text-slate-600',
+          notForAdmin: true,
         },
       ],
     },
@@ -248,6 +251,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { state } = useSidebar();
   const isCollapsed = state === 'collapsed';
 
+  const { isAdmin } = useAuth();
+
   return (
     <Sidebar
       className="border-l border-sidebar-border bg-sidebar"
@@ -278,6 +283,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarGroupLabel>
             <SidebarMenu className="space-y-1">
               {section.items.map((item) => {
+                if (isAdmin && item.notForAdmin) return null;
                 const isActive =
                   pathname === item.url ||
                   (item.isActive && pathname === item.url);

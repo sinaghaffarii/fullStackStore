@@ -1,4 +1,5 @@
 export const QUERY_KEY = Object.freeze({
+  AUTH: 'AUTH',
   BRAND: 'BRAND',
   CATEGORY: 'CATEGORY',
   PRODUCT: 'PRODUCT',
