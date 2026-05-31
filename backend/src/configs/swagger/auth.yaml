@@ -160,7 +160,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  success:
+                  status:
                     type: boolean
                   data:
                     $ref: '#/components/schemas/User'
@@ -267,7 +267,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  success:
+                  status:
                     type: boolean
                   message:
                     type: string

@@ -6,10 +6,8 @@ import { Controller, useForm } from 'react-hook-form';
 import type { CreateBrandDto, UpsertBrandDto } from '@/services/Brand';
 import type { IBrand } from '@/types/brand';
 
-import { Button } from '@/components/ui/Button';
-import { DialogFooter } from '@/components/ui/Dialog';
 import { ImageUploader } from '@/components/ui/ImageUploader';
-import { Input } from '@/components/ui/Input';
+import { BaseInput } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 import { Switch } from '@/components/ui/Switch';
 import { useCreateBrandItem, useUpsertBrandItem } from '@/services/Brand';
@@ -32,8 +30,8 @@ const defaultValues: FormData = {
 
 export function BrandForm({ brand, onSuccess }: Props) {
   const isEdit = !!brand;
-  const { mutate: createBrand, isPending: creating } = useCreateBrandItem();
-  const { mutate: upsertBrand, isPending: updating } = useUpsertBrandItem();
+  const { mutate: createBrand } = useCreateBrandItem();
+  const { mutate: upsertBrand } = useUpsertBrandItem();
 
   const {
     control,
@@ -85,7 +83,7 @@ export function BrandForm({ brand, onSuccess }: Props) {
         rules={{ required: 'نام برند الزامی است' }}
         control={control}
         render={({ field: { ref, ...fieldWithoutRef } }) => (
-          <Input
+          <BaseInput
             label="نام برند (English)"
             placeholder="مثال: BOBBY JONES"
             {...fieldWithoutRef}
@@ -99,7 +97,7 @@ export function BrandForm({ brand, onSuccess }: Props) {
         rules={{ required: 'نام فارسی برند الزامی است' }}
         control={control}
         render={({ field: { ref, ...fieldWithoutRef } }) => (
-          <Input
+          <BaseInput
             label="نام برند (فارسی)"
             placeholder="مثال: بابی جونز"
             {...fieldWithoutRef}
@@ -112,7 +110,7 @@ export function BrandForm({ brand, onSuccess }: Props) {
         name="slug"
         control={control}
         render={({ field: { ref, ...fieldWithoutRef } }) => (
-          <Input
+          <BaseInput
             label="اسلاگ (Slug)"
             placeholder="مثال: bobby-jones"
             {...fieldWithoutRef}
@@ -145,12 +143,6 @@ export function BrandForm({ brand, onSuccess }: Props) {
           </div>
         )}
       />
-
-      <DialogFooter>
-        <Button type="submit" loading={creating || updating}>
-          {isEdit ? 'ویرایش برند' : 'ذخیره برند'}
-        </Button>
-      </DialogFooter>
     </form>
   );
 }

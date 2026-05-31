@@ -223,7 +223,7 @@ export function DataTable<TData, TValue>({
               >
                 {headerGroup.headers.map((header) => (
                   <TableHead
-                    className="text-start font-semibold"
+                    className="text-center font-semibold"
                     key={header.id}
                   >
                     {flexRender(
@@ -248,7 +248,10 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow className="hover:bg-muted/30" key={row.id}>
+                <TableRow
+                  className="text-center hover:bg-muted/30"
+                  key={row.id}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(

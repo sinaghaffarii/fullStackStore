@@ -5,12 +5,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
-import type { Product } from '@/types/product';
+import type { CreateProductDto } from '@/types/product';
 
 import CarouselProducts from './carousel/CarouselProducts';
 
 interface Props {
-  products: Product[];
+  products: CreateProductDto[];
   isLoading?: boolean;
 }
 

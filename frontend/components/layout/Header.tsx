@@ -18,7 +18,7 @@ import { useMobile } from '@/hooks/useMobile';
 import { ROUTE_OBJECT } from '@/utils/constants';
 
 import { Button } from '../ui/Button';
-import { Input } from '../ui/Input';
+import { BaseInput } from '../ui/Input';
 import MegaMenu from '../ui/MegaMenu';
 import { Separator } from '../ui/Separator';
 import MobileSidebar from './MobileSidebar';
@@ -190,7 +190,7 @@ const Header = () => {
             </div>
 
             <div className="w-full md:w-80 lg:w-[500px]">
-              <Input
+              <BaseInput
                 className="h-10 border bg-white pr-10 transition-all focus:ring-2 focus:ring-primary"
                 placeholder="جستجوی نام محصول، دسته‌بندی و ..."
                 rightIcon={<SearchIcon className="size-5 text-gray-400" />}
@@ -199,7 +199,7 @@ const Header = () => {
           </div>
         ) : (
           <div className="pb-3">
-            <Input
+            <BaseInput
               className="h-10 border bg-white pr-10 text-sm transition-all focus:ring-2 focus:ring-primary"
               placeholder="جستجوی محصولات..."
               rightIcon={<SearchIcon className="size-5 text-gray-400" />}

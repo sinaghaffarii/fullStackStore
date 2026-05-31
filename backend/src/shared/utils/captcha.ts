@@ -1,5 +1,5 @@
 interface CaptchaVerifyResponse {
-  success: boolean;
+  status: boolean;
   errorCodes: string[];
 }
 
@@ -10,7 +10,7 @@ export async function verifyCaptcha(
 
   if (!secretKey) {
     console.error('TURNSTILE_SECRET_KEY is not defined');
-    return { success: false, errorCodes: ['missing-secret-key'] };
+    return { status: false, errorCodes: ['missing-secret-key'] };
   }
 
   try {
@@ -31,11 +31,11 @@ export async function verifyCaptcha(
     const data = await response.json();
 
     return {
-      success: data.success === true,
+      status: data.status === true,
       errorCodes: data['error-codes'] || [],
     };
   } catch (error) {
     console.error('Captcha verification error:', error);
-    return { success: false, errorCodes: ['verification-failed'] };
+    return { status: false, errorCodes: ['verification-failed'] };
   }
 }

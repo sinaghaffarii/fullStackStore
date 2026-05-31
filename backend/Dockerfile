@@ -20,6 +20,6 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY package*.json ./
 
-EXPOSE 8000
+EXPOSE 8585
 
 CMD ["pnpm", "start"]

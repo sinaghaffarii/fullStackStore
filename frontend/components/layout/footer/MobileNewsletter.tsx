@@ -2,12 +2,12 @@ import { Instagram, Youtube } from 'lucide-react';
 import React from 'react';
 
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { BaseInput } from '@/components/ui/Input';
 
 const MobileNewsletterSection: React.FC = () => (
   <div className="space-y-4 lg:hidden">
     <form className="flex gap-2" onSubmit={(e) => e.preventDefault()}>
-      <Input
+      <BaseInput
         className="flex-1"
         placeholder="ایمیل یا شماره تماس خود را وارد کنید..."
       />

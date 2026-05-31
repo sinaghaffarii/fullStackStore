@@ -1,4 +1,4 @@
-import type { AuthUser } from '../../infrastructure/http/middlewares/auth.middleware';
+import type { AuthUser } from '../../middlewares/auth.middleware';
 
 declare module 'melipayamak';
 

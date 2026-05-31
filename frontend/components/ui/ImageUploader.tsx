@@ -1,3 +1,5 @@
+/* eslint-disable next/no-img-element */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable max-lines */
 /* eslint-disable max-lines-per-function */
 'use client';
@@ -247,7 +249,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
           {/* Crop Area */}
           <ReactCrop
             aspect={aspect}
-            className="max-h-96"
+            className="max-h-80"
             crop={crop}
             onChange={setCrop}
           >

@@ -1,4 +1,5 @@
-import type { Product } from './product';
+/* eslint-disable @typescript-eslint/naming-convention */
+import type { CreateProductDto } from './product';
 
 export interface IPaginationMeta {
   total: number;
@@ -16,12 +17,13 @@ export interface IListResponse<TItem> {
 }
 
 export interface ApiSuccessResponse<T> {
-  success: true;
+  status: true;
+  message?: string;
   data: T;
 }
 
 export interface ApiErrorResponse {
-  success: false;
+  status: false;
   message: string;
   error?: {
     code?: string;
@@ -58,7 +60,7 @@ export interface CartItem {
   cart_id: string;
   product_id: string;
   quantity: number;
-  product?: Product;
+  product?: CreateProductDto;
 }
 
 export interface Order {
@@ -78,7 +80,7 @@ export interface OrderItem {
   product_id: string;
   quantity: number;
   price: number;
-  product?: Product;
+  product?: CreateProductDto;
 }
 
 export interface Ticket {

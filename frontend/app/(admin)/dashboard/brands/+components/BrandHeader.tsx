@@ -1,7 +1,7 @@
 import { Plus, Search } from 'lucide-react';
 
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { BaseInput } from '@/components/ui/Input';
 
 interface Props {
   total: number;
@@ -32,7 +32,7 @@ export function BrandHeader({
 
       <div className="relative max-w-sm">
         <Search className="absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
+        <BaseInput
           className="pr-10"
           value={searchValue}
           onChange={(e) => onSearchChange(e.target.value)}

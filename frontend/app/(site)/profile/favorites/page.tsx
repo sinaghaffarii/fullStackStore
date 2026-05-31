@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import type { Product, ProductImage } from '@/types/product';
+import type { CreateProductDto, ProductImage } from '@/types/product';
 
 import { ProductCard } from '@/components/ui/ProductCard';
 
@@ -15,7 +15,7 @@ const defaultProductImage: ProductImage = {
   is_primary: false,
 };
 
-const mockFavorites: Product[] = [
+const mockFavorites: CreateProductDto[] = [
   {
     id: '1', // ✅ string
     slug: 'smok-novo-x',

@@ -19,7 +19,7 @@ export const config = {
     pass: process.env.EMAIL_PASS,
   },
   app: {
-    port: parseInt(process.env.PORT || '8000', 10),
+    port: parseInt(process.env.PORT || '8585', 10),
     env: process.env.NODE_ENV || 'development',
   },
 } as const;

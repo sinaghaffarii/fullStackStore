@@ -54,25 +54,6 @@ export function CategoriesTable({
 
   const columns: ColumnDef<ICategory>[] = [
     {
-      accessorKey: 'image',
-      header: 'تصویر',
-      cell: ({ row }) => {
-        const imageSrc = row.original.image
-          ? `${process.env.NEXT_PUBLIC_API_URL_IMAGE}${row.original.image}`
-          : '/images/products/defaultImage.jpg';
-
-        return (
-          <div className="relative size-12 overflow-hidden rounded-md border">
-            <img
-              alt={row.original.name}
-              className="size-full object-cover"
-              src={imageSrc}
-            />
-          </div>
-        );
-      },
-    },
-    {
       accessorKey: 'name',
       header: 'عنوان',
       cell: ({ row }) => (

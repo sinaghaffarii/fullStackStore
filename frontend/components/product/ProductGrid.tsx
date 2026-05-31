@@ -1,13 +1,13 @@
 'use client';
 
-import type { Product } from '@/types/product';
+import type { CreateProductDto } from '@/types/product';
 
 import { useCart } from '@/hooks/useCart';
 
 import { ProductCard } from '../ui/ProductCard';
 
 interface ProductGridProps {
-  products: Product[];
+  products: CreateProductDto[];
 }
 
 export function ProductGrid({ products }: ProductGridProps) {

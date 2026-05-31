@@ -10,7 +10,7 @@ import { PanelLeftIcon } from 'lucide-react';
 import * as React from 'react';
 
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { BaseInput } from '@/components/ui/Input';
 import { Separator } from '@/components/ui/Separator';
 import {
   Sheet,
@@ -468,9 +468,9 @@ function SidebarSeparator({
 function SidebarInput({
   className,
   ...props
-}: React.ComponentProps<typeof Input>) {
+}: React.ComponentProps<typeof BaseInput>) {
   return (
-    <Input
+    <BaseInput
       className={cn('h-8 w-full bg-background shadow-none', className)}
       data-slot="sidebar-input"
       {...props}

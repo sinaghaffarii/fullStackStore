@@ -1,0 +1,55 @@
+import Joi from 'joi';
+
+const emptyStringToNull = (value: any) => {
+  if (value === '') return null;
+  return value;
+};
+
+export const categoryValidation = {
+  create: Joi.object({
+    name: Joi.string().min(2).max(100).required(),
+    slug: Joi.string()
+      .min(2)
+      .max(120)
+      .pattern(/^[-0-9a-z]+$/)
+      .required(),
+    description: Joi.string().max(500).optional().allow(''),
+    parent_id: Joi.string()
+      .uuid()
+      .optional()
+      .allow('', null)
+      .custom(emptyStringToNull),
+    sort_order: Joi.number().integer().min(0).optional(),
+    is_active: Joi.boolean().default(true),
+  }),
+
+  update: Joi.object({
+    name: Joi.string().min(2).max(100).optional(),
+    slug: Joi.string()
+      .min(2)
+      .max(120)
+      .pattern(/^[-0-9a-z]+$/)
+      .optional(),
+    description: Joi.string().max(500).optional().allow(''),
+    parent_id: Joi.string()
+      .uuid()
+      .optional()
+      .allow('', null)
+      .custom(emptyStringToNull),
+    sort_order: Joi.number().integer().min(0).optional(),
+    is_active: Joi.boolean().optional(),
+  }),
+
+  list: Joi.object({
+    parent_id: Joi.string().uuid().optional().allow(null, ''),
+    is_active: Joi.boolean().optional(),
+    include_children: Joi.boolean().default(false),
+    search: Joi.string().max(100).optional(),
+    page: Joi.number().integer().min(1).default(1),
+    limit: Joi.number().integer().min(1).max(100).default(20),
+  }),
+
+  search: Joi.object({
+    query: Joi.string().min(1).max(100).required(),
+  }),
+};

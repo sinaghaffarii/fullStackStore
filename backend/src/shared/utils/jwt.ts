@@ -1,4 +1,3 @@
-// src/shared/utils/jwt.ts
 import type { Response } from 'express';
 
 import jwt from 'jsonwebtoken';

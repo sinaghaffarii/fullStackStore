@@ -2,12 +2,13 @@
 
 import { Plus, Search } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
 import { useDebounce } from 'react-use';
 
-import { ProductsTable } from '@/components/dashboard/products/ProductsTable';
+import { ProductsTable } from '@/app/(admin)/dashboard/products/+components/ProductsTable';
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { BaseInput } from '@/components/ui/Input';
 import {
   Select,
   SelectContent,
@@ -16,27 +17,59 @@ import {
   SelectValue,
 } from '@/components/ui/Select';
 import { useGetProductList } from '@/services/Products';
+import { SortOption } from '@/types/product';
+import { ROUTE_OBJECT } from '@/utils/constants';
+
+const DEFAULT_LIMIT = 10;
 
 export default function ProductsPage() {
-  const [page, setPage] = useState(1);
-  const [limit] = useState(12);
-  const [search, setSearch] = useState('');
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const initialPage = useMemo(
+    () => parseInt(searchParams.get('page') ?? '1', 10),
+    [searchParams],
+  );
+  const [page, setPage] = useState(initialPage);
+
+  const [searchInput, setSearchInput] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [sort, setSort] = useState('newest');
+  const [sort, setSort] = useState<SortOption>(SortOption.NEWEST);
 
   useDebounce(
     () => {
-      setDebouncedSearch(search);
+      setDebouncedSearch(searchInput);
     },
     500,
-    [search],
+    [searchInput],
   );
+
+  const params = useMemo(() => {
+    const currentParams = new URLSearchParams(searchParams.toString());
+    currentParams.set('page', String(page));
+    currentParams.set('limit', String(DEFAULT_LIMIT));
+    currentParams.set('sort', sort);
+
+    return currentParams.toString();
+  }, [page, searchParams, sort]);
+
+  useEffect(() => {
+    if (
+      searchParams.get('page') !== String(page) ||
+      searchParams.get('limit') !== String(DEFAULT_LIMIT)
+    ) {
+      router.push(`${ROUTE_OBJECT.D_PRODUCTS}?${params}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router, params]);
+
+  const sortFilter = searchParams.get('sort') ?? undefined;
 
   const { data, isLoading } = useGetProductList({
     page,
-    limit,
+    limit: DEFAULT_LIMIT,
     search: debouncedSearch || undefined,
-    sort,
+    sort: sortFilter as SortOption,
   });
 
   return (
@@ -59,24 +92,28 @@ export default function ProductsPage() {
       <div className="flex flex-col gap-4 sm:flex-row">
         <div className="relative flex-1">
           <Search className="absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
+          <BaseInput
             className="w-2xs pr-10"
-            value={search}
-            dimension="lg"
-            onChange={(e) => setSearch(e.target.value)}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
             placeholder="جستجو در محصولات..."
           />
         </div>
-        <Select value={sort} onValueChange={setSort}>
-          <SelectTrigger size="lg" className="w-48">
+
+        <Select
+          value={sort as string}
+          onValueChange={(val) => setSort(val as SortOption)}
+        >
+          <SelectTrigger className="w-48">
             <SelectValue placeholder="مرتب‌سازی" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="newest">جدیدترین</SelectItem>
-            <SelectItem value="oldest">قدیمی‌ترین</SelectItem>
-            <SelectItem value="price_low">ارزان‌ترین</SelectItem>
-            <SelectItem value="price_high">گران‌ترین</SelectItem>
-            <SelectItem value="best_selling">پرفروش‌ترین</SelectItem>
+            <SelectItem value={SortOption.NEWEST}>جدیدترین</SelectItem>
+            <SelectItem value={SortOption.OLDEST}>قدیمی‌ترین</SelectItem>
+            <SelectItem value={SortOption.PRICE_LOW}>ارزان‌ترین</SelectItem>
+            <SelectItem value={SortOption.PRICE_HIGH}>گران‌ترین</SelectItem>
+            <SelectItem value={SortOption.BEST_SELLING}>پرفروش‌ترین</SelectItem>
+            <SelectItem value={SortOption.MOST_POPULAR}>محبوب ترین</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -84,7 +121,7 @@ export default function ProductsPage() {
       <ProductsTable
         data={data?.data.items || []}
         page={page}
-        pageSize={limit}
+        pageSize={DEFAULT_LIMIT}
         isLoading={isLoading}
         onPageChange={setPage}
         total={data?.data.pagination.total || 0}

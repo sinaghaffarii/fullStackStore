@@ -42,7 +42,7 @@ export function setupSwagger(app: Application): void {
         docExpansion: 'none',
       },
       customCss: '.swagger-ui .topbar { display: none }',
-      customSiteTitle: 'FullStack Store API',
+      customSiteTitle: 'Faran Beauty API',
     }),
   );
 
@@ -53,7 +53,7 @@ function buildSwaggerSpec(): OpenApiSpec {
   const baseSpec: OpenApiSpec = {
     openapi: '3.0.0',
     info: {
-      title: 'FullStack Store API',
+      title: 'Faran Beauty API',
       version: '1.0.0',
     },
     servers: [{ url: '/api' }],

@@ -39,7 +39,7 @@ export const useAuth = () => {
         const response = await apiClient.get('/auth/me');
         return response.data;
       } catch (_error) {
-        // ✅ تغییر error به _error
+        // ✅ تغییر errors به _error
         return null;
       }
     },

@@ -12,7 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/Form';
-import { Input } from '@/components/ui/Input';
+import { BaseInput } from '@/components/ui/Input';
 
 interface OTPFormProps {
   onSubmit: (data: { code: string }) => void;
@@ -38,7 +38,7 @@ export function OTPForm({ onSubmit, isLoading, onBack }: OTPFormProps) {
               <FormItem>
                 <FormLabel className="sr-only">کد تأیید</FormLabel>
                 <FormControl>
-                  <Input
+                  <BaseInput
                     {...fieldWithoutRef} // ✅ بدون ref
                     dir="ltr"
                     maxLength={6}

@@ -14,6 +14,7 @@ import {
   User,
 } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import * as React from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
@@ -29,7 +30,15 @@ import {
 } from '@/components/ui/DropdownMenu';
 import { SidebarTrigger } from '@/components/ui/Sidebar';
 import { cn } from '@/lib/utils';
+import { getPathNameForBreadCrumb } from '@/utils/breadCrumbPath';
+import { ROUTE_OBJECT } from '@/utils/constants';
 
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+} from '../ui/Breadcrumb';
 import { LogoutButton } from './admin/LogoutButton';
 
 interface HeaderNavProps {
@@ -37,6 +46,8 @@ interface HeaderNavProps {
 }
 
 export function HeaderNav({ className }: HeaderNavProps) {
+  const pathName = usePathname();
+  const items = getPathNameForBreadCrumb(pathName);
   const [isFullscreen, setIsFullscreen] = React.useState(false);
   const [isDark, setIsDark] = React.useState(false);
 
@@ -66,23 +77,17 @@ export function HeaderNav({ className }: HeaderNavProps) {
       <div className="flex items-center gap-4">
         <SidebarTrigger className="size-9" />
 
-        <nav className="hidden items-center gap-1 text-sm md:flex">
-          <Link
-            className="font-medium text-primary hover:underline"
-            href="/admin"
-          >
-            اپلیکیشن
-          </Link>
-          <ChevronLeft className="size-4 text-muted-foreground" />
-          <Link
-            className="text-muted-foreground transition-colors hover:text-foreground"
-            href="/admin"
-          >
-            داشبوردها
-          </Link>
-          <ChevronLeft className="size-4 text-muted-foreground" />
-          <span className="text-muted-foreground">آنالیزها</span>
-        </nav>
+        <Breadcrumb className="hidden items-center gap-1 text-sm text-muted-foreground md:flex">
+          <BreadcrumbItem>اپلیکیشن</BreadcrumbItem>
+          {items.map((path) => {
+            return (
+              <React.Fragment key={path.href}>
+                <BreadcrumbSeparator />
+                <BreadcrumbLink href={path.href}>{path.label}</BreadcrumbLink>
+              </React.Fragment>
+            );
+          })}
+        </Breadcrumb>
       </div>
 
       {/* Left Side - User & Quick Actions */}

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useDebounce } from 'react-use';
 
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { BaseInput } from '@/components/ui/Input';
 import { useGetAdminList } from '@/services/Admins';
 
 import { AdminModal } from './+components/AdminModal';
@@ -56,7 +56,7 @@ export default function RolesPage() {
 
       <div className="relative max-w-sm">
         <Search className="absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
+        <BaseInput
           className="pr-10"
           value={search}
           dimension="lg"

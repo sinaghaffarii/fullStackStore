@@ -4,7 +4,7 @@ import { debounce } from 'lodash';
 import { Search } from 'lucide-react';
 import { useEffect, useMemo } from 'react';
 
-import { Input } from '@/components/ui/Input';
+import { BaseInput } from '@/components/ui/Input';
 
 interface Props {
   value: string;
@@ -29,7 +29,7 @@ export function CategorySearch({ value, onChange, onDebouncedChange }: Props) {
   return (
     <div className="relative max-w-sm">
       <Search className="absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-      <Input
+      <BaseInput
         className="pr-10"
         value={value}
         onChange={(e) => onChange(e.target.value)}

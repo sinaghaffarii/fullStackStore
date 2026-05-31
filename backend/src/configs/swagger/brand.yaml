@@ -53,7 +53,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  success:
+                  status:
                     type: boolean
                   data:
                     type: object

@@ -19,7 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/Dialog';
-import { Input } from '@/components/ui/Input';
+import { BaseInput } from '@/components/ui/Input';
 import { useCreateAdmin, useUpdateAdmin } from '@/services/Admins';
 import { createAdminSchema } from '@/validations';
 
@@ -44,7 +44,7 @@ const FormField = ({
     render={({ field: { ref, ...fieldWithoutRef } }) => (
       <div className="relative">
         <Icon className="absolute top-10 right-3 size-4 text-muted-foreground" />
-        <Input
+        <BaseInput
           dir={type === 'email' || type === 'password' ? 'ltr' : 'rtl'}
           required
           className="pr-10"
