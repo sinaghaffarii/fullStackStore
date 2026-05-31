@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
-/* eslint-disable max-lines-per-function */
 'use client';
 
+import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 import type { CreateCategoryDto, UpsertCategoryDto } from '@/services/Category';
@@ -17,8 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/Dialog';
-import { ImageUploader } from '@/components/ui/ImageUploader';
-import { Input } from '@/components/ui/Input';
+import { BaseInput } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 import { Switch } from '@/components/ui/Switch';
 import { Textarea } from '@/components/ui/Textarea';
@@ -39,34 +38,23 @@ const defaultFormValues: CreateCategoryDto & { id?: string } = {
   name: '',
   slug: '',
   description: '',
-  image: null,
   is_active: true,
   parent_id: null,
   sort_order: 0,
 };
 
-export function CategoryForm({
-  isOpen,
-  onClose,
-  category,
-  treeCategories,
-}: Props) {
-  const { control, handleSubmit, reset, setValue } = useForm<
+const CategoryForm = ({ isOpen, onClose, category, treeCategories }: Props) => {
+  const { control, handleSubmit, reset, watch } = useForm<
     CreateCategoryDto & { id?: string }
   >({
-    defaultValues: category
-      ? {
-          id: category.id,
-          name: category.name,
-          slug: category.slug,
-          description: category.description || '',
-          image: category.image,
-          is_active: category.is_active,
-          parent_id: category.parent_id,
-          sort_order: category.sort_order || 0,
-        }
-      : defaultFormValues,
+    defaultValues: defaultFormValues,
   });
+
+  useEffect(() => {
+    if (category?.id) {
+      reset(category);
+    }
+  }, [category]);
 
   const { mutate: create, isPending: creating } = useCreateCategoryItem();
   const { mutate: update, isPending: updating } = useUpsertCategoryItem();
@@ -85,7 +73,6 @@ export function CategoryForm({
         name: formData.name,
         slug: formData.slug,
         description: formData.description || '',
-        image: formData.image,
         is_active: formData.is_active,
         parent_id: formData.parent_id,
         sort_order: formData.sort_order || 0,
@@ -96,7 +83,6 @@ export function CategoryForm({
         name: formData.name,
         slug: formData.slug,
         description: formData.description || '',
-        image: formData.image,
         is_active: formData.is_active,
         parent_id: formData.parent_id,
         sort_order: formData.sort_order,
@@ -119,20 +105,6 @@ export function CategoryForm({
         <DialogBody>
           <form className="space-y-4" id="category-form" onSubmit={onSubmit}>
             <Controller
-              name="image"
-              control={control}
-              render={({ field }) => (
-                <ImageUploader
-                  label="تصویر دسته‌بندی"
-                  value={field.value ?? undefined}
-                  onChange={(url) =>
-                    setValue('image', url, { shouldDirty: true })
-                  }
-                />
-              )}
-            />
-
-            <Controller
               name="parent_id"
               control={control}
               render={({ field }) => (
@@ -150,7 +122,7 @@ export function CategoryForm({
               rules={{ required: 'نام الزامی است' }}
               control={control}
               render={({ field: { ref, ...fieldWithoutRef }, fieldState }) => (
-                <Input
+                <BaseInput
                   {...fieldWithoutRef}
                   label="نام دسته‌بندی"
                   error={fieldState.error?.message}
@@ -162,7 +134,7 @@ export function CategoryForm({
               name="slug"
               control={control}
               render={({ field: { ref, ...fieldWithoutRef }, fieldState }) => (
-                <Input
+                <BaseInput
                   {...fieldWithoutRef}
                   label="Slug"
                   error={fieldState.error?.message}
@@ -212,4 +184,6 @@ export function CategoryForm({
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default React.memo(CategoryForm);

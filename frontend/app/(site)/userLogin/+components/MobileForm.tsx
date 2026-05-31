@@ -13,11 +13,10 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/Form';
-import { Input } from '@/components/ui/Input';
+import { BaseInput } from '@/components/ui/Input';
+import { AuthSchema } from '@/validations/auth';
 
 import type { LoginInput } from '../../../../validations';
-
-import { AuthSchema } from '../../../../validations';
 
 interface MobileFormProps {
   onSubmit: (data: LoginInput) => void;
@@ -44,7 +43,7 @@ export function MobileForm({ onSubmit, isLoading }: MobileFormProps) {
                   <div className="absolute top-1/2 right-4 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-primary">
                     <Phone size={20} />
                   </div>
-                  <Input
+                  <BaseInput
                     {...fieldWithoutRef} // ✅ بدون ref
                     dir="ltr"
                     type="tel"

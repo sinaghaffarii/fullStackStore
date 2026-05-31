@@ -4,32 +4,39 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
+import type { BaseInputProps } from './Input';
+
+import { BaseInput } from './Input';
+
 interface CurrencyInputProps
-  extends Omit<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    'onChange' | 'value'
-  > {
-  value?: number | null;
+  extends Omit<BaseInputProps, 'onChange' | 'type' | 'value'> {
+  value: number | null;
   onChange: (value: number | null) => void;
-  label?: string;
-  error?: string;
   currency?: string;
 }
 
-// فرمت عدد با جداکننده هزارگان - روش ساده و بدون مشکل
-const formatNumber = (num: number): string => {
+const FA_DIGITS = '۰۱۲۳۴۵۶۷۸۹';
+
+const formatNumber = (num: number | null): string => {
+  if (num === null || typeof num !== 'number' || isNaN(num)) {
+    return '';
+  }
+
   return num.toLocaleString('fa-IR');
 };
 
 const parseNumber = (str: string): number | null => {
-  // حذف کاما، فاصله و اعداد فارسی به انگلیسی
-  const cleaned = str
-    .replace(/[\s,،]/g, '')
-    .replace(/[۰-۹]/g, (d) => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d).toString());
+  if (!str) return null;
 
-  if (cleaned === '') return null;
-  const num = Number(cleaned);
-  return Number.isNaN(num) ? null : num;
+  const cleaned = str
+    .replace(/[\s,،٬]/g, '')
+
+    .replace(/[۰-۹]/g, (d) => FA_DIGITS.indexOf(d).toString());
+
+  if (!cleaned) return null;
+
+  const n = Number(cleaned);
+  return Number.isNaN(n) ? null : n;
 };
 
 export const CurrencyInput = ({
@@ -39,98 +46,63 @@ export const CurrencyInput = ({
   label,
   error,
   required,
-  currency = 'ریال',
   className,
+  currency,
   ...props
 }: CurrencyInputProps & { ref?: React.RefObject<HTMLInputElement | null> }) => {
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  const [displayValue, setDisplayValue] = React.useState('');
-
-  React.useImperativeHandle(ref, () => inputRef.current!);
+  const [displayValue, setDisplayValue] = React.useState<string>(() =>
+    formatNumber(value),
+  );
 
   React.useEffect(() => {
-    if (value != null) {
+    if (formatNumber(value) !== displayValue) {
+      // eslint-disable-next-line @eslint-react/hooks-extra/no-direct-set-state-in-use-effect
       setDisplayValue(formatNumber(value));
-    } else {
-      setDisplayValue('');
     }
-  }, [value]);
+  }, [value, displayValue]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
-    // فقط ارقام فارسی و انگلیسی
-    const digits = raw.replace(/[^0-9۰-۹]/g, '');
+    const inputText = e.target.value;
 
-    if (digits === '') {
-      setDisplayValue('');
+    const cleanedInput = inputText.replace(/[^0-9۰-۹]/g, '');
+
+    if (cleanedInput === '') {
       onChange(null);
       return;
     }
 
-    const num = parseNumber(digits);
+    const num = parseNumber(cleanedInput);
+
     if (num !== null) {
       setDisplayValue(formatNumber(num));
+
       onChange(num);
+    } else {
+      setDisplayValue('');
+      onChange(null);
     }
   };
 
   return (
-    <div className="w-full space-y-1.5">
-      {label && (
-        <label
-          className="block text-sm font-medium text-foreground"
-          htmlFor={props.id}
-        >
-          <span className="inline-flex items-center gap-1">
-            {label}
-            {required && (
-              <>
-                <span aria-hidden="true" className="text-destructive">
-                  *
-                </span>
-                <span className="sr-only">الزامی</span>
-              </>
-            )}
-          </span>
-        </label>
-      )}
-
-      <div className="relative">
-        <input
-          aria-invalid={!!error}
-          aria-required={!!required}
-          ref={inputRef}
-          type="text"
-          value={displayValue}
-          inputMode="numeric"
-          onChange={handleChange}
-          className={cn(
-            'h-10 w-full rounded-md px-3 py-1 text-base md:text-sm',
-            'border border-input bg-transparent shadow-xs',
-            'transition-[color,box-shadow,background-color] outline-none',
-            'focus-visible:border-primary/50 focus-visible:ring-[3px] focus-visible:ring-primary/10',
-            'disabled:cursor-not-allowed disabled:opacity-50',
-            'placeholder:text-muted-foreground',
-            error &&
-              'border-destructive ring-destructive/20 focus-visible:border-destructive focus-visible:ring-destructive/20',
-            'pl-14',
-            className,
-          )}
-          {...props}
-        />
-        <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-sm text-muted-foreground">
+    <div className={cn('relative w-full space-y-1.5', className)}>
+      {currency && (
+        <span className="pointer-events-none absolute top-1/2 right-3 z-10 -translate-y-1/2 text-sm text-gray-500">
           {currency}
         </span>
-      </div>
-
-      {error && (
-        <span
-          className="block text-xs font-medium text-destructive"
-          role="alert"
-        >
-          {error}
-        </span>
       )}
+
+      <BaseInput
+        {...props}
+        className={cn(currency ? 'pr-12' : '', className)}
+        label={label}
+        ref={ref}
+        required={required}
+        type="text"
+        value={displayValue}
+        error={error}
+        inputMode="numeric"
+        onChange={handleChange}
+      />
     </div>
   );
 };

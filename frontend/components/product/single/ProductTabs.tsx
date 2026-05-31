@@ -1,6 +1,6 @@
 'use client';
 
-import type { Product } from '@/types/product';
+import type { CreateProductDto } from '@/types/product';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
 import { cn } from '@/lib/utils';
@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import { ProductReviews } from './ProductReviews';
 import { ProductSpecs } from './ProductSpecs';
 
-interface ProductDetail extends Product {
+interface ProductDetail extends CreateProductDto {
   specifications?: Record<string, string>;
   highlights?: string[];
 }

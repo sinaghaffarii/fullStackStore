@@ -1,7 +1,7 @@
 import type { Response } from 'express';
 
 export interface ApiResponse<T = any> {
-  success: boolean;
+  status: boolean;
   message: string;
   data?: T;
   error?: {
@@ -19,7 +19,7 @@ export function sendResponse<T>(
   },
 ): void {
   const response: ApiResponse<T> = {
-    success: statusCode >= 200 && statusCode < 300,
+    status: statusCode >= 200 && statusCode < 300,
     message: options.message,
     data: options.data,
   };
@@ -37,7 +37,7 @@ export function sendError(
   },
 ): void {
   const response: ApiResponse = {
-    success: false,
+    status: false,
     message: options.message,
     error: {
       code: options.errorCode || `ERR_${options.statusCode}`,

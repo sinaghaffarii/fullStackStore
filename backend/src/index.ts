@@ -9,22 +9,22 @@ import https from 'https';
 import morgan from 'morgan';
 import path from 'path';
 
+import { setupAssociations } from './associations';
 import { sequelize } from './configs/database';
 import { config } from './configs/environment';
 import { setupSwagger } from './configs/swagger/setup';
-import { seedAdmin } from './core/scripts/admin.seeder';
-import { setupAssociations } from './infrastructure/database/models';
-import { errorHandler } from './infrastructure/http/middlewares/error-handler.middleware';
-import { notFoundHandler } from './infrastructure/http/middlewares/not-fount.middleware';
-import { globalRateLimit } from './infrastructure/http/middlewares/rate-limit.middleware';
-import { authRoutes } from './infrastructure/http/routes/auth.routes';
-import { brandRoutes } from './infrastructure/http/routes/brand.routes';
-import { cartRoutes } from './infrastructure/http/routes/cart.routes';
-import { categoryRoutes } from './infrastructure/http/routes/category.routes';
-import { discountRoutes } from './infrastructure/http/routes/discount.routes';
-import { productRoutes } from './infrastructure/http/routes/product.routes';
-import { profileRoutes } from './infrastructure/http/routes/profile.routes';
-import { uploadRoutes } from './infrastructure/http/routes/upload.routes';
+import { errorHandler } from './middlewares/error-handler.middleware';
+import { notFoundHandler } from './middlewares/not-fount.middleware';
+import { globalRateLimit } from './middlewares/rate-limit.middleware';
+import { brandRoutes } from './modules/brands/routes/brand.routes';
+import { cartRoutes } from './modules/cart/routes/cart.routes';
+import { categoryRoutes } from './modules/categories/routes/category.routes';
+import { discountRoutes } from './modules/discount/routes/discount.routes';
+import { productRoutes } from './modules/products/routes/product.routes';
+import { uploadRoutes } from './modules/upload/routes/upload.routes';
+import { authRoutes } from './modules/user/routes/auth.routes';
+import { profileRoutes } from './modules/user/routes/profile.routes';
+import { seedAdmin } from './scripts/admin.seeder';
 import { CleanupService } from './shared/utils/cleanup';
 
 class App {

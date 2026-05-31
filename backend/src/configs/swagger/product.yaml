@@ -1,6 +1,6 @@
 tags:
   - name: Products
-    description: مدیریت محصولات
+    description: Product Management
 
 components:
   schemas:
@@ -22,14 +22,11 @@ components:
     ProductVariant:
       type: object
       required:
-        - sku
         - name
         - options
         - price
         - stock
       properties:
-        sku:
-          type: string
         name:
           type: string
         options:
@@ -183,7 +180,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  success:
+                  status:
                     type: boolean
                   data:
                     type: object

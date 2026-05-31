@@ -4,7 +4,7 @@ export interface AdminLoginRequest {
 }
 
 export interface AdminLoginResponse {
-  success: boolean;
+  status: boolean;
   message: string;
   user?: {
     id: string;
@@ -15,7 +15,7 @@ export interface AdminLoginResponse {
 }
 
 export interface LogoutResponse {
-  success: boolean;
+  status: boolean;
   message: string;
 }
 

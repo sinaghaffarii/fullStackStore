@@ -1,5 +1,7 @@
 import { Home } from 'lucide-react';
 
+import type { BreadcrumbSegment } from '@/types/breadcrumb';
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,11 +10,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/Breadcrumb';
-
-interface BreadcrumbSegment {
-  title: string;
-  href?: string;
-}
 
 interface DynamicBreadcrumbProps {
   segments: BreadcrumbSegment[];

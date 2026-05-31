@@ -2,7 +2,7 @@ import { Instagram, SendIcon, Youtube } from 'lucide-react';
 import React from 'react';
 
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { BaseInput } from '@/components/ui/Input';
 
 interface Props {
   variant?: 'desktop' | 'mobile';
@@ -32,7 +32,7 @@ const Newsletter: React.FC<Props> = ({ variant = 'desktop' }) => {
         className="flex flex-col gap-3 sm:flex-row"
         onSubmit={(e) => e.preventDefault()}
       >
-        <Input
+        <BaseInput
           required
           aria-label="ایمیل یا شماره تماس"
           className="flex-1 rounded-full border-gray-300 bg-gray-50 text-sm placeholder:text-gray-400"

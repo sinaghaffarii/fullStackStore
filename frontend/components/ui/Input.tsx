@@ -1,7 +1,9 @@
 import type { VariantProps } from 'class-variance-authority';
+import type { RegisterOptions } from 'react-hook-form';
 
 import { cva } from 'class-variance-authority';
 import * as React from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import { cn } from '@/lib/utils';
 
@@ -31,16 +33,17 @@ const inputVariants = cva(
   },
 );
 
-export interface InputProps
+export interface BaseInputProps
   extends React.InputHTMLAttributes<HTMLInputElement>,
     VariantProps<typeof inputVariants> {
   label?: string;
   error?: string;
   rightIcon?: React.ReactNode;
   leftIcon?: React.ReactNode;
+  ref?: React.RefCallback<HTMLInputElement | null>;
 }
 
-export const Input = ({
+export const BaseInput = ({
   ref,
   className,
   label,
@@ -52,10 +55,10 @@ export const Input = ({
   rightIcon,
   leftIcon,
   ...props
-}: InputProps & { ref?: React.RefObject<HTMLInputElement | null> }) => (
+}: BaseInputProps) => (
   <div className="w-full space-y-1.5">
     {label && (
-      <label className="text-sm font-medium">
+      <label className="block text-sm font-medium text-foreground">
         {label}
         {required && <span className="text-destructive"> *</span>}
       </label>
@@ -95,4 +98,30 @@ export const Input = ({
   </div>
 );
 
-Input.displayName = 'Input';
+BaseInput.displayName = 'BaseInput';
+
+// ------------------------------- Form Input Components ------------------------------
+
+interface FormInputProps extends BaseInputProps {
+  name: string;
+  rules?: RegisterOptions;
+}
+
+export const FormInput = ({ name, rules, ...props }: FormInputProps) => {
+  const { control } = useFormContext();
+
+  return (
+    <Controller
+      name={name}
+      rules={rules}
+      control={control}
+      render={({ field, fieldState }) => (
+        <BaseInput
+          {...field}
+          {...props}
+          error={props.error ?? fieldState.error?.message}
+        />
+      )}
+    />
+  );
+};

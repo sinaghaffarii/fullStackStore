@@ -18,7 +18,7 @@ interface GetListProps {
   limit: number;
   parentId?: string;
   includeChildren?: boolean;
-  isActive?: boolean;
+  is_active?: boolean;
   search?: string;
 }
 
@@ -36,13 +36,13 @@ export const useGetCategoryList = ({
   limit,
   parentId,
   includeChildren,
-  isActive,
+  is_active,
   search,
 }: GetListProps) => {
   return useQuery<ApiSuccessResponse<IListResponse<ICategory>>>({
     queryKey: [
       QUERY_KEY.CATEGORY,
-      { page, limit, parentId, includeChildren, isActive, search },
+      { page, limit, parentId, includeChildren, is_active, search },
     ],
     queryFn: async () => {
       const params = new URLSearchParams();
@@ -51,7 +51,7 @@ export const useGetCategoryList = ({
       if (parentId) params.set('parent_id', parentId);
       if (includeChildren !== undefined)
         params.set('include_children', String(includeChildren));
-      if (isActive !== undefined) params.set('is_active', String(isActive));
+      if (is_active !== undefined) params.set('is_active', String(is_active));
       if (search) params.set('search', search);
 
       const { data } = await apiClient.get<

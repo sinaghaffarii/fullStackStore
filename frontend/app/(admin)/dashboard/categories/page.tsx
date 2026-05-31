@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 import type { ICategory } from '@/types/category';
 
+import CategoryForm from '@/app/(admin)/dashboard/categories/+components/CategoryForm';
 import { CategoriesTable } from '@/components/dashboard/categories/CategoriesTable';
 import { CategoryTreePreview } from '@/components/dashboard/categories/CategoryTreePreview';
 import { Button } from '@/components/ui/Button';
@@ -22,7 +23,6 @@ import {
 } from '@/services/Category';
 
 import { CategoryActions } from './+components/CategoryActions';
-import { CategoryForm } from './+components/CategoryForm';
 import { CategorySearch } from './+components/CategorySearch';
 
 const DEFAULT_LIMIT = 20;
@@ -56,8 +56,8 @@ export default function CategoriesPage() {
   };
 
   const handleCloseForm = () => {
-    setIsFormOpen(false);
     setEditingCategory(undefined);
+    setIsFormOpen(false);
   };
 
   const handleDebouncedSearch = (value: string) => {

@@ -16,8 +16,8 @@ const selectVariants = cva(
     variants: {
       size: {
         sm: 'h-8 px-2.5 text-xs rounded-md',
-        md: 'h-9 px-3 text-sm rounded-md',
-        lg: 'h-10 px-3.5 text-sm rounded-lg',
+        md: 'h-10 px-3 text-sm rounded-md',
+        lg: 'h-12 px-3.5 text-sm rounded-lg',
       },
       variant: {
         default: 'border-input hover:bg-accent/50',
@@ -53,6 +53,7 @@ const SelectTrigger = ({
   > | null>;
 }) => (
   <SelectPrimitive.Trigger
+    dir="rtl"
     className={cn(selectVariants({ size, variant }), className)}
     ref={ref}
     {...props}
@@ -65,7 +66,7 @@ const SelectTrigger = ({
 );
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
-// ============ Select (with label/error wrapper) ============
+// ============ Select (with label/errors wrapper) ============
 interface SelectProps
   extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root> {
   label?: string;
@@ -82,6 +83,7 @@ function Select({ label, required, error, children, ...props }: SelectProps) {
 
     const childType = child.type as { displayName?: string };
     if (childType.displayName === SelectPrimitive.Trigger.displayName) {
+      // eslint-disable-next-line @eslint-react/no-clone-element
       return React.cloneElement(
         child as React.ReactElement<SelectTriggerProps>,
         {
@@ -98,7 +100,6 @@ function Select({ label, required, error, children, ...props }: SelectProps) {
     return child;
   });
 
-  // بدون label و error، فقط Root را برگردان
   if (!label && !error) {
     return (
       <SelectPrimitive.Root {...props}>{enhancedChildren}</SelectPrimitive.Root>
@@ -207,6 +208,7 @@ const SelectItem = ({
   ref?: React.RefObject<React.ElementRef<typeof SelectPrimitive.Item> | null>;
 }) => (
   <SelectPrimitive.Item
+    dir="rtl"
     ref={ref}
     className={cn(
       'relative flex w-full cursor-pointer items-center rounded-sm py-1.5 ps-2 pe-8 text-sm outline-none select-none',

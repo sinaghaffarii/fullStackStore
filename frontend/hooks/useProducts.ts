@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useDebounce } from 'react-use';
 
-import type { Product } from '../types/product';
+import type { CreateProductDto } from '../types/product';
 
 import { apiClient } from '../lib/apiClient';
 
@@ -28,7 +28,7 @@ export function useProducts(
       });
 
       const response = await apiClient.get(`/products?${params}`);
-      return response.data as Product[];
+      return response.data as CreateProductDto[];
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes

@@ -3,12 +3,11 @@
 import Link from 'next/link';
 import { useMemo } from 'react';
 
+import type { ErrorData } from '@/utils/errorDetector';
+
 import { Button } from '@/components/ui/Button';
 import { getColorClasses } from '@/utils/colorClasses';
-
-import type { ErrorData } from '../utils/errorDetector';
-
-import { detectError } from '../utils/errorDetector';
+import { detectError } from '@/utils/errorDetector';
 
 export default function Error({
   error,

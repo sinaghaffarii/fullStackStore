@@ -28,7 +28,9 @@ export const ROUTE_OBJECT = Object.freeze({
   D_BRANDS: '/dashboard/brands',
   D_ORDERS: '/dashboard/orders',
   D_INVOICES: '/dashboard/invoices',
-  D_COUPONS: '/dashboard/coupons',
+  D_DISCOUNTS: '/dashboard/discounts',
+  D_DISCOUNTS_Add: '/dashboard/discounts/Add',
+  D_DISCOUNTS_Edit: '/dashboard/discounts/Edit',
   D_CUSTOMERS: '/dashboard/customers',
   D_ROLES: '/dashboard/roles',
 });

@@ -1,4 +1,4 @@
-import type { Category } from './index';
+import type { ICategory } from './category';
 
 export interface MenuItem {
   title: string;
@@ -6,7 +6,7 @@ export interface MenuItem {
   children?: MenuItem[];
 }
 
-export function categoriesToMenu(categories: Category[]): MenuItem[] {
+export function categoriesToMenu(categories: ICategory[]): MenuItem[] {
   return categories
     .filter((cat) => cat.is_active)
     .sort((a, b) => a.sort_order - b.sort_order)

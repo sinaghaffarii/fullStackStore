@@ -6,13 +6,13 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
-import type { Product } from '@/types/product';
+import type { CreateProductDto } from '@/types/product';
 
 import { ProductCard } from '@/components/ui/ProductCard';
 import { cn } from '@/lib/utils';
 
 interface RelatedProductsProps {
-  products?: Product[];
+  products?: CreateProductDto[];
   className?: string;
 }
 

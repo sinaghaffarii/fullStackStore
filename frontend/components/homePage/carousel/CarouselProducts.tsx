@@ -9,7 +9,7 @@ import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import React, { useState } from 'react';
 
-import type { Product } from '@/types/product';
+import type { CreateProductDto } from '@/types/product';
 
 import { ProductCard } from '@/components/ui/ProductCard';
 import { cn } from '@/lib/utils';
@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils';
 import CarouselNavigation from './CarouselNavigation';
 
 interface Props {
-  products: Product[];
+  products: CreateProductDto[];
   title?: string;
   description?: string;
   showArrows?: boolean;

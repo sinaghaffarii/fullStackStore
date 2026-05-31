@@ -5,9 +5,9 @@
 import { Eye, Heart, ShoppingCart, Star, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { memo, useRef } from 'react';
+import React, { memo, useRef } from 'react';
 
-import type { Product } from '@/types/product';
+import type { CreateProductDto } from '@/types/product';
 
 import { Button } from '@/components/ui/Button';
 import { useLazyLoad } from '@/hooks/useIntersectionObserver';
@@ -15,7 +15,7 @@ import { useLazyLoad } from '@/hooks/useIntersectionObserver';
 type Mode = 'carousel' | 'catalog' | 'favorite';
 
 interface Props {
-  product: Product;
+  product: CreateProductDto;
   mode?: Mode;
   priority?: boolean;
   onAddToCart?: (id: string) => Promise<void>;
@@ -138,7 +138,8 @@ const RatingDisplay = memo(function RatingDisplay({
     <span className="flex items-center gap-1">
       <Star className="size-3 fill-amber-400 text-amber-400" />
       <span className="text-xs">
-        {rating.toLocaleString('fa-IR')} ({reviewCount.toLocaleString('fa-IR')})
+        {rating?.toLocaleString('fa-IR')} (
+        {reviewCount?.toLocaleString('fa-IR')})
       </span>
     </span>
   );
@@ -244,7 +245,7 @@ export const ProductCard = memo(function ProductCard({
           </div>
 
           <h3
-            className="line-clamp-2 min-h-[2.5rem] text-sm leading-tight font-medium text-gray-800 transition-colors group-hover:text-gray-900"
+            className="line-clamp-2 min-h-10 text-sm leading-tight font-medium text-gray-800 transition-colors group-hover:text-gray-900"
             title={name}
           >
             {name}

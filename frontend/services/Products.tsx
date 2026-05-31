@@ -3,7 +3,12 @@ import type { AxiosError } from 'axios';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 
-import type { Product } from '@/types/product';
+import type {
+  CreateProductDto,
+  EnrichedProduct,
+  PriceRange,
+  SortOption,
+} from '@/types/product';
 import type {
   ApiErrorResponse,
   ApiSuccessResponse,
@@ -14,46 +19,23 @@ import { apiClient } from '@/lib/apiClient';
 import { QUERY_KEY } from '@/utils/constants';
 
 interface ProductFilters {
-  page: number;
-  limit: number;
-  search?: string;
   category_id?: string;
   brand_id?: string;
-  sort?: string;
+  min_price?: number;
+  max_price?: number;
+  price_range?: PriceRange;
+  in_stock?: boolean;
   is_featured?: boolean;
   is_new?: boolean;
-}
-
-export interface CreateProductDto {
-  name: string;
-  slug: string;
-  description?: string;
-  base_price: number;
-  category_id: string;
-  brand_id?: string;
+  search?: string;
   tags?: string[];
-  specifications?: Record<string, string>;
-  is_featured?: boolean;
-  is_new?: boolean;
-  variants: {
-    sku: string;
-    name: string;
-    options: { type: string; label: string; value: string }[];
-    price?: number;
-    compare_price?: number;
-    stock: number;
-    image_url?: string;
-  }[];
-  images: {
-    url: string;
-    alt?: string;
-    sort_order?: number;
-    is_primary?: boolean;
-  }[];
+  sort?: SortOption;
+  page?: number;
+  limit?: number;
 }
 
 export const useGetProductList = (filters: ProductFilters) => {
-  return useQuery<ApiSuccessResponse<IListResponse<Product>>>({
+  return useQuery<ApiSuccessResponse<IListResponse<EnrichedProduct>>>({
     queryKey: [QUERY_KEY.PRODUCT, filters],
     queryFn: async () => {
       const params = new URLSearchParams();
@@ -63,7 +45,7 @@ export const useGetProductList = (filters: ProductFilters) => {
         }
       });
       const { data } = await apiClient.get<
-        ApiSuccessResponse<IListResponse<Product>>
+        ApiSuccessResponse<IListResponse<EnrichedProduct>>
       >(`/products?${params.toString()}`);
       return data;
     },
@@ -72,25 +54,35 @@ export const useGetProductList = (filters: ProductFilters) => {
 };
 
 export const useGetProductById = (id: string) => {
-  return useQuery<ApiSuccessResponse<Product>>({
+  return useQuery<ApiSuccessResponse<EnrichedProduct>>({
     queryKey: [QUERY_KEY.PRODUCT, id],
     queryFn: async () => {
-      const { data } = await apiClient.get<ApiSuccessResponse<Product>>(
+      const { data } = await apiClient.get<ApiSuccessResponse<EnrichedProduct>>(
         `/products/${id}`,
       );
       return data;
     },
     enabled: !!id,
-    staleTime: 1000 * 60 * 5, // 5 دقیقه
-    gcTime: 1000 * 60 * 10, // 10 دقیقه (cacheTime قدیمی)
-    retry: 2, // 2 بار تلاش مجدد در صورت خطا
+  });
+};
+
+export const useGetProductBySlug = (slug: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEY.PRODUCT, slug],
+    queryFn: async () => {
+      const { data } = await apiClient.get<ApiSuccessResponse<EnrichedProduct>>(
+        `/products/slug/${slug}`,
+      );
+      return data;
+    },
+    enabled: !!slug,
   });
 };
 
 export const useCreateProduct = () => {
   const queryClient = useQueryClient();
   return useMutation<
-    ApiSuccessResponse<Product>,
+    ApiSuccessResponse<CreateProductDto>,
     AxiosError<ApiErrorResponse>,
     CreateProductDto
   >({
@@ -111,7 +103,7 @@ export const useCreateProduct = () => {
 export const useUpdateProduct = () => {
   const queryClient = useQueryClient();
   return useMutation<
-    ApiSuccessResponse<Product>,
+    ApiSuccessResponse<CreateProductDto>,
     AxiosError<ApiErrorResponse>,
     { id: string; dto: Partial<CreateProductDto> }
   >({

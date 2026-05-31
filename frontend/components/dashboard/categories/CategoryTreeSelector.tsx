@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
@@ -7,7 +8,7 @@ import { useMemo, useRef, useState } from 'react';
 import type { ICategory } from '@/types/category';
 
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { BaseInput } from '@/components/ui/Input';
 import {
   Popover,
   PopoverContent,
@@ -274,7 +275,7 @@ function SearchInput({ value, onChange, inputRef }: SearchInputProps) {
     <div className="sticky top-0 z-10 border-b bg-background p-3">
       <div className="relative">
         <Search className="absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
+        <BaseInput
           className="pr-10"
           ref={inputRef}
           value={value}

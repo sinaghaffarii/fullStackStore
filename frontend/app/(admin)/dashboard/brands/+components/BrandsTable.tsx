@@ -1,3 +1,5 @@
+/* eslint-disable max-lines */
+/* eslint-disable next/no-img-element */
 /* eslint-disable max-lines-per-function */
 'use client';
 

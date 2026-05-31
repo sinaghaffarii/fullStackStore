@@ -8,7 +8,7 @@ export function StructuredData() {
         '@type': 'WebSite',
         '@id': `${process.env.NEXT_PUBLIC_SITE_URL}/#website`,
         url: process.env.NEXT_PUBLIC_SITE_URL,
-        name: 'فروشگاه آنلاین',
+        name: 'فاران بیوتی',
         description: 'فروشگاه اینترنتی با بهترین قیمت‌ها و کیفیت',
         potentialAction: [
           {
@@ -24,7 +24,7 @@ export function StructuredData() {
       {
         '@type': 'Organization',
         '@id': `${process.env.NEXT_PUBLIC_SITE_URL}/#organization`,
-        name: 'فروشگاه آنلاین',
+        name: 'فاران بیوتی',
         url: process.env.NEXT_PUBLIC_SITE_URL,
         logo: `${process.env.NEXT_PUBLIC_SITE_URL}/images/logo.png`,
         sameAs: [],

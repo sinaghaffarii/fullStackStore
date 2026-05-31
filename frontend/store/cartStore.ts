@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-import type { Product } from '../types/product';
-import type { CartItem } from '../types/public';
+import type { CreateProductDto } from '@/types/product';
+import type { CartItem } from '@/types/public';
 
 interface CartState {
   items: CartItem[];
-  addItem: (product: Product, quantity?: number) => void;
+  addItem: (product: CreateProductDto, quantity?: number) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;

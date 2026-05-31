@@ -5,7 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import React, { useRef, useState } from 'react';
 
 import type { ProductFiltersWrapperRef } from '@/components/product/ProductFiltersWrapper';
-import type { BreadcrumbSegment, CategoryData, Product } from '@/types/product';
+import type { BreadcrumbSegment } from '@/types/breadcrumb';
+import type { CategoryData, CreateProductDto } from '@/types/product';
 
 import { CategoryHeader } from '@/components/product/CategoryHeader';
 import { ProductFiltersWrapper } from '@/components/product/ProductFiltersWrapper';
@@ -64,7 +65,7 @@ function getCategoryData(slugs: string[]): CategoryData {
     features: ['پرفروش', 'جدید', 'دارای تخفیف', 'تست شده'],
   };
 
-  const products: Product[] = Array(12)
+  const products: CreateProductDto[] = Array(12)
     .fill(null)
     .map((_, i) => {
       const productId = i + 1;
@@ -92,7 +93,7 @@ function getCategoryData(slugs: string[]): CategoryData {
         category: slugs[slugs.length - 1] || 'hair',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-      } as unknown as Product;
+      } as unknown as CreateProductDto;
     });
 
   return {

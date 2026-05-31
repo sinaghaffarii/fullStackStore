@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from 'next';
 
-import { Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { Bounce, ToastContainer } from 'react-toastify';
 
 import './globals.css';
+import './Kalameh.fontface.css';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 import { Providers } from '@/lib/providers';
 
@@ -15,15 +16,15 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: 'فروشگاه آنلاین - بهترین قیمت‌ها و کیفیت',
-    template: '%s | فروشگاه آنلاین',
+    default: 'فاران بیوتی - بهترین قیمت‌ها و کیفیت',
+    template: '%s | فاران بیوتی',
   },
   description:
     'فروشگاه اینترنتی با بهترین قیمت‌ها، کیفیت عالی و تحویل سریع. خرید آنلاین مطمئن و آسان.',
-  keywords: ['فروشگاه آنلاین', 'خرید اینترنتی', 'محصولات با کیفیت'],
-  authors: [{ name: 'فروشگاه آنلاین' }],
-  creator: 'فروشگاه آنلاین',
-  publisher: 'فروشگاه آنلاین',
+  keywords: ['فاران بیوتی', 'خرید اینترنتی', 'محصولات با کیفیت'],
+  authors: [{ name: 'فاران بیوتی' }],
+  creator: 'فاران بیوتی',
+  publisher: 'فاران بیوتی',
   formatDetection: {
     email: false,
     address: false,
@@ -39,13 +40,13 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'fa_IR',
     url: '/',
-    siteName: 'فروشگاه آنلاین',
-    title: 'فروشگاه آنلاین - بهترین قیمت‌ها و کیفیت',
+    siteName: 'فاران بیوتی',
+    title: 'فاران بیوتی - بهترین قیمت‌ها و کیفیت',
     description: 'فروشگاه اینترنتی با بهترین قیمت‌ها، کیفیت عالی و تحویل سریع.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'فروشگاه آنلاین - بهترین قیمت‌ها و کیفیت',
+    title: 'فاران بیوتی - بهترین قیمت‌ها و کیفیت',
     description: 'فروشگاه اینترنتی با بهترین قیمت‌ها، کیفیت عالی و تحویل سریع.',
   },
   robots: {
@@ -78,12 +79,12 @@ export default function RootLayout({
               draggable
               rtl
               theme="light"
-              autoClose={5000}
+              autoClose={3000}
               closeOnClick={false}
-              hideProgressBar={false}
-              newestOnTop={false}
-              pauseOnFocusLoss
-              pauseOnHover
+              hideProgressBar
+              newestOnTop
+              pauseOnFocusLoss={false}
+              pauseOnHover={false}
               position="top-center"
               transition={Bounce}
             />

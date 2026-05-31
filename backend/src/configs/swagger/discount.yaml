@@ -7,13 +7,10 @@ paths:
     get:
       tags: [Discounts]
       summary: لیست تخفیف‌ها
+      security:
+        - bearerAuth: []
       parameters:
-        - name: scope
-          in: query
-          schema:
-            type: string
-            enum: [PRODUCT, CATEGORY, BRAND, GLOBAL]
-        - name: isActive
+        - name: is_active
           in: query
           schema:
             type: boolean
@@ -44,32 +41,28 @@ paths:
           application/json:
             schema:
               type: object
-              required: [name, type, value, scope, startsAt, endsAt]
+              required: [name, coupon_code, type, value, starts_at, ends_at]
               properties:
                 name:
+                  type: string
+                coupon_code:
                   type: string
                 type:
                   type: string
                   enum: [PERCENTAGE, FIXED]
                 value:
                   type: number
-                maxAmount:
+                max_amount:
                   type: number
-                scope:
-                  type: string
-                  enum: [PRODUCT, CATEGORY, BRAND, GLOBAL]
-                targetId:
-                  type: string
-                  format: uuid
-                startsAt:
+                starts_at:
                   type: string
                   format: date-time
-                endsAt:
+                ends_at:
                   type: string
                   format: date-time
-                badgeText:
+                badge_text:
                   type: string
-                isActive:
+                is_active:
                   type: boolean
       responses:
         200:
@@ -119,28 +112,24 @@ paths:
               properties:
                 name:
                   type: string
+                coupon_code:
+                  type: string
                 type:
                   type: string
                   enum: [PERCENTAGE, FIXED]
                 value:
                   type: number
-                maxAmount:
+                max_amount:
                   type: number
-                scope:
-                  type: string
-                  enum: [PRODUCT, CATEGORY, BRAND, GLOBAL]
-                targetId:
-                  type: string
-                  format: uuid
-                startsAt:
+                starts_at:
                   type: string
                   format: date-time
-                endsAt:
+                ends_at:
                   type: string
                   format: date-time
-                badgeText:
+                badge_text:
                   type: string
-                isActive:
+                is_active:
                   type: boolean
       responses:
         200:

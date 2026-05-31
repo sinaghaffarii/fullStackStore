@@ -126,7 +126,7 @@ const sidebarData: {
         },
         {
           title: 'کوپن‌ها و تخفیف‌ها',
-          url: ROUTE_OBJECT.D_COUPONS,
+          url: ROUTE_OBJECT.D_DISCOUNTS,
           icon: Bitcoin,
           color: 'text-emerald-600',
         },

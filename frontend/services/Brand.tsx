@@ -17,7 +17,7 @@ interface GetBrandListParams {
   page: number;
   limit: number;
   search?: string;
-  is_active?: boolean;
+  isActive?: boolean;
 }
 
 export type CreateBrandDto = Omit<IBrand, 'createdAt' | 'id' | 'updatedAt'>;
@@ -27,10 +27,10 @@ export const useGetBrandList = ({
   page,
   limit,
   search,
-  is_active,
+  isActive,
 }: GetBrandListParams) => {
   return useQuery<ApiSuccessResponse<IListResponse<IBrand>>>({
-    queryKey: [QUERY_KEY.BRAND, { page, limit, search, is_active }],
+    queryKey: [QUERY_KEY.BRAND, { page, limit, search, isActive }],
     queryFn: async () => {
       const params = new URLSearchParams();
 
@@ -38,7 +38,7 @@ export const useGetBrandList = ({
       params.set('limit', String(limit));
 
       if (search) params.set('search', search);
-      if (is_active !== undefined) params.set('is_active', String(is_active));
+      if (isActive !== undefined) params.set('is_active', String(isActive));
 
       const { data } = await apiClient.get<
         ApiSuccessResponse<IListResponse<IBrand>>
@@ -102,8 +102,8 @@ export const useDeleteBrandItem = () => {
       const { data } = await apiClient.delete(`/brands/${brandId}`);
       return data;
     },
-    onSuccess: ({ success }) => {
-      if (success) {
+    onSuccess: ({ status }) => {
+      if (status) {
         toast.success('برند بام موفقیت حذف گردید.');
         queryClient.invalidateQueries({
           queryKey: [QUERY_KEY.BRAND],

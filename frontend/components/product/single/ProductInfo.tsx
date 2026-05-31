@@ -4,7 +4,7 @@
 import { Check, Flame, Minus, Plus, Sparkles, Star } from 'lucide-react';
 import { useState } from 'react';
 
-import type { Product, StockStatus } from '@/types/product';
+import type { CreateProductDto, StockStatus } from '@/types/product';
 
 import { Button } from '@/components/ui/Button';
 import { cn, formatPrice, getStockLabel } from '@/lib/utils';
@@ -15,7 +15,7 @@ interface ProductColor {
 }
 
 interface ProductInfoProps {
-  product: Product;
+  product: CreateProductDto;
 }
 
 const mapStockStatus = (
@@ -187,7 +187,7 @@ function PriceSection({
   product,
   stockStatus,
 }: {
-  product: Product;
+  product: CreateProductDto;
   stockStatus: StockStatus;
 }) {
   const hasDiscount = product.discount_percent > 0;
@@ -274,7 +274,7 @@ function QuantitySelector({
  * کامپوننت MobileBar برای نمایش نوار ثابت در پایین صفحه در موبایل
  * شامل قیمت و دکمه افزودن به سبد
  */
-function MobileBar({ product }: { product: Product }) {
+function MobileBar({ product }: { product: CreateProductDto }) {
   const hasDiscount = product.discount_percent > 0;
 
   return (
